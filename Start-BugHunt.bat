@@ -9,17 +9,9 @@ echo.
 
 :: 1. Check if node_modules exists
 if not exist "node_modules\" (
-    echo [Setup] First-time setup detected. Installing dependencies...
+    echo [Setup] First-time setup: Installing dependencies...
     echo (This may take a minute or two on first run)
-    echo.
     call npm install
-    if %errorlevel% neq 0 (
-        echo.
-        echo [Warning] Approving postinstall scripts...
-        call npm approve-scripts electron 2>nul
-        call npm approve-scripts esbuild 2>nul
-        call npm install
-    )
     echo.
 )
 
@@ -30,14 +22,22 @@ if not exist "dist\" (
     echo.
 )
 
-:: 3. Launch the native Electron desktop application window
-echo [Launch] Starting Bug Hunt Native Desktop App...
-call npm start
+:: 3. Launch Application Window
+echo [Launch] Starting Bug Hunt Desktop Application...
 
-if %errorlevel% neq 0 (
-    echo.
-    echo [Notice] Attempting direct Electron launch...
-    call npx electron .
+:: If Electron binary exists, launch Electron native window
+if exist "node_modules\electron\dist\electron.exe" (
+    echo Launching via Electron Desktop Engine...
+    call npm start
+    if %errorlevel% equ 0 exit
 )
+
+:: Fallback: Start background server and launch standalone app window
+echo Starting embedded backend server...
+start /B node server/server.js
+timeout /t 2 /nobreak >nul
+
+echo Opening Desktop Application Window...
+start msedge --app=http://localhost:4000 --window-size=1366,860 --app-id=bughunt
 
 exit
