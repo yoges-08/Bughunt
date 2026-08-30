@@ -119,6 +119,9 @@ export default function StudentEditor({ user, onLogout }) {
       // Refresh past submissions
       const subs = await api.getStudentSubmissions();
       setSubmissions(subs);
+
+      // Auto-switch to History tab so student sees their recorded submission in the list
+      setActiveTab('history');
     } catch (err) {
       setLastResult({
         success: false,
@@ -365,7 +368,7 @@ export default function StudentEditor({ user, onLogout }) {
               {/* Sanitized Pass/Fail Banner */}
               {lastResult && (
                 <div
-                  className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono font-bold transition-all ${
+                  className={`p-3.5 rounded-xl border flex flex-col gap-2 transition-all ${
                     lastResult.status === 'SUCCESS'
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
                       : lastResult.status === 'TIMEOUT'
@@ -373,7 +376,29 @@ export default function StudentEditor({ user, onLogout }) {
                       : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
                   }`}
                 >
-                  <div className="flex items-center gap-2">
+                  {/* Action Header: Clearly distinguishes Official SUBMIT from Local RUN */}
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider font-sans">
+                      {lastResult.isSubmit ? (
+                        <span className="flex items-center gap-1.5 text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-md border border-emerald-500/30">
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Official Submission Recorded</span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1.5 text-blue-400 bg-blue-500/20 px-2.5 py-0.5 rounded-md border border-blue-500/30">
+                          <Play className="w-3.5 h-3.5 fill-blue-400" />
+                          <span>Local Test Run (Sandbox)</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <span className="text-[10px] text-slate-400 font-sans font-medium">
+                      {lastResult.isSubmit ? 'Evaluated & Saved on Server' : 'Tested with Sample Input'}
+                    </span>
+                  </div>
+
+                  {/* Sanitized Message */}
+                  <div className="flex items-center gap-2 pt-0.5">
                     {lastResult.status === 'SUCCESS' ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                     ) : lastResult.status === 'TIMEOUT' ? (
@@ -381,12 +406,8 @@ export default function StudentEditor({ user, onLogout }) {
                     ) : (
                       <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
                     )}
-                    <span className="text-sm">{lastResult.message}</span>
+                    <span className="text-sm font-mono font-bold">{lastResult.message}</span>
                   </div>
-
-                  <span className="text-[10px] text-slate-400 uppercase font-sans">
-                    {lastResult.isSubmit ? 'Final Server Evaluation' : 'Local Test Run'}
-                  </span>
                 </div>
               )}
 
