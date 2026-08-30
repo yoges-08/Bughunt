@@ -1,16 +1,16 @@
-# 🐞 BUG HUNT — LAN Coding Contest Application
+# 🐞 BUG HUNT — LAN Coding Contest Platform
 
-A single desktop application for running LAN-based "Bug Hunt" coding contests with role-based UI (Admin vs. Student), private bundled compilers, instant LAN problem push, independent server re-verification, and strict error sanitization.
+A single desktop application for running LAN-based "Bug Hunt" coding contests with role-based UI (Admin Dashboard vs. Student Contest Editor), private bundled compilers, instant LAN problem push, independent server re-verification, and strict error sanitization.
 
 ---
 
 ## 🌟 Core Architecture & Key Features
 
-### 1. Single Application with Role-Based Login & Server-Side Security
+### 1. Single Application with Role-Based Desktop Interface
 - The same application is installed on every computer (Admin PC & Student PCs).
 - **Host Mode (Admin PC)**: Starts the embedded Express + WebSocket server on `0.0.0.0:4000`, hosts the contest database, and connects its local UI as Admin.
 - **Client Mode (Student PCs)**: Connects to the Host PC's LAN IP address (e.g., `http://192.168.1.50:4000`).
-- **Server-Side Role Enforcement**: The user interface is purely presentational. All administrative APIs (file push, student list, raw compiler diagnostics) strictly check `req.user.role === 'admin'`. Any unauthorized student request is rejected with `403 Forbidden`.
+- **Server-Side Role Enforcement**: All administrative APIs (file push, student list, raw compiler diagnostics) strictly check `req.user.role === 'admin'`. Any unauthorized student request is rejected with `403 Forbidden`.
 
 ### 2. Instant LAN File Push (Core Requirement 1)
 - When the Admin selects a problem and clicks **"Push File to Student(s)"**, the file and starter code are transmitted in real-time over WebSocket.
@@ -33,18 +33,36 @@ A single desktop application for running LAN-based "Bug Hunt" coding contests wi
 
 ---
 
-## 🚀 How to Launch the Application
+## 🚀 Setup & Launch Guide for New / Fresh Computers
 
-### Method 1: Double-Click the Desktop Launcher (Standalone Desktop Window)
+### 1. Clone & Setup
+Clone or copy the repository to a non-synced directory (e.g., `C:\Dev\Bughunt`):
+
+```bash
+git clone https://github.com/yoges-08/Bughunt.git
+cd Bughunt
+```
+
+### 2. Install Dependencies & Build Frontend
+```bash
+npm install
+npm run build
+```
+
+*(Note: If you see `npm warn allow-scripts` regarding electron/esbuild, approve them by running `npm approve-scripts electron` and `npm approve-scripts esbuild`, then re-run `npm install`)*
+
+### 3. Launch the Application
+
+#### Option A: One-Click Launcher (Recommended)
 Double-click:
 ```text
 Start-BugHunt.bat
 ```
-*(Automatically starts backend server and opens the application in a standalone desktop window)*
+*(Automatically verifies dependencies and launches the native Electron desktop application window)*
 
-### Method 2: Run via Terminal
+#### Option B: Launch via Terminal
 ```bash
-npm run dev
+npm start
 ```
 
 ---
@@ -60,6 +78,17 @@ npm run dev
 | **Student** | `student4` | `pass4` | Team Dana |
 
 *Admins can also create additional student accounts live from the Admin Dashboard.*
+
+---
+
+## 🛠️ Troubleshooting Common Setup Issues
+
+| Issue / Error | Cause | Solution |
+| :--- | :--- | :--- |
+| `ERR_CONNECTION_REFUSED` | Server was not running or `npm run build` was not run | Run `npm run build` once, then launch with `Start-BugHunt.bat` |
+| `EADDRINUSE 0.0.0.0:4000` | Port 4000 held by an old background process | Check port via `netstat -ano \| findstr :4000` and kill with `taskkill /F /PID <pid>` |
+| `EPERM` during install | OneDrive folder file locking / antivirus scan | Move project outside OneDrive (e.g. `C:\Dev\Bughunt`) |
+| `allow-scripts` warning | Electron binary postinstall blocked by npm gate | Run `npm approve-scripts electron` & `npm approve-scripts esbuild`, then `npm install` |
 
 ---
 

@@ -77,9 +77,20 @@ if (fs.existsSync(distPath)) {
 // Initialize WebSocket server
 socketManager.init(server);
 
-// Start listening on all network interfaces (0.0.0.0)
+// Start listening on all network interfaces (0.0.0.0) with graceful EADDRINUSE handling
 export function startServer(port = PORT) {
   return new Promise((resolve) => {
+    // Handle error if port is already occupied
+    server.once('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`ℹ️  Port ${port} is already active. Using existing server instance.`);
+        resolve({ server, port, ips: getLocalIpAddresses(), alreadyRunning: true });
+      } else {
+        console.error('Server error:', err);
+        resolve({ server, port, error: err });
+      }
+    });
+
     server.listen(port, '0.0.0.0', () => {
       const ips = getLocalIpAddresses();
       console.log('====================================================');
@@ -93,7 +104,7 @@ export function startServer(port = PORT) {
         console.log(`   👉 http://localhost:${port}`);
       }
       console.log('====================================================\n');
-      resolve({ server, port, ips });
+      resolve({ server, port, ips, alreadyRunning: false });
     });
   });
 }
