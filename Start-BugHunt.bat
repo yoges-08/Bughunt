@@ -35,7 +35,7 @@ if exist "node_modules\electron\dist\electron.exe" (
 :: Fallback: Start background server and launch standalone app window
 echo Starting embedded backend server...
 start /B node server/server.js
-timeout /t 2 /nobreak >nul
+ping -n 3 127.0.0.1 >nul 2>&1
 
 echo Opening Desktop Application Window...
 start msedge --app=http://localhost:4000 --window-size=1366,860 --app-id=bughunt
