@@ -54,7 +54,10 @@ router.get('/students', (req, res) => {
         language: assignment.language,
         filename: assignment.filename,
         status: assignment.status,
-        assignedAt: assignment.assignedAt
+        assignedAt: assignment.assignedAt,
+        expiresAt: assignment.expiresAt,
+        durationMinutes: assignment.durationMinutes,
+        hasSubmitted: assignment.hasSubmitted
       } : null,
       submissionsCount: submissions.length,
       hasPassed
@@ -90,9 +93,9 @@ router.get('/problems', (req, res) => {
   res.json(problems);
 });
 
-// Create problem
+// Create problem with configurable timer / durationMinutes
 router.post('/problems', (req, res) => {
-  const { title, language, filename, description, starterCode, testCases, timeLimitMs } = req.body;
+  const { title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes } = req.body;
 
   if (!title || !language || !filename || !starterCode) {
     return res.status(400).json({ error: 'Title, language, filename, and starterCode are required' });
@@ -106,7 +109,8 @@ router.post('/problems', (req, res) => {
       description: description || '',
       starterCode,
       testCases: testCases || [],
-      timeLimitMs: Number(timeLimitMs) || 3000
+      timeLimitMs: Number(timeLimitMs) || 3000,
+      durationMinutes: Math.max(1, Number(durationMinutes) || 15)
     });
     res.status(201).json(newProblem);
   } catch (err) {
@@ -117,7 +121,7 @@ router.post('/problems', (req, res) => {
 // --- LAN File Push / Problem Assignment ---
 /**
  * CORE REQUIREMENT 1:
- * Admin sends problem file to student or group of students over LAN.
+ * Admin sends problem file to student or group of students over LAN with live timer.
  */
 router.post('/assign', (req, res) => {
   const { problemId, studentId, assignAll } = req.body;
@@ -131,6 +135,10 @@ router.post('/assign', (req, res) => {
     return res.status(404).json({ error: 'Problem not found' });
   }
 
+  const durationMinutes = problem.durationMinutes || 15;
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + durationMinutes * 60 * 1000).toISOString();
+
   const problemPayload = {
     problemId: problem.id,
     title: problem.title,
@@ -138,15 +146,24 @@ router.post('/assign', (req, res) => {
     filename: problem.filename,
     description: problem.description,
     starterCode: problem.starterCode,
+    durationMinutes,
+    assignedAt: now.toISOString(),
+    expiresAt,
+    hasSubmitted: false,
     sampleTestCase: problem.testCases.find(t => !t.isHidden) || null
   };
 
   if (assignAll) {
-    // Push to all students
+    // Assign and push to all students
+    const students = db.getAllStudents();
+    students.forEach(s => {
+      db.assignProblemToStudent(s.id, problemId);
+    });
+
     const results = socketManager.pushProblemToAll(problemPayload);
     socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
     return res.json({
-      message: `Assigned problem '${problem.title}' to all students`,
+      message: `Assigned problem '${problem.title}' (⏱️ ${durationMinutes} mins) to all students`,
       results
     });
   }
@@ -165,7 +182,7 @@ router.post('/assign', (req, res) => {
   socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
 
   res.json({
-    message: `Assigned problem '${problem.title}' to student`,
+    message: `Assigned problem '${problem.title}' (⏱️ ${durationMinutes} mins) to student`,
     studentId,
     deliveredImmediately: isOnline
   });

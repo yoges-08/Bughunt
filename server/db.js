@@ -19,7 +19,7 @@ const INITIAL_DB = {
     {
       id: 'usr_admin',
       username: 'admin',
-      password: 'admin123', // In a real setup or contest, admin sets or resets this
+      password: 'admin123',
       role: 'admin',
       name: 'Contest Administrator',
       createdAt: new Date().toISOString()
@@ -98,6 +98,7 @@ if __name__ == "__main__":
         { input: "12321\n123456\n", expectedOutput: "YES\nNO", isHidden: true }
       ],
       timeLimitMs: 3000,
+      durationMinutes: 15,
       createdAt: new Date().toISOString()
     },
     {
@@ -149,6 +150,7 @@ int main() {
         { input: "5 4\n1 3 5 7 9\n", expectedOutput: "-1", isHidden: true }
       ],
       timeLimitMs: 3000,
+      durationMinutes: 20,
       createdAt: new Date().toISOString()
     },
     {
@@ -201,6 +203,7 @@ int main() {
         { input: "3\n7 7 7\n", expectedOutput: "7 3", isHidden: true }
       ],
       timeLimitMs: 3000,
+      durationMinutes: 15,
       createdAt: new Date().toISOString()
     }
   ],
@@ -290,7 +293,7 @@ class ContestDatabase {
     return this.data.problems.find(p => p.id === id);
   }
 
-  createProblem({ title, language, filename, description, starterCode, testCases, timeLimitMs = 3000 }) {
+  createProblem({ title, language, filename, description, starterCode, testCases, timeLimitMs = 3000, durationMinutes = 15 }) {
     const problem = {
       id: `prob_${uuidv4().substring(0, 8)}`,
       title: title.trim(),
@@ -299,7 +302,8 @@ class ContestDatabase {
       description: description.trim(),
       starterCode: starterCode || '',
       testCases: testCases || [],
-      timeLimitMs: timeLimitMs || 3000,
+      timeLimitMs: Number(timeLimitMs) || 3000,
+      durationMinutes: Math.max(1, Number(durationMinutes) || 15),
       createdAt: new Date().toISOString()
     };
     this.data.problems.push(problem);
@@ -312,22 +316,30 @@ class ContestDatabase {
     const problem = this.getProblemById(problemId);
     if (!problem) throw new Error(`Problem ${problemId} not found`);
 
+    const now = new Date();
+    const durationMinutes = Math.max(1, problem.durationMinutes || 15);
+    const expiresAt = new Date(now.getTime() + durationMinutes * 60 * 1000).toISOString();
+
     let assignment = this.data.assignments.find(a => a.studentId === studentId);
     if (assignment) {
       assignment.problemId = problemId;
-      assignment.assignedAt = new Date().toISOString();
+      assignment.assignedAt = now.toISOString();
+      assignment.expiresAt = expiresAt;
+      assignment.durationMinutes = durationMinutes;
       assignment.currentCode = problem.starterCode;
       assignment.status = 'assigned';
-      assignment.lastUpdated = new Date().toISOString();
+      assignment.lastUpdated = now.toISOString();
     } else {
       assignment = {
         id: `asg_${uuidv4().substring(0, 8)}`,
         studentId,
         problemId,
-        assignedAt: new Date().toISOString(),
+        assignedAt: now.toISOString(),
+        expiresAt,
+        durationMinutes,
         status: 'assigned',
         currentCode: problem.starterCode,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: now.toISOString()
       };
       this.data.assignments.push(assignment);
     }
@@ -341,6 +353,10 @@ class ContestDatabase {
     const problem = this.getProblemById(assignment.problemId);
     if (!problem) return null;
 
+    const hasSubmitted = Boolean(
+      this.data.submissions.find(s => s.studentId === studentId && s.problemId === problem.id)
+    );
+
     return {
       assignmentId: assignment.id,
       problemId: problem.id,
@@ -352,6 +368,9 @@ class ContestDatabase {
       currentCode: assignment.currentCode,
       status: assignment.status,
       assignedAt: assignment.assignedAt,
+      expiresAt: assignment.expiresAt || new Date(new Date(assignment.assignedAt).getTime() + (problem.durationMinutes || 15) * 60 * 1000).toISOString(),
+      durationMinutes: problem.durationMinutes || assignment.durationMinutes || 15,
+      hasSubmitted,
       sampleTestCase: problem.testCases.find(t => !t.isHidden) || null
     };
   }

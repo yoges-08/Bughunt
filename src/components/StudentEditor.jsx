@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { 
   Play, Send, CheckCircle2, XCircle, Clock, AlertTriangle, 
-  FileCode, Terminal, LogOut, Radio, RefreshCw, Save, Layers, Sparkles
+  FileCode, Terminal, LogOut, Radio, RefreshCw, Save, Layers, Sparkles, Lock
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
@@ -17,6 +17,7 @@ export default function StudentEditor({ user, onLogout }) {
   const [submissions, setSubmissions] = useState([]);
   const [autoSaveStatus, setAutoSaveStatus] = useState('Saved');
   const [incomingAlert, setIncomingAlert] = useState(null);
+  const [timeLeftSeconds, setTimeLeftSeconds] = useState(null);
   
   const saveTimeoutRef = useRef(null);
 
@@ -47,7 +48,7 @@ export default function StudentEditor({ user, onLogout }) {
       setProblem(payload);
       setCode(payload.starterCode || payload.code || '');
       setLastResult(null);
-      setIncomingAlert(`⚡ New Problem Assigned by Admin: "${payload.title}" (${payload.filename})`);
+      setIncomingAlert(`⚡ New Problem Assigned by Admin: "${payload.title}" (${payload.filename}) • ⏱️ ${payload.durationMinutes || 15} Mins`);
       setTimeout(() => setIncomingAlert(null), 6000);
     });
 
@@ -55,6 +56,50 @@ export default function StudentEditor({ user, onLogout }) {
       unsubProblemPush();
     };
   }, []);
+
+  // Live Timer countdown management
+  useEffect(() => {
+    if (!problem) {
+      setTimeLeftSeconds(null);
+      return;
+    }
+
+    const calcTimeLeft = () => {
+      if (!problem.expiresAt && !problem.assignedAt) return null;
+      const expiry = problem.expiresAt 
+        ? new Date(problem.expiresAt).getTime()
+        : new Date(problem.assignedAt).getTime() + (problem.durationMinutes || 15) * 60 * 1000;
+      const diff = Math.max(0, Math.floor((expiry - Date.now()) / 1000));
+      return diff;
+    };
+
+    setTimeLeftSeconds(calcTimeLeft());
+
+    const interval = setInterval(() => {
+      const remaining = calcTimeLeft();
+      setTimeLeftSeconds(remaining);
+      if (remaining === 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [problem]);
+
+  // Format timer as MM:SS
+  const formatTimer = (totalSeconds) => {
+    if (totalSeconds === null || totalSeconds === undefined) return '--:--';
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Check Single Submission Limit & Expiration
+  const currentProblemId = problem?.problemId || problem?.id;
+  const hasSubmitted = Boolean(
+    submissions.some(s => s.problemId === currentProblemId) || problem?.hasSubmitted
+  );
+  const isTimeExpired = timeLeftSeconds !== null && timeLeftSeconds === 0;
 
   // Handle Code Edit & Auto-save
   const handleEditorChange = (newCode) => {
@@ -101,15 +146,17 @@ export default function StudentEditor({ user, onLogout }) {
     }
   };
 
-  // Final Submit with Server Re-verification (Core Requirement 2 & 3)
+  // Final Submit with Server Re-verification (Core Requirement 2 & 3 - One-time Only)
   const handleSubmit = async () => {
     if (!problem || !code) return;
+    if (hasSubmitted || isTimeExpired) return;
+
     setSubmitLoading(true);
     setLastResult(null);
 
     try {
       const result = await api.submitStudentCode({
-        problemId: problem.problemId || problem.id,
+        problemId: currentProblemId,
         code,
         language: problem.language
       });
@@ -126,7 +173,11 @@ export default function StudentEditor({ user, onLogout }) {
       setLastResult({
         success: false,
         status: 'EXECUTION_FAILED',
-        message: '❌ Program Execution Failed',
+        message: err.message.includes('already submitted') 
+          ? '❌ Already Submitted — Only 1 submission allowed'
+          : err.message.includes('expired')
+          ? '⏱ Contest Time Expired'
+          : '❌ Program Execution Failed',
         isSubmit: true
       });
     } finally {
@@ -175,6 +226,24 @@ export default function StudentEditor({ user, onLogout }) {
         )}
 
         <div className="flex items-center gap-3">
+          {/* Live Contest Timer Display */}
+          {problem && timeLeftSeconds !== null && (
+            <div
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-bold border transition ${
+                isTimeExpired
+                  ? 'bg-slate-800 text-slate-400 border-slate-700'
+                  : timeLeftSeconds <= 120
+                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/30 animate-pulse'
+                  : timeLeftSeconds <= 300
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>{isTimeExpired ? 'TIME EXPIRED' : `⏱ ${formatTimer(timeLeftSeconds)}`}</span>
+            </div>
+          )}
+
           <div className="flex items-center gap-2 bg-surface-950 px-3 py-1 rounded-xl border border-slate-800 text-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-slate-300 font-medium">{user.name}</span>
@@ -240,9 +309,15 @@ export default function StudentEditor({ user, onLogout }) {
                   </p>
                 </div>
 
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800">
-                  <div className="text-slate-400 font-semibold mb-1 text-[11px]">File Target</div>
-                  <div className="font-mono text-emerald-400 text-xs">{problem.filename}</div>
+                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                  <div>
+                    <div className="text-slate-400 font-semibold mb-0.5 text-[11px]">File Target</div>
+                    <div className="font-mono text-emerald-400 text-xs">{problem.filename}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-slate-400 font-semibold mb-0.5 text-[11px]">Time Limit</div>
+                    <div className="font-mono text-amber-400 text-xs">{problem.durationMinutes || 15} Mins</div>
+                  </div>
                 </div>
 
                 {problem.sampleTestCase && (
@@ -269,12 +344,13 @@ export default function StudentEditor({ user, onLogout }) {
 
                 <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[11px] text-blue-300 space-y-1.5">
                   <div className="font-bold flex items-center gap-1.5">
-                    <span>💡 Contest Instructions</span>
+                    <span>💡 Contest Rules & Instructions</span>
                   </div>
                   <ul className="list-disc list-inside space-y-1 text-blue-200/80 text-[11px]">
                     <li>Find and fix the bugs directly in the code editor.</li>
-                    <li>Click <strong>RUN</strong> to test against sample input locally.</li>
-                    <li>Click <strong>SUBMIT</strong> to send code for official server grading.</li>
+                    <li>Click <strong>RUN</strong> to test against sample input as many times as you like.</li>
+                    <li><strong>ONE SUBMISSION ONLY:</strong> Once you click <strong>SUBMIT</strong>, your solution is final and recorded.</li>
+                    <li>Keep an eye on the <strong>⏱ Timer</strong> at the top bar.</li>
                   </ul>
                 </div>
               </div>
@@ -380,12 +456,12 @@ export default function StudentEditor({ user, onLogout }) {
                   <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
                     <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider font-sans">
                       {lastResult.isSubmit ? (
-                        <span className="flex items-center gap-1.5 text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-md border border-emerald-500/30">
+                        <span className="flex items-center gap-1.5 text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-md border border-emerald-500/30">
                           <Send className="w-3 h-3" />
                           <span>Official Submission Recorded</span>
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1.5 text-blue-400 bg-blue-500/20 px-2 py-0.5 rounded-md border border-blue-500/30">
+                        <span className="flex items-center gap-1.5 text-blue-400 bg-blue-500/20 px-2.5 py-0.5 rounded-md border border-blue-500/30">
                           <Play className="w-3 h-3 fill-blue-400" />
                           <span>Local Test Run (Sandbox)</span>
                         </span>
@@ -414,7 +490,19 @@ export default function StudentEditor({ user, onLogout }) {
               {/* Action Buttons: RUN and SUBMIT */}
               <div className="flex items-center justify-between">
                 <div className="text-[11px] text-slate-400 font-sans">
-                  <span>Click <strong>RUN</strong> to test locally, <strong>SUBMIT</strong> for final evaluation</span>
+                  {hasSubmitted ? (
+                    <span className="text-emerald-400 font-medium flex items-center gap-1">
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>Submission locked • 1 of 1 attempt used for this problem</span>
+                    </span>
+                  ) : isTimeExpired ? (
+                    <span className="text-rose-400 font-medium flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Contest time has expired for this problem • Submissions closed</span>
+                    </span>
+                  ) : (
+                    <span>Click <strong>RUN</strong> to test locally, <strong>SUBMIT</strong> for final evaluation (1 attempt only)</span>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -429,11 +517,31 @@ export default function StudentEditor({ user, onLogout }) {
 
                   <button
                     onClick={handleSubmit}
-                    disabled={submitLoading || runLoading}
-                    className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition"
+                    disabled={submitLoading || runLoading || hasSubmitted || isTimeExpired}
+                    className={`px-6 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg transition ${
+                      hasSubmitted
+                        ? 'bg-slate-800 text-emerald-400 border border-emerald-500/30 cursor-not-allowed shadow-none'
+                        : isTimeExpired
+                        ? 'bg-slate-800 text-rose-400 border border-rose-500/30 cursor-not-allowed shadow-none'
+                        : 'bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white shadow-emerald-950'
+                    }`}
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>{submitLoading ? 'Evaluating...' : 'SUBMIT'}</span>
+                    {hasSubmitted ? (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>SUBMITTED (1/1)</span>
+                      </>
+                    ) : isTimeExpired ? (
+                      <>
+                        <Clock className="w-3.5 h-3.5 text-rose-400" />
+                        <span>TIME EXPIRED</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>{submitLoading ? 'Evaluating...' : 'SUBMIT'}</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

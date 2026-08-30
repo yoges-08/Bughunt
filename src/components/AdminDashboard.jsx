@@ -31,6 +31,7 @@ export default function AdminDashboard({ user, onLogout }) {
     filename: '',
     description: '',
     starterCode: '',
+    durationMinutes: 15,
     input1: '',
     output1: '',
     input2: '',
@@ -142,9 +143,22 @@ export default function AdminDashboard({ user, onLogout }) {
         filename: newProblemData.filename || `solution.${newProblemData.language === 'python' ? 'py' : newProblemData.language}`,
         description: newProblemData.description,
         starterCode: newProblemData.starterCode,
+        durationMinutes: Number(newProblemData.durationMinutes) || 15,
         testCases
       });
       setShowAddProblemModal(false);
+      setNewProblemData({
+        title: '',
+        language: 'python',
+        filename: '',
+        description: '',
+        starterCode: '',
+        durationMinutes: 15,
+        input1: '',
+        output1: '',
+        input2: '',
+        output2: ''
+      });
       loadData();
     } catch (err) {
       alert('Failed to create problem: ' + err.message);
@@ -462,10 +476,15 @@ export default function AdminDashboard({ user, onLogout }) {
                       <pre>{p.starterCode}</pre>
                     </div>
 
-                    <div className="text-[11px] text-slate-400">
+                    <div className="text-[11px] text-slate-400 flex items-center gap-2">
                       <span>Test cases: {p.testCases?.length || 0}</span>
-                      <span className="mx-2">•</span>
-                      <span>Time limit: {p.timeLimitMs}ms</span>
+                      <span>•</span>
+                      <span className="text-emerald-400 font-medium flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        <span>{p.durationMinutes || 15} mins timer</span>
+                      </span>
+                      <span>•</span>
+                      <span>Sandbox: {p.timeLimitMs}ms</span>
                     </div>
                   </div>
 
@@ -696,8 +715,8 @@ export default function AdminDashboard({ user, onLogout }) {
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col p-6 shadow-2xl">
             <h3 className="text-base font-bold text-slate-100 mb-4">Create New Buggy Problem</h3>
             <form onSubmit={handleCreateProblem} className="space-y-4 text-xs overflow-y-auto flex-1 pr-2">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-1">
                   <label className="block text-slate-400 font-semibold mb-1">Problem Title</label>
                   <input
                     type="text"
@@ -719,6 +738,22 @@ export default function AdminDashboard({ user, onLogout }) {
                     <option value="cpp">C++</option>
                     <option value="c">C</option>
                   </select>
+                </div>
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1 flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Contest Timer (Mins)</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="180"
+                    required
+                    value={newProblemData.durationMinutes}
+                    onChange={(e) => setNewProblemData({ ...newProblemData, durationMinutes: e.target.value })}
+                    placeholder="e.g. 15"
+                    className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  />
                 </div>
               </div>
 

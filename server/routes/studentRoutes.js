@@ -5,6 +5,8 @@
  * - RUN: Sandboxed execution with strictly generic pass/fail response.
  * - SUBMIT: Server independently re-compiles and re-verifies against all test cases.
  * - SANITIZATION: Never returns raw compiler/runtime output or line numbers to students.
+ * - SINGLE SUBMISSION LIMIT: Only one submission allowed per problem assignment.
+ * - TIMER ENFORCEMENT: Server validates that submission was sent before problem expiry.
  */
 
 import express from 'express';
@@ -45,6 +47,9 @@ router.get('/current-problem', (req, res) => {
       currentCode: assignment.currentCode,
       status: assignment.status,
       assignedAt: assignment.assignedAt,
+      expiresAt: assignment.expiresAt,
+      durationMinutes: assignment.durationMinutes || 15,
+      hasSubmitted: Boolean(assignment.hasSubmitted),
       sampleTestCase: assignment.sampleTestCase
     }
   });
@@ -101,6 +106,7 @@ router.post('/run', async (req, res) => {
 /**
  * CORE REQUIREMENT 2 & 3:
  * Server independently re-compiles, executes all test cases, and scores the submission.
+ * Enforces single submission limit and time limit.
  */
 router.post('/submit', async (req, res) => {
   const studentId = req.user.id;
@@ -108,6 +114,30 @@ router.post('/submit', async (req, res) => {
 
   if (!problemId || !code || !language) {
     return res.status(400).json({ error: 'problemId, code, and language are required' });
+  }
+
+  // 1. Check if student has already submitted this problem (Single Submission Limit)
+  const existingSubmissions = db.getStudentSubmissions(studentId);
+  const alreadySubmitted = existingSubmissions.some(s => s.problemId === problemId);
+  if (alreadySubmitted) {
+    return res.status(400).json({
+      error: 'Only one submission is allowed per problem. You have already submitted your solution.',
+      alreadySubmitted: true
+    });
+  }
+
+  // 2. Check if problem time limit has expired
+  const assignment = db.getStudentAssignment(studentId);
+  if (assignment && assignment.expiresAt) {
+    const now = Date.now();
+    const expiry = new Date(assignment.expiresAt).getTime();
+    // Allow a 15-second network latency grace period
+    if (now > expiry + 15000) {
+      return res.status(400).json({
+        error: 'Contest time has expired for this problem. Submissions are now closed.',
+        timeExpired: true
+      });
+    }
   }
 
   try {
