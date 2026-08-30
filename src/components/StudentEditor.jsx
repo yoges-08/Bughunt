@@ -144,23 +144,23 @@ export default function StudentEditor({ user, onLogout }) {
   })();
 
   return (
-    <div className="h-screen flex flex-col bg-surface-950 text-slate-100 overflow-hidden select-none">
-      {/* Top Header */}
-      <header className="bg-surface-900 border-b border-slate-800 px-5 py-3 flex items-center justify-between z-20">
+    <div className="h-screen w-screen flex flex-col bg-surface-950 text-slate-100 overflow-hidden select-none">
+      {/* Top Header - Fixed Height */}
+      <header className="shrink-0 bg-surface-900 border-b border-slate-800 px-5 py-2.5 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
             BH
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white tracking-tight">Bug Hunt Contest</span>
+              <span className="font-bold text-white tracking-tight text-sm">Bug Hunt Contest</span>
               {problem && (
                 <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] uppercase font-mono font-bold">
                   {problem.language}
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-400 truncate max-w-xs md:max-w-md">
               {problem ? problem.title : 'Waiting for Admin to assign problem...'}
             </p>
           </div>
@@ -196,13 +196,13 @@ export default function StudentEditor({ user, onLogout }) {
         </div>
       </header>
 
-      {/* Main Content Area */}
+      {/* Main Content Area - Strictly Fills Remaining Height */}
       {problem ? (
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 min-h-0 flex overflow-hidden">
           {/* Left Panel: Problem Spec & Test Case info */}
-          <div className="w-80 bg-surface-900 border-r border-slate-800 flex flex-col overflow-hidden">
-            {/* Tab switch */}
-            <div className="flex border-b border-slate-800 text-xs">
+          <div className="w-80 lg:w-96 shrink-0 bg-surface-900 border-r border-slate-800 flex flex-col min-h-0 overflow-hidden">
+            {/* Tab switch Header */}
+            <div className="shrink-0 flex border-b border-slate-800 text-xs">
               <button
                 onClick={() => setActiveTab('description')}
                 className={`flex-1 py-2.5 font-bold transition flex items-center justify-center gap-1.5 ${
@@ -229,20 +229,20 @@ export default function StudentEditor({ user, onLogout }) {
 
             {/* Tab 1: Description */}
             {activeTab === 'description' && (
-              <div className="p-4 space-y-4 overflow-y-auto flex-1 text-xs">
+              <div className="flex-1 min-h-0 p-4 space-y-4 overflow-y-auto text-xs">
                 <div>
                   <div className="text-slate-500 font-bold uppercase tracking-wider text-[10px] mb-1">
                     Bug Hunt Challenge
                   </div>
                   <h2 className="text-sm font-bold text-white mb-2">{problem.title}</h2>
-                  <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                  <p className="text-slate-300 leading-relaxed whitespace-pre-wrap text-xs">
                     {problem.description}
                   </p>
                 </div>
 
                 <div className="bg-surface-950 p-3 rounded-xl border border-slate-800">
-                  <div className="text-slate-400 font-semibold mb-1">File Target</div>
-                  <div className="font-mono text-emerald-400">{problem.filename}</div>
+                  <div className="text-slate-400 font-semibold mb-1 text-[11px]">File Target</div>
+                  <div className="font-mono text-emerald-400 text-xs">{problem.filename}</div>
                 </div>
 
                 {problem.sampleTestCase && (
@@ -250,16 +250,16 @@ export default function StudentEditor({ user, onLogout }) {
                     <div className="text-slate-400 font-semibold uppercase text-[10px]">Sample Test Case</div>
                     {problem.sampleTestCase.input && (
                       <div>
-                        <div className="text-slate-500 text-[10px] font-mono">Sample Input:</div>
-                        <pre className="font-mono text-slate-200 bg-surface-900 p-2 rounded text-[11px] overflow-x-auto">
+                        <div className="text-slate-500 text-[10px] font-mono mb-1">Sample Input:</div>
+                        <pre className="font-mono text-slate-200 bg-surface-900 p-2 rounded text-[11px] overflow-x-auto whitespace-pre">
                           {problem.sampleTestCase.input}
                         </pre>
                       </div>
                     )}
                     {problem.sampleTestCase.expectedOutput && (
                       <div>
-                        <div className="text-slate-500 text-[10px] font-mono">Expected Output:</div>
-                        <pre className="font-mono text-emerald-300 bg-surface-900 p-2 rounded text-[11px] overflow-x-auto">
+                        <div className="text-slate-500 text-[10px] font-mono mb-1">Expected Output:</div>
+                        <pre className="font-mono text-emerald-300 bg-surface-900 p-2 rounded text-[11px] overflow-x-auto whitespace-pre">
                           {problem.sampleTestCase.expectedOutput}
                         </pre>
                       </div>
@@ -267,14 +267,14 @@ export default function StudentEditor({ user, onLogout }) {
                   </div>
                 )}
 
-                <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[11px] text-blue-300 space-y-1">
-                  <div className="font-bold flex items-center gap-1">
+                <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[11px] text-blue-300 space-y-1.5">
+                  <div className="font-bold flex items-center gap-1.5">
                     <span>💡 Contest Instructions</span>
                   </div>
-                  <ul className="list-disc list-inside space-y-0.5 text-blue-200/80 text-[10px]">
+                  <ul className="list-disc list-inside space-y-1 text-blue-200/80 text-[11px]">
                     <li>Find and fix the bugs directly in the code editor.</li>
-                    <li>Click <strong>RUN</strong> to test against sample input.</li>
-                    <li>Click <strong>SUBMIT</strong> to send to the server for final grading.</li>
+                    <li>Click <strong>RUN</strong> to test against sample input locally.</li>
+                    <li>Click <strong>SUBMIT</strong> to send code for official server grading.</li>
                   </ul>
                 </div>
               </div>
@@ -282,7 +282,7 @@ export default function StudentEditor({ user, onLogout }) {
 
             {/* Tab 2: Submission History */}
             {activeTab === 'history' && (
-              <div className="p-4 space-y-2.5 overflow-y-auto flex-1 text-xs">
+              <div className="flex-1 min-h-0 p-4 space-y-2.5 overflow-y-auto text-xs">
                 <div className="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-1">
                   Submission History
                 </div>
@@ -325,9 +325,9 @@ export default function StudentEditor({ user, onLogout }) {
           </div>
 
           {/* Center & Right: Locked-Down Monaco Code Editor */}
-          <div className="flex-1 flex flex-col overflow-hidden bg-surface-950">
+          <div className="flex-1 min-h-0 flex flex-col overflow-hidden bg-surface-950">
             {/* Editor File Bar */}
-            <div className="bg-surface-950 border-b border-slate-800 px-4 py-2 flex justify-between items-center text-xs">
+            <div className="shrink-0 bg-surface-950 border-b border-slate-800 px-4 py-2 flex justify-between items-center text-xs">
               <div className="flex items-center gap-2 text-slate-300 font-mono">
                 <FileCode className="w-3.5 h-3.5 text-emerald-400" />
                 <span>{problem.filename}</span>
@@ -337,8 +337,8 @@ export default function StudentEditor({ user, onLogout }) {
               </div>
             </div>
 
-            {/* Monaco Editor Component */}
-            <div className="flex-1 relative">
+            {/* Monaco Editor Container - Shrinks Dynamically */}
+            <div className="flex-1 min-h-0 relative overflow-hidden">
               <Editor
                 height="100%"
                 language={monacoLanguage}
@@ -363,12 +363,12 @@ export default function StudentEditor({ user, onLogout }) {
               />
             </div>
 
-            {/* Bottom Action & Generic Status Panel (Core Requirement 2 & 3) */}
-            <div className="bg-surface-900 border-t border-slate-800 p-4 flex flex-col gap-3">
+            {/* Bottom Action & Generic Status Panel - Fixed Docked at Bottom */}
+            <div className="shrink-0 bg-surface-900 border-t border-slate-800 p-3.5 flex flex-col gap-2.5 z-10 shadow-lg">
               {/* Sanitized Pass/Fail Banner */}
               {lastResult && (
                 <div
-                  className={`p-3.5 rounded-xl border flex flex-col gap-2 transition-all ${
+                  className={`p-2.5 px-3.5 rounded-xl border flex flex-col gap-1.5 transition-all ${
                     lastResult.status === 'SUCCESS'
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
                       : lastResult.status === 'TIMEOUT'
@@ -377,16 +377,16 @@ export default function StudentEditor({ user, onLogout }) {
                   }`}
                 >
                   {/* Action Header: Clearly distinguishes Official SUBMIT from Local RUN */}
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
                     <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider font-sans">
                       {lastResult.isSubmit ? (
-                        <span className="flex items-center gap-1.5 text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-md border border-emerald-500/30">
-                          <Send className="w-3.5 h-3.5" />
+                        <span className="flex items-center gap-1.5 text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-md border border-emerald-500/30">
+                          <Send className="w-3 h-3" />
                           <span>Official Submission Recorded</span>
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1.5 text-blue-400 bg-blue-500/20 px-2.5 py-0.5 rounded-md border border-blue-500/30">
-                          <Play className="w-3.5 h-3.5 fill-blue-400" />
+                        <span className="flex items-center gap-1.5 text-blue-400 bg-blue-500/20 px-2 py-0.5 rounded-md border border-blue-500/30">
+                          <Play className="w-3 h-3 fill-blue-400" />
                           <span>Local Test Run (Sandbox)</span>
                         </span>
                       )}
@@ -398,7 +398,7 @@ export default function StudentEditor({ user, onLogout }) {
                   </div>
 
                   {/* Sanitized Message */}
-                  <div className="flex items-center gap-2 pt-0.5">
+                  <div className="flex items-center gap-2">
                     {lastResult.status === 'SUCCESS' ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                     ) : lastResult.status === 'TIMEOUT' ? (
@@ -406,22 +406,22 @@ export default function StudentEditor({ user, onLogout }) {
                     ) : (
                       <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
                     )}
-                    <span className="text-sm font-mono font-bold">{lastResult.message}</span>
+                    <span className="text-xs font-mono font-bold">{lastResult.message}</span>
                   </div>
                 </div>
               )}
 
               {/* Action Buttons: RUN and SUBMIT */}
               <div className="flex items-center justify-between">
-                <div className="text-[11px] text-slate-400">
-                  <span>Press <strong>RUN</strong> to test locally, <strong>SUBMIT</strong> to send to server</span>
+                <div className="text-[11px] text-slate-400 font-sans">
+                  <span>Click <strong>RUN</strong> to test locally, <strong>SUBMIT</strong> for final evaluation</span>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleRun}
                     disabled={runLoading || submitLoading}
-                    className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-100 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-700 transition shadow"
+                    className="px-5 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-100 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-700 transition shadow"
                   >
                     <Play className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
                     <span>{runLoading ? 'Running...' : 'RUN'}</span>
@@ -430,7 +430,7 @@ export default function StudentEditor({ user, onLogout }) {
                   <button
                     onClick={handleSubmit}
                     disabled={submitLoading || runLoading}
-                    className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition"
+                    className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>{submitLoading ? 'Evaluating...' : 'SUBMIT'}</span>
@@ -442,7 +442,7 @@ export default function StudentEditor({ user, onLogout }) {
         </div>
       ) : (
         /* Empty State: Waiting for Admin to push file */
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div className="flex-1 min-h-0 flex flex-col items-center justify-center p-8 text-center">
           <div className="w-16 h-16 rounded-2xl bg-surface-900 border border-slate-800 flex items-center justify-center text-emerald-400 mb-4 animate-pulse">
             <Radio className="w-8 h-8" />
           </div>
