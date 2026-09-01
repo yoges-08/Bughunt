@@ -3,15 +3,50 @@
  * 
  * Provides an ACID-like file-backed JSON store with in-memory caching and atomic writes.
  * Supports accounts (Admin/Student), Buggy Problems, Assignments, and Submissions.
+ * Includes cryptographic password hashing (scrypt) and automated legacy migration.
  */
 
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = path.resolve(__dirname, '..', 'data', 'contest_db.json');
+
+/**
+ * Hash a plain text password using cryptographic scrypt with a unique random salt
+ */
+export function hashPassword(plainPassword) {
+  if (typeof plainPassword !== 'string' || !plainPassword) {
+    throw new Error('Password must be a non-empty string');
+  }
+  const salt = crypto.randomBytes(16).toString('hex');
+  const derivedKey = crypto.scryptSync(plainPassword, salt, 64);
+  return `scrypt$${salt}$${derivedKey.toString('hex')}`;
+}
+
+/**
+ * Verify a plain text password against a stored scrypt hash (or fallback during migration)
+ */
+export function verifyPassword(plainPassword, storedHash) {
+  if (!plainPassword || !storedHash || typeof storedHash !== 'string') {
+    return false;
+  }
+  
+  if (storedHash.startsWith('scrypt$')) {
+    const parts = storedHash.split('$');
+    if (parts.length !== 3) return false;
+    const [, salt, expectedHex] = parts;
+    const keyBuffer = Buffer.from(expectedHex, 'hex');
+    const derivedKey = crypto.scryptSync(plainPassword, salt, 64);
+    return crypto.timingSafeEqual(keyBuffer, derivedKey);
+  }
+
+  // Fallback for unmigrated legacy plaintext comparison
+  return plainPassword === storedHash;
+}
 
 // Initial seed data with default admin, students, and sample bug-hunt problems
 const INITIAL_DB = {
@@ -19,7 +54,7 @@ const INITIAL_DB = {
     {
       id: 'usr_admin',
       username: 'admin',
-      password: 'admin123',
+      password: hashPassword('admin123'),
       role: 'admin',
       name: 'Contest Administrator',
       createdAt: new Date().toISOString()
@@ -27,7 +62,7 @@ const INITIAL_DB = {
     {
       id: 'usr_student_1',
       username: 'student1',
-      password: 'pass1',
+      password: hashPassword('pass1'),
       role: 'student',
       name: 'Alice Johnson (Team A)',
       createdAt: new Date().toISOString()
@@ -35,7 +70,7 @@ const INITIAL_DB = {
     {
       id: 'usr_student_2',
       username: 'student2',
-      password: 'pass2',
+      password: hashPassword('pass2'),
       role: 'student',
       name: 'Bob Smith (Team B)',
       createdAt: new Date().toISOString()
@@ -43,7 +78,7 @@ const INITIAL_DB = {
     {
       id: 'usr_student_3',
       username: 'student3',
-      password: 'pass3',
+      password: hashPassword('pass3'),
       role: 'student',
       name: 'Charlie Davis (Team C)',
       createdAt: new Date().toISOString()
@@ -51,7 +86,7 @@ const INITIAL_DB = {
     {
       id: 'usr_student_4',
       username: 'student4',
-      password: 'pass4',
+      password: hashPassword('pass4'),
       role: 'student',
       name: 'Dana Lee (Team D)',
       createdAt: new Date().toISOString()
@@ -234,11 +269,34 @@ class ContestDatabase {
       try {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         this.data = JSON.parse(raw);
+        // Automated migration: Hash any legacy plaintext passwords
+        this.migratePlaintextPasswords();
       } catch (err) {
         console.error('Error reading database file, re-initializing:', err);
         this.data = JSON.parse(JSON.stringify(INITIAL_DB));
         this.save();
       }
+    }
+  }
+
+  /**
+   * Automatically detect and hash any unhashed passwords in the database in-place
+   */
+  migratePlaintextPasswords() {
+    if (!this.data || !Array.isArray(this.data.users)) return;
+    let migrated = false;
+
+    for (const user of this.data.users) {
+      if (user.password && !user.password.startsWith('scrypt$')) {
+        console.log(`🔒 [Security Migration] Hashing password for user '${user.username}'...`);
+        user.password = hashPassword(user.password);
+        migrated = true;
+      }
+    }
+
+    if (migrated) {
+      this.save();
+      console.log('✅ [Security Migration] All legacy plaintext passwords successfully migrated to scrypt hashes.');
     }
   }
 
@@ -254,10 +312,12 @@ class ContestDatabase {
 
   // --- Users ---
   findUserByUsername(username) {
-    return this.data.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    if (!username || typeof username !== 'string') return null;
+    return this.data.users.find(u => u.username.toLowerCase() === username.trim().toLowerCase());
   }
 
   findUserById(id) {
+    if (!id || typeof id !== 'string') return null;
     return this.data.users.find(u => u.id === id);
   }
 
@@ -268,17 +328,32 @@ class ContestDatabase {
   }
 
   createStudent(username, password, name) {
-    if (this.findUserByUsername(username)) {
-      throw new Error(`Username '${username}' already exists`);
+    const cleanUsername = (username || '').trim();
+    const cleanPassword = (password || '').trim();
+    const cleanName = (name || '').trim();
+
+    // Input Validation
+    if (!/^[a-zA-Z0-9_-]{3,32}$/.test(cleanUsername)) {
+      throw new Error('Username must be 3-32 characters and contain only letters, numbers, underscores, or hyphens');
     }
+
+    if (cleanPassword.length < 4 || cleanPassword.length > 128) {
+      throw new Error('Password must be between 4 and 128 characters');
+    }
+
+    if (this.findUserByUsername(cleanUsername)) {
+      throw new Error(`Username '${cleanUsername}' already exists`);
+    }
+
     const student = {
       id: `usr_${uuidv4().substring(0, 8)}`,
-      username: username.trim(),
-      password: password.trim(),
+      username: cleanUsername,
+      password: hashPassword(cleanPassword),
       role: 'student',
-      name: name ? name.trim() : username.trim(),
+      name: cleanName || cleanUsername,
       createdAt: new Date().toISOString()
     };
+
     this.data.users.push(student);
     this.save();
     return { id: student.id, username: student.username, name: student.name };
@@ -294,18 +369,40 @@ class ContestDatabase {
   }
 
   createProblem({ title, language, filename, description, starterCode, testCases, timeLimitMs = 3000, durationMinutes = 15 }) {
+    const cleanTitle = (title || '').trim();
+    const cleanLang = (language || '').toLowerCase().trim();
+    const cleanFilename = (filename || '').trim();
+
+    // Input Validation
+    if (cleanTitle.length < 2 || cleanTitle.length > 100) {
+      throw new Error('Problem title must be between 2 and 100 characters');
+    }
+
+    if (!['python', 'py', 'c', 'cpp', 'c++'].includes(cleanLang)) {
+      throw new Error('Language must be one of: python, c, cpp');
+    }
+
+    // Filename path-traversal prevention
+    const basename = path.basename(cleanFilename);
+    if (!basename || basename !== cleanFilename || basename.includes('..')) {
+      throw new Error('Invalid filename: path traversal and directory separators are not allowed');
+    }
+
+    const validDuration = Math.min(180, Math.max(1, Number(durationMinutes) || 15));
+
     const problem = {
       id: `prob_${uuidv4().substring(0, 8)}`,
-      title: title.trim(),
-      language: language.toLowerCase().trim(),
-      filename: filename.trim(),
-      description: description.trim(),
+      title: cleanTitle,
+      language: cleanLang === 'py' ? 'python' : cleanLang === 'c++' ? 'cpp' : cleanLang,
+      filename: basename,
+      description: (description || '').trim(),
       starterCode: starterCode || '',
-      testCases: testCases || [],
+      testCases: Array.isArray(testCases) ? testCases : [],
       timeLimitMs: Number(timeLimitMs) || 3000,
-      durationMinutes: Math.max(1, Number(durationMinutes) || 15),
+      durationMinutes: validDuration,
       createdAt: new Date().toISOString()
     };
+
     this.data.problems.push(problem);
     this.save();
     return problem;
@@ -354,7 +451,11 @@ class ContestDatabase {
     if (!problem) return null;
 
     const hasSubmitted = Boolean(
-      this.data.submissions.find(s => s.studentId === studentId && s.problemId === problem.id)
+      this.data.submissions.find(s => 
+        s.studentId === studentId && 
+        s.problemId === problem.id &&
+        new Date(s.createdAt) >= new Date(assignment.assignedAt)
+      )
     );
 
     return {
@@ -402,7 +503,7 @@ class ContestDatabase {
       problemId,
       code,
       language,
-      status, // SUCCESS, PROGRAM_ERROR, EXECUTION_FAILED, TIMEOUT
+      status,
       pass: Boolean(pass),
       rawOutput,
       genericMessage,

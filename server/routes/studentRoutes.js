@@ -116,9 +116,15 @@ router.post('/submit', async (req, res) => {
     return res.status(400).json({ error: 'problemId, code, and language are required' });
   }
 
-  // 1. Check if student has already submitted this problem (Single Submission Limit)
+  // 1. Check if student has already submitted this problem for the current assignment (Single Submission Limit)
+  const assignment = db.getStudentAssignment(studentId);
   const existingSubmissions = db.getStudentSubmissions(studentId);
-  const alreadySubmitted = existingSubmissions.some(s => s.problemId === problemId);
+  const alreadySubmitted = existingSubmissions.some(s => 
+    s.problemId === problemId && 
+    assignment && 
+    new Date(s.createdAt) >= new Date(assignment.assignedAt)
+  );
+
   if (alreadySubmitted) {
     return res.status(400).json({
       error: 'Only one submission is allowed per problem. You have already submitted your solution.',
@@ -127,7 +133,6 @@ router.post('/submit', async (req, res) => {
   }
 
   // 2. Check if problem time limit has expired
-  const assignment = db.getStudentAssignment(studentId);
   if (assignment && assignment.expiresAt) {
     const now = Date.now();
     const expiry = new Date(assignment.expiresAt).getTime();

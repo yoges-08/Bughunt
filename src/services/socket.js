@@ -1,7 +1,7 @@
 /**
  * WebSocket Real-Time Client for Bug Hunt
  * 
- * Manages persistent connection, auto-reconnection, and message dispatch.
+ * Manages persistent connection, in-band auth handshake, auto-reconnection, and message dispatch.
  */
 
 import { api } from './api.js';
@@ -23,26 +23,39 @@ class SocketService {
 
     try {
       const hostUrl = api.getHostUrl();
-      const wsUrl = hostUrl.replace(/^http/, 'ws') + `/ws?token=${api.token}`;
+      // Clean connection URL without sensitive token in query string
+      const wsUrl = hostUrl.replace(/^http/, 'ws') + '/ws';
       
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
-        this.connected = true;
-        this.emit('connection_change', { connected: true });
-        
-        // Start ping heartbeat
-        clearInterval(this.pingTimer);
-        this.pingTimer = setInterval(() => {
-          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send(JSON.stringify({ type: 'PING' }));
-          }
-        }, 15000);
+        // Send initial in-band authentication handshake
+        if (api.token && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.send(JSON.stringify({
+            type: 'AUTH',
+            token: api.token
+          }));
+        }
       };
 
       this.ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+          
+          if (data.type === 'AUTH_SUCCESS') {
+            this.connected = true;
+            this.emit('connection_change', { connected: true });
+
+            // Start ping heartbeat once authenticated
+            clearInterval(this.pingTimer);
+            this.pingTimer = setInterval(() => {
+              if (this.ws && this.ws.readyState === WebSocket.OPEN && this.connected) {
+                this.ws.send(JSON.stringify({ type: 'PING' }));
+              }
+            }, 15000);
+            return;
+          }
+
           if (data.type) {
             this.emit(data.type, data.payload);
           }
@@ -56,7 +69,7 @@ class SocketService {
         clearInterval(this.pingTimer);
         this.emit('connection_change', { connected: false });
         
-        // Try reconnecting after 3 seconds
+        // Try reconnecting after 3 seconds if session is active
         clearTimeout(this.reconnectTimer);
         if (api.token) {
           this.reconnectTimer = setTimeout(() => this.connect(), 3000);

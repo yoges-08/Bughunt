@@ -4,7 +4,8 @@
  * CORE REQUIREMENT 2:
  * Executes C, C++, and Python privately without relying on external IDEs.
  * Uses bundled compilers located in <app_root>/bin/compilers/ or configured fallbacks.
- * Isolated execution in dedicated temp sandbox directories with strict timeouts.
+ * Isolated execution in dedicated temp sandbox directories with strict timeouts,
+ * stream buffer limits, and stripped environment variables.
  */
 
 import fs from 'fs';
@@ -15,6 +16,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const APP_ROOT = path.resolve(__dirname, '..');
+
+// Maximum combined stdout/stderr buffer size in bytes (512 KB) to prevent memory exhaustion
+const MAX_OUTPUT_BUFFER_BYTES = 512 * 1024;
 
 // Default paths for bundled private compilers
 const BUNDLED_COMPILERS = {
@@ -29,6 +33,30 @@ const BUNDLED_COMPILERS = {
     python: path.join(APP_ROOT, 'bin', 'compilers', 'python', 'python.exe')
   }
 };
+
+/**
+ * Build a restricted, isolated environment object for sandboxed subprocesses.
+ * Strips all server secrets, database keys, and JWT environment variables.
+ */
+function getSanitizedEnv(cwd, extraPath = '') {
+  const isWindows = process.platform === 'win32';
+  const basePaths = [extraPath, process.env.PATH].filter(Boolean).join(isWindows ? ';' : ':');
+
+  return {
+    PATH: basePaths,
+    SYSTEMROOT: process.env.SYSTEMROOT || 'C:\\Windows',
+    SYSTEMDRIVE: process.env.SYSTEMDRIVE || 'C:',
+    WINDIR: process.env.WINDIR || 'C:\\Windows',
+    COMSPEC: process.env.COMSPEC || 'C:\\Windows\\system32\\cmd.exe',
+    PATHEXT: process.env.PATHEXT || '.COM;.EXE;.BAT;.CMD',
+    LOCALAPPDATA: process.env.LOCALAPPDATA,
+    APPDATA: process.env.APPDATA,
+    TEMP: cwd,
+    TMP: cwd,
+    PYTHONUNBUFFERED: '1',
+    PYTHONDONTWRITEBYTECODE: '1'
+  };
+}
 
 /**
  * Locate the compiler executable for the given language.
@@ -83,15 +111,27 @@ async function compileSource(compilerCmd, args, cwd) {
   return new Promise((resolve) => {
     let stdout = '';
     let stderr = '';
+    let totalBytes = 0;
 
     const child = spawn(compilerCmd, args, {
       cwd,
       windowsHide: true,
-      env: { ...process.env, PATH: `${path.dirname(compilerCmd)};${process.env.PATH || ''}` }
+      env: getSanitizedEnv(cwd, path.dirname(compilerCmd))
     });
 
-    child.stdout?.on('data', (d) => { stdout += d.toString(); });
-    child.stderr?.on('data', (d) => { stderr += d.toString(); });
+    child.stdout?.on('data', (d) => {
+      if (totalBytes < MAX_OUTPUT_BUFFER_BYTES) {
+        stdout += d.toString();
+        totalBytes += d.length;
+      }
+    });
+
+    child.stderr?.on('data', (d) => {
+      if (totalBytes < MAX_OUTPUT_BUFFER_BYTES) {
+        stderr += d.toString();
+        totalBytes += d.length;
+      }
+    });
 
     child.on('error', (err) => {
       resolve({
@@ -120,12 +160,14 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
   return new Promise((resolve) => {
     let stdout = '';
     let stderr = '';
+    let totalBytes = 0;
     let timedOut = false;
     const startTime = Date.now();
 
     const child = spawn(binaryPath, args, {
       cwd,
-      windowsHide: true
+      windowsHide: true,
+      env: getSanitizedEnv(cwd, path.dirname(binaryPath))
     });
 
     const timer = setTimeout(() => {
@@ -140,8 +182,19 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
       child.stdin.end();
     }
 
-    child.stdout?.on('data', (d) => { stdout += d.toString(); });
-    child.stderr?.on('data', (d) => { stderr += d.toString(); });
+    child.stdout?.on('data', (d) => {
+      if (totalBytes < MAX_OUTPUT_BUFFER_BYTES) {
+        stdout += d.toString();
+        totalBytes += d.length;
+      }
+    });
+
+    child.stderr?.on('data', (d) => {
+      if (totalBytes < MAX_OUTPUT_BUFFER_BYTES) {
+        stderr += d.toString();
+        totalBytes += d.length;
+      }
+    });
 
     child.on('error', (err) => {
       clearTimeout(timer);
@@ -273,7 +326,10 @@ export async function executeCode({ code, language, stdin = '', timeoutMs = 3000
 
       // Syntax check for Python
       const syntaxCheck = await new Promise((resolve) => {
-        execFile(compilerPath, ['-m', 'py_compile', sourceFileName], { cwd: sandboxDir }, (err, stdout, stderr) => {
+        execFile(compilerPath, ['-m', 'py_compile', sourceFileName], {
+          cwd: sandboxDir,
+          env: getSanitizedEnv(sandboxDir, path.dirname(compilerPath))
+        }, (err, stdout, stderr) => {
           if (err) {
             resolve({ success: false, stderr: stderr || err.message });
           } else {

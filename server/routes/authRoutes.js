@@ -3,7 +3,7 @@
  */
 
 import express from 'express';
-import { db } from '../db.js';
+import { db, verifyPassword } from '../db.js';
 import { generateToken, authenticateToken } from '../auth.js';
 
 const router = express.Router();
@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
   }
 
   const user = db.findUserByUsername(username);
-  if (!user || user.password !== password) {
+  if (!user || !verifyPassword(password, user.password)) {
     return res.status(401).json({ error: 'Invalid username or password' });
   }
 

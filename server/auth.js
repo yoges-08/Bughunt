@@ -7,10 +7,52 @@
  */
 
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
 import { db } from './db.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'bughunt_lan_secret_key_2026_x89f';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SECRET_FILE = path.resolve(__dirname, '..', 'data', '.jwt_secret');
 const TOKEN_EXPIRY = '24h';
+
+/**
+ * Get or dynamically generate a persistent cryptographically secure JWT secret.
+ * Priority:
+ * 1. process.env.JWT_SECRET
+ * 2. Persistent secret file (data/.jwt_secret)
+ * 3. Newly generated 256-bit random hex string saved to data/.jwt_secret
+ */
+function getJwtSecret() {
+  if (process.env.JWT_SECRET && process.env.JWT_SECRET.trim().length > 0) {
+    return process.env.JWT_SECRET.trim();
+  }
+
+  try {
+    const dataDir = path.dirname(SECRET_FILE);
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    if (fs.existsSync(SECRET_FILE)) {
+      const savedSecret = fs.readFileSync(SECRET_FILE, 'utf-8').trim();
+      if (savedSecret.length >= 32) {
+        return savedSecret;
+      }
+    }
+
+    // Generate fresh 256-bit random secret
+    const newSecret = crypto.randomBytes(32).toString('hex');
+    fs.writeFileSync(SECRET_FILE, newSecret, 'utf-8');
+    return newSecret;
+  } catch (err) {
+    console.error('Warning: Failed to persist JWT secret to disk, using in-memory random secret:', err);
+    return crypto.randomBytes(32).toString('hex');
+  }
+}
+
+const JWT_SECRET = getJwtSecret();
 
 /**
  * Generate a JWT token for a user
@@ -32,6 +74,7 @@ export function generateToken(user) {
  * Verify a JWT token
  */
 export function verifyToken(token) {
+  if (!token || typeof token !== 'string') return null;
   try {
     return jwt.verify(token, JWT_SECRET);
   } catch (err) {
@@ -40,16 +83,15 @@ export function verifyToken(token) {
 }
 
 /**
- * Express middleware to authenticate token from Header or Query
+ * Express middleware to authenticate token strictly from Authorization: Bearer header.
+ * Query string tokens are rejected to prevent leakage in URL logs/history.
  */
 export function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const tokenFromHeader = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  const tokenFromQuery = req.query.token;
-  const token = tokenFromHeader || tokenFromQuery;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
 
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized: Authentication token required' });
+    return res.status(401).json({ error: 'Unauthorized: Authentication token required in Authorization header' });
   }
 
   const payload = verifyToken(token);

@@ -3,9 +3,9 @@
  * 
  * Simulates complete contest lifecycle:
  * 1. Server startup & LAN IP discovery
- * 2. Role-based login (Admin & Student)
+ * 2. Role-based login with hashed credentials (Admin & Student)
  * 3. Server-side security check (Student forbidden from Admin APIs)
- * 4. Real-time WebSocket connection for Student
+ * 4. In-band authenticated WebSocket connection for Student
  * 5. Admin pushes problem file over LAN -> Student receives it instantly
  * 6. Student runs buggy code -> Output is strictly sanitized (no raw errors/stack traces)
  * 7. Student submits fixed solution -> Server independently re-verifies against hidden test cases
@@ -71,27 +71,36 @@ async function runE2ETest() {
     });
     assert(forbiddenRes.status === 403, 'Server-side security: Student blocked with 403 Forbidden from admin overview');
 
-    // 5. Connect Student WebSocket
-    const wsUrl = `ws://localhost:${TEST_PORT}/ws?token=${studentToken}`;
+    // 5. Connect Student WebSocket with In-Band Auth Handshake
+    const wsUrl = `ws://localhost:${TEST_PORT}/ws`;
     const ws = new WebSocket(wsUrl);
 
+    let authSuccess = false;
     let receivedProblem = null;
+
     await new Promise((resolve, reject) => {
       ws.on('open', () => {
-        assert(true, 'Student WebSocket connected and authenticated successfully over LAN');
-        resolve();
+        // Send initial in-band authentication message
+        ws.send(JSON.stringify({ type: 'AUTH', token: studentToken }));
       });
+
+      ws.on('message', (data) => {
+        try {
+          const msg = JSON.parse(data.toString());
+          if (msg.type === 'AUTH_SUCCESS') {
+            authSuccess = true;
+            assert(true, 'Student WebSocket completed in-band AUTH_SUCCESS handshake over LAN');
+            resolve();
+          } else if (msg.type === 'PROBLEM_ASSIGNED') {
+            receivedProblem = msg.payload;
+          }
+        } catch {}
+      });
+
       ws.on('error', reject);
     });
 
-    ws.on('message', (data) => {
-      try {
-        const msg = JSON.parse(data.toString());
-        if (msg.type === 'PROBLEM_ASSIGNED') {
-          receivedProblem = msg.payload;
-        }
-      } catch {}
-    });
+    assert(authSuccess === true, 'In-band WebSocket authentication verified');
 
     // 6. Admin pushes Problem to Student 1
     const pushRes = await fetch(`${baseUrl}/api/admin/assign`, {

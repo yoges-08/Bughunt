@@ -41,3 +41,4 @@ pip-log.txt
 # Database local runtime
 data/contest_db.json.tmp
 data/*.tmp
+data/.jwt_secret

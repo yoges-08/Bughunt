@@ -4,6 +4,7 @@
  * CORE REQUIREMENT 1:
  * Pushes problem files directly to student app instances over LAN.
  * Tracks online/offline status of students and admins in real-time.
+ * In-band authentication handshake prevents token leakage in connection URLs.
  */
 
 import { WebSocketServer, WebSocket } from 'ws';
@@ -22,67 +23,89 @@ class SocketManager {
   init(server) {
     this.wss = new WebSocketServer({ server, path: '/ws' });
 
-    this.wss.on('connection', (ws, req) => {
-      // Extract token from URL query: /ws?token=...
-      const url = new URL(req.url, 'http://localhost');
-      const token = url.searchParams.get('token');
-
-      if (!token) {
-        ws.close(4001, 'Authentication token required');
-        return;
-      }
-
-      const payload = verifyToken(token);
-      if (!payload) {
-        ws.close(4002, 'Invalid or expired token');
-        return;
-      }
-
-      const user = db.findUserById(payload.id);
-      if (!user) {
-        ws.close(4003, 'User not found');
-        return;
-      }
-
-      ws.userId = user.id;
-      ws.username = user.username;
-      ws.role = user.role;
-      ws.user = user;
+    this.wss.on('connection', (ws) => {
+      ws.authenticated = false;
       ws.isAlive = true;
 
-      // Register connection by role
-      if (user.role === 'admin') {
-        this.adminSockets.add(ws);
-      } else if (user.role === 'student') {
-        if (!this.studentSockets.has(user.id)) {
-          this.studentSockets.set(user.id, new Set());
+      // 5-second authentication handshake timeout
+      const authTimeout = setTimeout(() => {
+        if (!ws.authenticated) {
+          ws.close(4001, 'Authentication handshake timed out');
         }
-        this.studentSockets.get(user.id).add(ws);
-        
-        // Notify admins that student came online
-        this.broadcastToAdmins({
-          type: 'STUDENT_ONLINE',
-          payload: {
-            studentId: user.id,
-            username: user.username,
-            name: user.name,
-            online: true,
-            timestamp: new Date().toISOString()
-          }
-        });
-      }
+      }, 5000);
 
-      // Handle incoming messages if needed
       ws.on('message', (message) => {
         try {
           const data = JSON.parse(message.toString());
+
+          // Handle in-band authentication handshake
+          if (!ws.authenticated) {
+            if (data.type === 'AUTH' && data.token) {
+              const payload = verifyToken(data.token);
+              if (!payload) {
+                clearTimeout(authTimeout);
+                ws.close(4002, 'Invalid or expired authentication token');
+                return;
+              }
+
+              const user = db.findUserById(payload.id);
+              if (!user) {
+                clearTimeout(authTimeout);
+                ws.close(4003, 'User account not found');
+                return;
+              }
+
+              clearTimeout(authTimeout);
+              ws.authenticated = true;
+              ws.userId = user.id;
+              ws.username = user.username;
+              ws.role = user.role;
+              ws.user = user;
+
+              // Confirm successful handshake to client
+              ws.send(JSON.stringify({ type: 'AUTH_SUCCESS', payload: { role: user.role } }));
+
+              // Register connection by role
+              if (user.role === 'admin') {
+                this.adminSockets.add(ws);
+              } else if (user.role === 'student') {
+                if (!this.studentSockets.has(user.id)) {
+                  this.studentSockets.set(user.id, new Set());
+                }
+                this.studentSockets.get(user.id).add(ws);
+
+                // Notify admins that student came online
+                this.broadcastToAdmins({
+                  type: 'STUDENT_ONLINE',
+                  payload: {
+                    studentId: user.id,
+                    username: user.username,
+                    name: user.name,
+                    online: true,
+                    timestamp: new Date().toISOString()
+                  }
+                });
+              }
+            } else {
+              // Unauthenticated messages rejected
+              ws.close(4001, 'Authentication required');
+            }
+            return;
+          }
+
+          // Handle authenticated messages (e.g. heartbeat PING)
           if (data.type === 'PING') {
             ws.send(JSON.stringify({ type: 'PONG' }));
           }
-        } catch {}
+        } catch (err) {
+          console.error('WebSocket message parsing error:', err.message);
+        }
       });
 
       ws.on('close', () => {
+        clearTimeout(authTimeout);
+        if (!ws.authenticated) return;
+
         if (ws.role === 'admin') {
           this.adminSockets.delete(ws);
         } else if (ws.role === 'student') {
@@ -133,7 +156,7 @@ class SocketManager {
       });
 
       for (const ws of sockets) {
-        if (ws.readyState === WebSocket.OPEN) {
+        if (ws.readyState === WebSocket.OPEN && ws.authenticated) {
           ws.send(message);
           sent = true;
         }
@@ -165,7 +188,7 @@ class SocketManager {
   broadcastToAdmins(data) {
     const msg = JSON.stringify(data);
     for (const ws of this.adminSockets) {
-      if (ws.readyState === WebSocket.OPEN) {
+      if (ws.readyState === WebSocket.OPEN && ws.authenticated) {
         ws.send(msg);
       }
     }
