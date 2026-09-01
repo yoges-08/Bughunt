@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Users, Send, FileCode, CheckCircle2, XCircle, Clock, Plus, 
   RefreshCw, LogOut, Radio, Eye, Code, Terminal, Layers, AlertTriangle, Check,
-  Search, Filter, Copy, FileText, Sparkles, Download, CheckCheck
+  Search, Filter, Copy, FileText, Sparkles, Download, CheckCheck,
+  ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, ChevronLeft, ChevronRight,
+  ArrowUp, ArrowDown
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
@@ -24,6 +26,11 @@ export default function AdminDashboard({ user, onLogout }) {
   // Student Search & Filtering
   const [studentSearch, setStudentSearch] = useState('');
   const [studentFilter, setStudentFilter] = useState('all'); // 'all', 'online', 'offline', 'solved', 'in_progress', 'unassigned'
+
+  // Pagination & Scroll State
+  const [rowsPerPage, setRowsPerPage] = useState(10); // 10, 25, 50, 'all'
+  const [currentPage, setCurrentPage] = useState(1);
+  const studentTableContainerRef = useRef(null);
 
   // Modals
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
@@ -100,6 +107,11 @@ export default function AdminDashboard({ user, onLogout }) {
     };
   }, []);
 
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [studentSearch, studentFilter, rowsPerPage]);
+
   // Compute filtered students list
   const filteredStudents = students.filter(s => {
     // Status Filter
@@ -119,6 +131,43 @@ export default function AdminDashboard({ user, onLogout }) {
     }
     return true;
   });
+
+  // Pagination calculation
+  const totalFiltered = filteredStudents.length;
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.max(1, Math.ceil(totalFiltered / rowsPerPage));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const startIndex = rowsPerPage === 'all' ? 0 : (effectivePage - 1) * rowsPerPage;
+  const paginatedStudents = rowsPerPage === 'all'
+    ? filteredStudents
+    : filteredStudents.slice(startIndex, startIndex + rowsPerPage);
+
+  // Smooth table scroll helpers
+  const handleScrollUp = () => {
+    if (studentTableContainerRef.current) {
+      studentTableContainerRef.current.scrollBy({ top: -220, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollDown = () => {
+    if (studentTableContainerRef.current) {
+      studentTableContainerRef.current.scrollBy({ top: 220, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollTop = () => {
+    if (studentTableContainerRef.current) {
+      studentTableContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollBottom = () => {
+    if (studentTableContainerRef.current) {
+      studentTableContainerRef.current.scrollTo({
+        top: studentTableContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   // Handle Inspect Student Details
   const handleInspectStudent = async (studentId) => {
@@ -461,7 +510,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
                   <span>Live Connected Students</span>
                   <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-xs rounded-full font-normal">
-                    Showing {filteredStudents.length} of {students.length}
+                    Showing {paginatedStudents.length} on page ({totalFiltered} matching of {students.length} total)
                   </span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">Real-time status, problem tracking, and code inspector</p>
@@ -582,22 +631,111 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             </div>
 
-            {/* Students Table with Responsive Scroll */}
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-x-auto shadow-xl">
+            {/* Scroll Navigation & Pagination Control Bar (Top) */}
+            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <span className="text-slate-400 font-medium">
+                  Showing <strong className="text-slate-200">{startIndex + 1} - {Math.min(startIndex + paginatedStudents.length, totalFiltered)}</strong> of <strong className="text-slate-200">{totalFiltered}</strong> students
+                </span>
+
+                <div className="flex items-center gap-1.5 text-slate-400">
+                  <span>Per page:</span>
+                  <select
+                    value={rowsPerPage}
+                    onChange={(e) => setRowsPerPage(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+                    className="bg-surface-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value="all">All ({totalFiltered})</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Interactive Scroll & Page Buttons */}
+              <div className="flex items-center gap-2">
+                {/* Scroll Action Buttons */}
+                <div className="flex items-center bg-surface-950 border border-slate-800 rounded-xl p-0.5 gap-0.5 shadow">
+                  <button
+                    onClick={handleScrollTop}
+                    title="Jump to Top"
+                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition"
+                  >
+                    <ChevronsUp className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={handleScrollUp}
+                    title="Scroll Up"
+                    className="px-2 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1 transition font-medium"
+                  >
+                    <ChevronUp className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Scroll Up</span>
+                  </button>
+                  <div className="w-[1px] h-4 bg-slate-800" />
+                  <button
+                    onClick={handleScrollDown}
+                    title="Scroll Down"
+                    className="px-2 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1 transition font-medium"
+                  >
+                    <ChevronDown className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Scroll Down</span>
+                  </button>
+                  <button
+                    onClick={handleScrollBottom}
+                    title="Jump to Bottom"
+                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition"
+                  >
+                    <ChevronsDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Page Prev/Next Buttons */}
+                {rowsPerPage !== 'all' && totalPages > 1 && (
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={effectivePage <= 1}
+                      className="px-2.5 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Prev</span>
+                    </button>
+                    <span className="px-2 text-slate-400 font-mono">
+                      Page {effectivePage} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={effectivePage >= totalPages}
+                      className="px-2.5 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Students Table with Dedicated Scroll Container & Sticky Header */}
+            <div
+              ref={studentTableContainerRef}
+              className="bg-surface-900 border border-slate-800 rounded-2xl max-h-[460px] overflow-y-auto overflow-x-auto shadow-xl relative scroll-smooth"
+            >
               <table className="w-full text-left text-xs min-w-[850px]">
-                <thead className="bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800">
+                <thead className="sticky top-0 bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800 z-10 shadow">
                   <tr>
-                    <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4">Student / Team Name</th>
-                    <th className="py-3 px-4">Username</th>
-                    <th className="py-3 px-4">Currently Assigned Problem</th>
-                    <th className="py-3 px-4">Progress</th>
-                    <th className="py-3 px-4">Submissions</th>
-                    <th className="py-3 px-4 text-right">Actions</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Status</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Student / Team Name</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Username</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Currently Assigned Problem</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Progress</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Submissions</th>
+                    <th className="py-3.5 px-4 bg-surface-950 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60 font-sans">
-                  {filteredStudents.map((s) => (
+                  {paginatedStudents.map((s) => (
                     <tr key={s.id} className="hover:bg-slate-800/30 transition">
                       <td className="py-3.5 px-4">
                         {s.isOnline ? (
@@ -670,7 +808,7 @@ export default function AdminDashboard({ user, onLogout }) {
                       </td>
                     </tr>
                   ))}
-                  {filteredStudents.length === 0 && (
+                  {paginatedStudents.length === 0 && (
                     <tr>
                       <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
                         No students match your search or filter criteria.
@@ -679,6 +817,37 @@ export default function AdminDashboard({ user, onLogout }) {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Bottom Quick Scroll & Pagination Bar */}
+            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="text-slate-400">
+                {totalFiltered} students found • Use scroll buttons or page controls to navigate
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleScrollUp}
+                  className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
+                >
+                  <ChevronUp className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Scroll Up</span>
+                </button>
+                <button
+                  onClick={handleScrollDown}
+                  className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
+                >
+                  <ChevronDown className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Scroll Down</span>
+                </button>
+                <button
+                  onClick={handleScrollTop}
+                  className="px-2.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg border border-slate-800 transition font-medium"
+                  title="Scroll to Top"
+                >
+                  <ChevronsUp className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         )}
