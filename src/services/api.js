@@ -129,6 +129,17 @@ class ApiService {
     });
   }
 
+  async createBulkStudents(payload) {
+    return this.request('/api/admin/students/bulk', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  }
+
+  async getStudentDetails(studentId) {
+    return this.request(`/api/admin/students/${studentId}/details`);
+  }
+
   async getAdminProblems() {
     return this.request('/api/admin/problems');
   }

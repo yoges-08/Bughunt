@@ -87,6 +87,81 @@ router.post('/students', (req, res) => {
   }
 });
 
+// Bulk create students
+router.post('/students/bulk', (req, res) => {
+  const { students: rawStudents, generate } = req.body;
+
+  let studentList = [];
+
+  if (Array.isArray(rawStudents) && rawStudents.length > 0) {
+    studentList = rawStudents;
+  } else if (generate && generate.count) {
+    const count = Math.min(100, Math.max(1, Number(generate.count) || 10));
+    const prefix = (generate.prefix || 'student').trim();
+    const startNum = Number(generate.startNumber) || 1;
+    const pwdPrefix = generate.passwordPrefix || 'pass';
+
+    for (let i = 0; i < count; i++) {
+      const num = startNum + i;
+      studentList.push({
+        username: `${prefix}${num}`,
+        password: `${pwdPrefix}${num}`,
+        name: `Student ${num} (Team ${num})`
+      });
+    }
+  } else {
+    return res.status(400).json({ error: 'Provide either a list of students or generator options' });
+  }
+
+  const created = [];
+  const errors = [];
+
+  for (const s of studentList) {
+    try {
+      const newS = db.createStudent(s.username, s.password, s.name);
+      created.push(newS);
+    } catch (err) {
+      errors.push({ username: s.username, error: err.message });
+    }
+  }
+
+  if (created.length > 0) {
+    socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
+  }
+
+  res.json({
+    createdCount: created.length,
+    created,
+    errorsCount: errors.length,
+    errors
+  });
+});
+
+// Single student detailed inspection
+router.get('/students/:id/details', (req, res) => {
+  const studentId = req.params.id;
+  const student = db.findUserById(studentId);
+  if (!student || student.role !== 'student') {
+    return res.status(404).json({ error: 'Student not found' });
+  }
+
+  const isOnline = socketManager.isStudentOnline(student.id);
+  const assignment = db.getStudentAssignment(student.id);
+  const submissions = db.getSubmissionsForAdmin().filter(s => s.studentId === student.id);
+
+  res.json({
+    student: {
+      id: student.id,
+      username: student.username,
+      name: student.name,
+      createdAt: student.createdAt,
+      isOnline
+    },
+    assignment,
+    submissions
+  });
+});
+
 // --- Problem Management ---
 router.get('/problems', (req, res) => {
   const problems = db.getAllProblems();

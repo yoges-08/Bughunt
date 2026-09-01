@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, Send, FileCode, CheckCircle2, XCircle, Clock, Plus, 
-  RefreshCw, LogOut, Radio, Eye, Code, Terminal, Layers, AlertTriangle, Check
+  RefreshCw, LogOut, Radio, Eye, Code, Terminal, Layers, AlertTriangle, Check,
+  Search, Filter, Copy, FileText, Sparkles, Download, CheckCheck
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
@@ -20,9 +21,25 @@ export default function AdminDashboard({ user, onLogout }) {
   const [pushLoading, setPushLoading] = useState(false);
   const [pushSuccessMsg, setPushSuccessMsg] = useState('');
 
+  // Student Search & Filtering
+  const [studentSearch, setStudentSearch] = useState('');
+  const [studentFilter, setStudentFilter] = useState('all'); // 'all', 'online', 'offline', 'solved', 'in_progress', 'unassigned'
+
   // Modals
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [newStudentData, setNewStudentData] = useState({ username: '', password: '', name: '' });
+  
+  // Bulk Student Modal
+  const [showBulkStudentModal, setShowBulkStudentModal] = useState(false);
+  const [bulkAddMode, setBulkAddMode] = useState('generate'); // 'generate' or 'csv'
+  const [bulkGenData, setBulkGenData] = useState({ prefix: 'student', count: 10, startNumber: 1, passwordPrefix: 'pass' });
+  const [bulkCsvText, setBulkCsvText] = useState('');
+  const [bulkLoading, setBulkLoading] = useState(false);
+
+  // Student Inspection Modal
+  const [selectedStudentDetails, setSelectedStudentDetails] = useState(null);
+  const [loadingStudentDetails, setLoadingStudentDetails] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   const [showAddProblemModal, setShowAddProblemModal] = useState(false);
   const [newProblemData, setNewProblemData] = useState({
@@ -68,11 +85,11 @@ export default function AdminDashboard({ user, onLogout }) {
     const unsubOnline = socket.on('STUDENT_ONLINE', () => loadData());
     const unsubOffline = socket.on('STUDENT_OFFLINE', () => loadData());
     const unsubUpdate = socket.on('STUDENTS_UPDATED', () => loadData());
-    const unsubSub = socket.on('NEW_SUBMISSION', (payload) => {
+    const unsubSub = socket.on('NEW_SUBMISSION', () => {
       loadData();
     });
 
-    const interval = setInterval(loadData, 5000); // 5s fallback polling
+    const interval = setInterval(loadData, 3000); // 3s fallback polling
 
     return () => {
       unsubOnline();
@@ -83,25 +100,63 @@ export default function AdminDashboard({ user, onLogout }) {
     };
   }, []);
 
-  // Handle LAN Problem Push
-  const handlePushProblem = async () => {
-    if (!selectedProblemId) return;
+  // Compute filtered students list
+  const filteredStudents = students.filter(s => {
+    // Status Filter
+    if (studentFilter === 'online' && !s.isOnline) return false;
+    if (studentFilter === 'offline' && s.isOnline) return false;
+    if (studentFilter === 'solved' && !s.hasPassed) return false;
+    if (studentFilter === 'in_progress' && (!s.assignment || s.hasPassed)) return false;
+    if (studentFilter === 'unassigned' && s.assignment) return false;
+
+    // Search query
+    if (studentSearch.trim()) {
+      const q = studentSearch.toLowerCase();
+      const matchName = (s.name || '').toLowerCase().includes(q);
+      const matchUsername = (s.username || '').toLowerCase().includes(q);
+      const matchProblem = (s.assignment?.title || '').toLowerCase().includes(q);
+      return matchName || matchUsername || matchProblem;
+    }
+    return true;
+  });
+
+  // Handle Inspect Student Details
+  const handleInspectStudent = async (studentId) => {
+    setLoadingStudentDetails(true);
+    try {
+      const details = await api.getStudentDetails(studentId);
+      setSelectedStudentDetails(details);
+    } catch (err) {
+      alert('Failed to load student details: ' + err.message);
+    } finally {
+      setLoadingStudentDetails(false);
+    }
+  };
+
+  // Push Problem over LAN (Core Requirement 1)
+  const handlePushProblem = async (overrideStudentId = null) => {
+    const targetId = overrideStudentId || selectedStudentId;
+    if (!selectedProblemId) {
+      alert('Please select a problem first');
+      return;
+    }
+
     setPushLoading(true);
     setPushSuccessMsg('');
+
     try {
-      if (selectedStudentId === 'ALL') {
-        const res = await api.assignProblem({
-          problemId: selectedProblemId,
-          assignAll: true
-        });
-        setPushSuccessMsg(`✅ Problem successfully pushed to ALL students over LAN!`);
+      const isAll = targetId === 'ALL';
+      const res = await api.assignProblem({
+        problemId: selectedProblemId,
+        studentId: isAll ? undefined : targetId,
+        assignAll: isAll
+      });
+
+      if (isAll) {
+        setPushSuccessMsg(`✅ Problem successfully pushed to ALL ${students.length} students over LAN!`);
       } else {
-        const res = await api.assignProblem({
-          problemId: selectedProblemId,
-          studentId: selectedStudentId
-        });
-        const targetStudent = students.find(s => s.id === selectedStudentId);
-        setPushSuccessMsg(`✅ Problem sent to ${targetStudent?.name || 'student'} (Delivered immediately: ${res.deliveredImmediately ? 'Yes' : 'Queued on reconnect'})`);
+        const targetStudent = students.find(s => s.id === targetId);
+        setPushSuccessMsg(`✅ Problem sent to ${targetStudent?.name || 'student'} (${res.deliveredImmediately ? 'Delivered Live' : 'Queued for Connect'})`);
       }
       loadData();
       setTimeout(() => setPushSuccessMsg(''), 4000);
@@ -112,7 +167,7 @@ export default function AdminDashboard({ user, onLogout }) {
     }
   };
 
-  // Create Student
+  // Create Single Student
   const handleCreateStudent = async (e) => {
     e.preventDefault();
     try {
@@ -122,6 +177,48 @@ export default function AdminDashboard({ user, onLogout }) {
       loadData();
     } catch (err) {
       alert('Failed to create student: ' + err.message);
+    }
+  };
+
+  // Bulk Create Students
+  const handleBulkCreateStudents = async (e) => {
+    e.preventDefault();
+    setBulkLoading(true);
+    try {
+      let payload;
+      if (bulkAddMode === 'generate') {
+        payload = { generate: bulkGenData };
+      } else {
+        // Parse CSV format: username, password, name
+        const lines = bulkCsvText.trim().split('\n');
+        const studentList = [];
+        for (const line of lines) {
+          const parts = line.split(',').map(s => s.trim());
+          if (parts.length >= 2 && parts[0] && parts[1]) {
+            studentList.push({
+              username: parts[0],
+              password: parts[1],
+              name: parts[2] || parts[0]
+            });
+          }
+        }
+        if (studentList.length === 0) {
+          alert('No valid student entries found in CSV text. Expected: username, password, Name');
+          setBulkLoading(false);
+          return;
+        }
+        payload = { students: studentList };
+      }
+
+      const res = await api.createBulkStudents(payload);
+      setShowBulkStudentModal(false);
+      setBulkCsvText('');
+      alert(`🎉 Successfully created ${res.createdCount} student accounts!${res.errorsCount > 0 ? ` (${res.errorsCount} skipped/duplicates)` : ''}`);
+      loadData();
+    } catch (err) {
+      alert('Bulk creation failed: ' + err.message);
+    } finally {
+      setBulkLoading(false);
     }
   };
 
@@ -216,10 +313,10 @@ export default function AdminDashboard({ user, onLogout }) {
             <span>Total Students</span>
             <Users className="w-4 h-4 text-blue-400" />
           </div>
-          <div className="text-2xl font-bold text-slate-100">{overview?.totalStudents ?? 0}</div>
+          <div className="text-2xl font-bold text-slate-100">{overview?.totalStudents ?? students.length}</div>
           <div className="text-xs text-emerald-400 mt-1 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-            <span>{overview?.onlineStudents ?? 0} online on LAN</span>
+            <span>{students.filter(s => s.isOnline).length} online on LAN</span>
           </div>
         </div>
 
@@ -228,7 +325,7 @@ export default function AdminDashboard({ user, onLogout }) {
             <span>Buggy Problems</span>
             <FileCode className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold text-slate-100">{overview?.totalProblems ?? 0}</div>
+          <div className="text-2xl font-bold text-slate-100">{overview?.totalProblems ?? problems.length}</div>
           <div className="text-xs text-slate-500 mt-1">C, C++, and Python</div>
         </div>
 
@@ -237,30 +334,34 @@ export default function AdminDashboard({ user, onLogout }) {
             <span>Submissions</span>
             <Terminal className="w-4 h-4 text-purple-400" />
           </div>
-          <div className="text-2xl font-bold text-slate-100">{overview?.totalSubmissions ?? 0}</div>
-          <div className="text-xs text-slate-500 mt-1">Re-verified by Server</div>
+          <div className="text-2xl font-bold text-slate-100">{overview?.totalSubmissions ?? submissions.length}</div>
+          <div className="text-xs text-slate-500 mt-1">Recorded & re-verified</div>
         </div>
 
         <div className="bg-surface-900 border border-slate-800 rounded-2xl p-4">
           <div className="flex justify-between items-start text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">
-            <span>Accepted Submissions</span>
+            <span>Passed Solutions</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold text-emerald-400">{overview?.passedSubmissions ?? 0}</div>
-          <div className="text-xs text-rose-400 mt-1">{overview?.failedSubmissions ?? 0} failed / wrong answer</div>
+          <div className="text-2xl font-bold text-emerald-400">{overview?.passedSubmissions ?? submissions.filter(s => s.pass).length}</div>
+          <div className="text-xs text-slate-500 mt-1">
+            {overview?.totalSubmissions ? Math.round(((overview?.passedSubmissions || 0) / overview.totalSubmissions) * 100) : 0}% success rate
+          </div>
         </div>
       </div>
 
-      {/* Action Bar: Push Problem over LAN */}
-      <div className="mx-6 my-4 bg-surface-900 border border-slate-800 rounded-2xl p-4">
-        <div className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3 flex items-center gap-2">
-          <Send className="w-4 h-4 text-emerald-400" />
-          <span>LAN File Push Control (Core Requirement 1)</span>
+      {/* LAN Problem Push Quick Bar */}
+      <div className="mx-6 my-4 p-4 bg-gradient-to-r from-surface-900 to-surface-950 border border-emerald-500/20 rounded-2xl shadow-lg">
+        <div className="flex items-center gap-2 mb-3">
+          <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+            LAN Problem Dispatch (Direct File Push)
+          </h2>
         </div>
-        
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex-1 min-w-[240px]">
-            <label className="block text-[11px] text-slate-400 uppercase font-semibold mb-1">Select Problem File</label>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-[11px] text-slate-400 uppercase font-semibold mb-1">Select Problem</label>
             <select
               value={selectedProblemId}
               onChange={(e) => setSelectedProblemId(e.target.value)}
@@ -268,23 +369,23 @@ export default function AdminDashboard({ user, onLogout }) {
             >
               {problems.map((p) => (
                 <option key={p.id} value={p.id}>
-                  [{p.language.toUpperCase()}] {p.title} ({p.filename})
+                  [{p.language.toUpperCase()}] {p.title} ({p.filename}) • ⏱️ {p.durationMinutes || 15}m
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="w-64">
+          <div className="w-72">
             <label className="block text-[11px] text-slate-400 uppercase font-semibold mb-1">Select Target</label>
             <select
               value={selectedStudentId}
               onChange={(e) => setSelectedStudentId(e.target.value)}
-              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
             >
-              <option value="ALL">📢 All Students (Group Push)</option>
+              <option value="ALL">📢 All Students ({students.length} Total)</option>
               {students.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.isOnline ? '🟢' : '⚪'} {s.name} ({s.username})
+                  {s.isOnline ? '🟢' : '⚪'} {s.name} ({s.username}) {s.assignment ? `[${s.assignment.title.slice(0, 15)}...]` : ''}
                 </option>
               ))}
             </select>
@@ -292,7 +393,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
           <div className="pt-5">
             <button
-              onClick={handlePushProblem}
+              onClick={() => handlePushProblem()}
               disabled={pushLoading || !selectedProblemId}
               className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition"
             >
@@ -314,7 +415,7 @@ export default function AdminDashboard({ user, onLogout }) {
       <div className="px-6 flex gap-2 border-b border-slate-800">
         <button
           onClick={() => setActiveTab('students')}
-          className={`px-4 py-3 text-xs font-bold border-b-2 transition flex items-center gap-2 ${
+          className={`pb-3 px-4 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
             activeTab === 'students'
               ? 'border-emerald-500 text-emerald-400'
               : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -326,26 +427,26 @@ export default function AdminDashboard({ user, onLogout }) {
 
         <button
           onClick={() => setActiveTab('problems')}
-          className={`px-4 py-3 text-xs font-bold border-b-2 transition flex items-center gap-2 ${
+          className={`pb-3 px-4 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
             activeTab === 'problems'
               ? 'border-emerald-500 text-emerald-400'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Layers className="w-4 h-4" />
+          <FileCode className="w-4 h-4" />
           <span>Problem Bank ({problems.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('submissions')}
-          className={`px-4 py-3 text-xs font-bold border-b-2 transition flex items-center gap-2 ${
+          className={`pb-3 px-4 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
             activeTab === 'submissions'
               ? 'border-emerald-500 text-emerald-400'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <Terminal className="w-4 h-4" />
-          <span>Submissions & Raw Diagnostics ({submissions.length})</span>
+          <span>Submissions & Compiler Diagnostics ({submissions.length})</span>
         </button>
       </div>
 
@@ -354,36 +455,151 @@ export default function AdminDashboard({ user, onLogout }) {
         {/* Tab 1: Students Monitor */}
         {activeTab === 'students' && (
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
-                Live Connected Students
-              </h2>
-              <button
-                onClick={() => setShowAddStudentModal(true)}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add Student Account</span>
-              </button>
+            {/* Header with Search, Filter & Actions */}
+            <div className="flex flex-wrap justify-between items-center gap-4">
+              <div>
+                <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                  <span>Live Connected Students</span>
+                  <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-xs rounded-full font-normal">
+                    Showing {filteredStudents.length} of {students.length}
+                  </span>
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">Real-time status, problem tracking, and code inspector</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowBulkStudentModal(true)}
+                  className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition shadow"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Bulk Generate / CSV</span>
+                </button>
+
+                <button
+                  onClick={() => setShowAddStudentModal(true)}
+                  className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow shadow-emerald-950"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Single Student</span>
+                </button>
+              </div>
             </div>
 
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden">
-              <table className="w-full text-left text-xs">
+            {/* Search & Filter Toolbar */}
+            <div className="bg-surface-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
+              {/* Search Bar */}
+              <div className="relative flex-1 min-w-[240px]">
+                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={studentSearch}
+                  onChange={(e) => setStudentSearch(e.target.value)}
+                  placeholder="Search by student name, username, or problem..."
+                  className="w-full bg-surface-950 border border-slate-800 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+                />
+                {studentSearch && (
+                  <button
+                    onClick={() => setStudentSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs font-bold"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {/* Status Filter Chips */}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                <button
+                  onClick={() => setStudentFilter('all')}
+                  className={`px-2.5 py-1 rounded-lg font-medium transition ${
+                    studentFilter === 'all'
+                      ? 'bg-slate-700 text-white font-bold'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  }`}
+                >
+                  All ({students.length})
+                </button>
+
+                <button
+                  onClick={() => setStudentFilter('online')}
+                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                    studentFilter === 'online'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                  <span>Online ({students.filter(s => s.isOnline).length})</span>
+                </button>
+
+                <button
+                  onClick={() => setStudentFilter('offline')}
+                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                    studentFilter === 'offline'
+                      ? 'bg-slate-700 text-slate-200 font-bold'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
+                  <span>Offline ({students.filter(s => !s.isOnline).length})</span>
+                </button>
+
+                <button
+                  onClick={() => setStudentFilter('solved')}
+                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                    studentFilter === 'solved'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  }`}
+                >
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  <span>Solved ({students.filter(s => s.hasPassed).length})</span>
+                </button>
+
+                <button
+                  onClick={() => setStudentFilter('in_progress')}
+                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                    studentFilter === 'in_progress'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  }`}
+                >
+                  <Clock className="w-3 h-3 text-amber-400" />
+                  <span>In Progress ({students.filter(s => s.assignment && !s.hasPassed).length})</span>
+                </button>
+
+                <button
+                  onClick={() => setStudentFilter('unassigned')}
+                  className={`px-2.5 py-1 rounded-lg font-medium transition ${
+                    studentFilter === 'unassigned'
+                      ? 'bg-slate-700 text-slate-200 font-bold'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  }`}
+                >
+                  Unassigned ({students.filter(s => !s.assignment).length})
+                </button>
+              </div>
+            </div>
+
+            {/* Students Table with Responsive Scroll */}
+            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-x-auto shadow-xl">
+              <table className="w-full text-left text-xs min-w-[850px]">
                 <thead className="bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800">
                   <tr>
                     <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4">Student Name</th>
+                    <th className="py-3 px-4">Student / Team Name</th>
                     <th className="py-3 px-4">Username</th>
                     <th className="py-3 px-4">Currently Assigned Problem</th>
                     <th className="py-3 px-4">Progress</th>
                     <th className="py-3 px-4">Submissions</th>
-                    <th className="py-3 px-4 text-right">Quick Push</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
-                  {students.map((s) => (
+                <tbody className="divide-y divide-slate-800/60 font-sans">
+                  {filteredStudents.map((s) => (
                     <tr key={s.id} className="hover:bg-slate-800/30 transition">
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4">
                         {s.isOnline ? (
                           <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -396,21 +612,21 @@ export default function AdminDashboard({ user, onLogout }) {
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 font-semibold text-slate-200">{s.name}</td>
-                      <td className="py-3 px-4 font-mono text-slate-400">{s.username}</td>
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4 font-semibold text-slate-100">{s.name}</td>
+                      <td className="py-3.5 px-4 font-mono text-slate-400">{s.username}</td>
+                      <td className="py-3.5 px-4">
                         {s.assignment ? (
                           <div className="flex items-center gap-2">
                             <span className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] uppercase font-mono text-emerald-400 border border-slate-700">
                               {s.assignment.language}
                             </span>
-                            <span className="text-slate-300">{s.assignment.title}</span>
+                            <span className="text-slate-200 font-medium">{s.assignment.title}</span>
                           </div>
                         ) : (
                           <span className="text-slate-500 italic">No problem assigned</span>
                         )}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4">
                         {s.hasPassed ? (
                           <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
                             <CheckCircle2 className="w-3 h-3" /> Solved
@@ -423,20 +639,44 @@ export default function AdminDashboard({ user, onLogout }) {
                           <span className="text-slate-600">-</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-slate-300 font-mono">{s.submissionsCount}</td>
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={() => {
-                            setSelectedStudentId(s.id);
-                            handlePushProblem();
-                          }}
-                          className="px-2.5 py-1 bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white rounded-lg text-xs font-medium border border-slate-700 transition"
-                        >
-                          Send Selected
-                        </button>
+                      <td className="py-3.5 px-4 text-slate-300 font-mono">
+                        <span className="px-2 py-0.5 bg-surface-950 rounded border border-slate-800">
+                          {s.submissionsCount} attempt{s.submissionsCount !== 1 ? 's' : ''}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleInspectStudent(s.id)}
+                            className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
+                            title="Inspect Student Code & Status"
+                          >
+                            <Eye className="w-3 h-3 text-blue-400" />
+                            <span>Details</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setSelectedStudentId(s.id);
+                              handlePushProblem(s.id);
+                            }}
+                            className="px-2.5 py-1.5 bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
+                            title="Push Selected Problem to this student"
+                          >
+                            <Send className="w-3 h-3 text-emerald-400" />
+                            <span>Push</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
+                  {filteredStudents.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
+                        No students match your search or filter criteria.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -448,18 +688,18 @@ export default function AdminDashboard({ user, onLogout }) {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
-                Contest Problem Bank
+                Buggy Problem Repository ({problems.length})
               </h2>
               <button
                 onClick={() => setShowAddProblemModal(true)}
-                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition"
+                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow shadow-emerald-950"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Create New Buggy Problem</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {problems.map((p) => (
                 <div key={p.id} className="bg-surface-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
                   <div>
@@ -497,7 +737,7 @@ export default function AdminDashboard({ user, onLogout }) {
                       className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
                     >
                       <Send className="w-3 h-3 text-emerald-400" />
-                      <span>Select to Push</span>
+                      <span>Select for LAN Push</span>
                     </button>
                   </div>
                 </div>
@@ -506,61 +746,62 @@ export default function AdminDashboard({ user, onLogout }) {
           </div>
         )}
 
-        {/* Tab 3: Submissions & Raw Diagnostics */}
+        {/* Tab 3: Submissions View */}
         {activeTab === 'submissions' && (
           <div className="space-y-4">
             <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
-              Submissions Log & Internal Compiler Diagnostics
+              Contest Submissions & Internal Diagnostics ({submissions.length})
             </h2>
 
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden">
-              <table className="w-full text-left text-xs">
+            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-x-auto">
+              <table className="w-full text-left text-xs min-w-[700px]">
                 <thead className="bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800">
                   <tr>
                     <th className="py-3 px-4">Time</th>
                     <th className="py-3 px-4">Student</th>
                     <th className="py-3 px-4">Problem</th>
-                    <th className="py-3 px-4">Result</th>
-                    <th className="py-3 px-4">Sanitized Message (Student View)</th>
-                    <th className="py-3 px-4">Exec Time</th>
-                    <th className="py-3 px-4 text-right">Raw Diagnostics (Admin Only)</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4">Runtime</th>
+                    <th className="py-3 px-4 text-right">Internal Raw Diagnostics</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-800/60 font-sans">
                   {submissions.map((sub) => (
                     <tr key={sub.id} className="hover:bg-slate-800/30 transition">
-                      <td className="py-3 px-4 text-slate-400 font-mono">
+                      <td className="py-3 px-4 font-mono text-slate-400 text-[11px]">
                         {new Date(sub.createdAt).toLocaleTimeString()}
                       </td>
-                      <td className="py-3 px-4 font-semibold text-slate-200">{sub.studentName}</td>
+                      <td className="py-3 px-4 font-semibold text-slate-200">
+                        {sub.studentName} <span className="text-slate-500 font-mono text-[11px]">({sub.studentUsername})</span>
+                      </td>
                       <td className="py-3 px-4 text-slate-300">{sub.problemTitle}</td>
                       <td className="py-3 px-4">
                         {sub.pass ? (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[11px]">
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[10px]">
                             PASS
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-[11px]">
-                            FAIL
+                          <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-[10px]">
+                            FAIL ({sub.status})
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 font-mono text-slate-300">{sub.genericMessage}</td>
-                      <td className="py-3 px-4 text-slate-400 font-mono">{sub.executionTimeMs}ms</td>
+                      <td className="py-3 px-4 font-mono text-slate-400 text-[11px]">
+                        {sub.executionTimeMs}ms
+                      </td>
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => setSelectedSubmission(sub)}
-                          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-medium border border-slate-700 flex items-center gap-1.5 ml-auto transition"
+                          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 transition"
                         >
-                          <Eye className="w-3.5 h-3.5 text-blue-400" />
-                          <span>Inspect</span>
+                          View Logs & Code
                         </button>
                       </td>
                     </tr>
                   ))}
                   {submissions.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center text-slate-500">
+                      <td colSpan={6} className="py-8 text-center text-slate-500 text-xs">
                         No submissions recorded yet.
                       </td>
                     </tr>
@@ -572,85 +813,162 @@ export default function AdminDashboard({ user, onLogout }) {
         )}
       </div>
 
-      {/* Raw Diagnostic Inspector Modal (Admin Only) */}
-      {selectedSubmission && (
+      {/* Student Detail Inspector Modal */}
+      {selectedStudentDetails && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
-          <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl">
-            <div className="p-4 border-b border-slate-800 flex justify-between items-center">
-              <div>
-                <h3 className="font-bold text-slate-100 flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-emerald-400" />
-                  <span>Submission Raw Diagnostic (Admin Internal View)</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Submitted by {selectedSubmission.studentName} for {selectedSubmission.problemTitle}
-                </p>
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col p-6 shadow-2xl">
+            <div className="flex justify-between items-start border-b border-slate-800 pb-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    {selectedStudentDetails.student.name}
+                    {selectedStudentDetails.student.isOnline ? (
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+                        🟢 Online on LAN
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 border border-slate-700 text-[10px] font-bold">
+                        ⚪ Offline
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-xs font-mono text-slate-400">
+                    Username: {selectedStudentDetails.student.username} • ID: {selectedStudentDetails.student.id}
+                  </p>
+                </div>
               </div>
+
               <button
-                onClick={() => setSelectedSubmission(null)}
-                className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-200"
+                onClick={() => setSelectedStudentDetails(null)}
+                className="text-slate-400 hover:text-white text-lg font-bold p-1"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-6 space-y-4 overflow-y-auto flex-1 text-xs">
-              <div className="grid grid-cols-3 gap-3">
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800">
-                  <div className="text-slate-500 font-semibold mb-1">Sanitized Student Message</div>
-                  <div className="font-mono text-slate-200">{selectedSubmission.genericMessage}</div>
+            <div className="space-y-4 overflow-y-auto flex-1 pr-2 text-xs">
+              {/* Current Assignment Card */}
+              <div className="bg-surface-950 p-4 rounded-xl border border-slate-800">
+                <div className="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-2">
+                  Assigned Contest Problem
                 </div>
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800">
-                  <div className="text-slate-500 font-semibold mb-1">Execution Duration</div>
-                  <div className="font-mono text-slate-200">{selectedSubmission.executionTimeMs} ms</div>
-                </div>
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800">
-                  <div className="text-slate-500 font-semibold mb-1">Verdict</div>
-                  <div className={`font-bold ${selectedSubmission.pass ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {selectedSubmission.pass ? 'ACCEPTED (PASS)' : 'FAILED'}
+                {selectedStudentDetails.assignment ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="font-bold text-white text-sm">
+                        {selectedStudentDetails.assignment.title}
+                      </div>
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-[10px] uppercase">
+                        {selectedStudentDetails.assignment.language}
+                      </span>
+                    </div>
+                    <div className="flex gap-4 text-slate-400 text-[11px] font-mono">
+                      <span>Target File: {selectedStudentDetails.assignment.filename}</span>
+                      <span>•</span>
+                      <span>Assigned: {new Date(selectedStudentDetails.assignment.assignedAt).toLocaleTimeString()}</span>
+                      <span>•</span>
+                      <span>Duration: {selectedStudentDetails.assignment.durationMinutes}m</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-slate-500 italic">No problem currently assigned to this student.</div>
+                )}
+              </div>
+
+              {/* Student Current Draft Code */}
+              {selectedStudentDetails.assignment && selectedStudentDetails.assignment.currentCode && (
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-slate-400 font-semibold uppercase text-[10px]">
+                      Student Current Code Draft
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedStudentDetails.assignment.currentCode);
+                        setCopiedCode(true);
+                        setTimeout(() => setCopiedCode(false), 2000);
+                      }}
+                      className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[10px] flex items-center gap-1 hover:bg-slate-700"
+                    >
+                      {copiedCode ? <CheckCheck className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedCode ? 'Copied' : 'Copy Code'}</span>
+                    </button>
+                  </div>
+                  <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
+                    <pre>{selectedStudentDetails.assignment.currentCode}</pre>
                   </div>
                 </div>
-              </div>
+              )}
 
+              {/* Submissions History for this student */}
               <div>
-                <div className="text-slate-400 font-bold uppercase tracking-wider mb-1.5">Submitted Code</div>
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-200 max-h-48 overflow-y-auto">
-                  <pre>{selectedSubmission.code}</pre>
+                <div className="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-2">
+                  Submissions History ({selectedStudentDetails.submissions?.length || 0})
                 </div>
-              </div>
-
-              <div>
-                <div className="text-slate-400 font-bold uppercase tracking-wider mb-1.5">
-                  Raw Server Evaluation Logs (Never Exposed to Student)
-                </div>
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-300 max-h-48 overflow-y-auto">
-                  <pre className="text-rose-400 whitespace-pre-wrap">
-                    {(() => {
-                      try {
-                        const parsed = JSON.parse(selectedSubmission.rawOutput);
-                        return parsed.stderr || parsed.rawError || JSON.stringify(parsed.testResults, null, 2);
-                      } catch {
-                        return selectedSubmission.rawOutput || 'No errors';
-                      }
-                    })()}
-                  </pre>
+                <div className="space-y-2">
+                  {(selectedStudentDetails.submissions || []).map((sub, idx) => (
+                    <div
+                      key={sub.id || idx}
+                      className="p-3 bg-surface-950 border border-slate-800 rounded-xl flex items-center justify-between"
+                    >
+                      <div>
+                        <div className="font-bold text-slate-200 text-xs">
+                          {sub.problemTitle || 'Submission'}
+                        </div>
+                        <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                          {new Date(sub.createdAt).toLocaleTimeString()} • {sub.executionTimeMs}ms
+                        </div>
+                      </div>
+                      <div>
+                        {sub.pass ? (
+                          <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[10px]">
+                            PASS
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-[10px]">
+                            FAIL ({sub.status})
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  {(!selectedStudentDetails.submissions || selectedStudentDetails.submissions.length === 0) && (
+                    <div className="text-slate-500 text-center py-4 text-xs">
+                      No submissions recorded for this student.
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div className="p-4 border-t border-slate-800 flex justify-end">
+            <div className="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
               <button
-                onClick={() => setSelectedSubmission(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold"
+                onClick={() => {
+                  const studentId = selectedStudentDetails.student.id;
+                  setSelectedStudentDetails(null);
+                  handlePushProblem(studentId);
+                }}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow"
               >
-                Close Inspector
+                <Send className="w-3.5 h-3.5" />
+                <span>Push Selected Problem to This Student</span>
+              </button>
+
+              <button
+                onClick={() => setSelectedStudentDetails(null)}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium"
+              >
+                Close
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Add Student Account Modal */}
+      {/* Single Add Student Account Modal */}
       {showAddStudentModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
@@ -702,6 +1020,138 @@ export default function AdminDashboard({ user, onLogout }) {
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold"
                 >
                   Create Account
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Generate & CSV Import Student Modal */}
+      {showBulkStudentModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl">
+            <h3 className="text-base font-bold text-slate-100 mb-1 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span>Bulk Student Account Creation</span>
+            </h3>
+            <p className="text-xs text-slate-400 mb-4">Quickly generate student accounts or paste a CSV list.</p>
+
+            {/* Mode Switch */}
+            <div className="flex border-b border-slate-800 mb-4 text-xs">
+              <button
+                type="button"
+                onClick={() => setBulkAddMode('generate')}
+                className={`flex-1 py-2 font-bold transition flex items-center justify-center gap-1.5 ${
+                  bulkAddMode === 'generate'
+                    ? 'text-emerald-400 border-b-2 border-emerald-500'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <span>⚡ Auto-Generate Range</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setBulkAddMode('csv')}
+                className={`flex-1 py-2 font-bold transition flex items-center justify-center gap-1.5 ${
+                  bulkAddMode === 'csv'
+                    ? 'text-emerald-400 border-b-2 border-emerald-500'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <span>📋 CSV / Text Paste</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleBulkCreateStudents} className="space-y-4 text-xs">
+              {bulkAddMode === 'generate' ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-slate-400 font-semibold mb-1">Username Prefix</label>
+                      <input
+                        type="text"
+                        required
+                        value={bulkGenData.prefix}
+                        onChange={(e) => setBulkGenData({ ...bulkGenData, prefix: e.target.value })}
+                        placeholder="e.g. student"
+                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 font-semibold mb-1">Password Prefix</label>
+                      <input
+                        type="text"
+                        required
+                        value={bulkGenData.passwordPrefix}
+                        onChange={(e) => setBulkGenData({ ...bulkGenData, passwordPrefix: e.target.value })}
+                        placeholder="e.g. pass"
+                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-slate-400 font-semibold mb-1">Start Number</label>
+                      <input
+                        type="number"
+                        min="1"
+                        required
+                        value={bulkGenData.startNumber}
+                        onChange={(e) => setBulkGenData({ ...bulkGenData, startNumber: e.target.value })}
+                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 font-semibold mb-1">How Many Accounts?</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="100"
+                        required
+                        value={bulkGenData.count}
+                        onChange={(e) => setBulkGenData({ ...bulkGenData, count: e.target.value })}
+                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-surface-950 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+                    Will create accounts: <strong className="text-emerald-400">{bulkGenData.prefix}{bulkGenData.startNumber}</strong> to <strong className="text-emerald-400">{bulkGenData.prefix}{Number(bulkGenData.startNumber) + Number(bulkGenData.count) - 1}</strong> with passwords <strong className="text-amber-400">{bulkGenData.passwordPrefix}1</strong>, <strong className="text-amber-400">{bulkGenData.passwordPrefix}2</strong>...
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <label className="block text-slate-400 font-semibold">
+                    Paste Student Rows (Format: <code className="text-emerald-400 font-mono">username, password, Full Name / Team</code>)
+                  </label>
+                  <textarea
+                    rows={6}
+                    required
+                    value={bulkCsvText}
+                    onChange={(e) => setBulkCsvText(e.target.value)}
+                    placeholder="student10, pass10, Alice (Team 10)&#10;student11, pass11, Bob (Team 11)&#10;student12, pass12, Charlie (Team 12)"
+                    className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3 text-slate-200 font-mono focus:outline-none focus:border-emerald-500 text-xs"
+                  />
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowBulkStudentModal(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={bulkLoading}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center gap-1.5 shadow"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{bulkLoading ? 'Creating...' : 'Create Accounts'}</span>
                 </button>
               </div>
             </form>
@@ -787,49 +1237,59 @@ export default function AdminDashboard({ user, onLogout }) {
                   value={newProblemData.starterCode}
                   onChange={(e) => setNewProblemData({ ...newProblemData, starterCode: e.target.value })}
                   placeholder="Paste buggy code that students will fix..."
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-surface-950 border border-slate-800 rounded-xl">
-                  <div className="font-semibold text-slate-300 mb-1">Sample Test Case (Visible)</div>
-                  <textarea
-                    rows={2}
+              <div className="grid grid-cols-2 gap-3 p-3 bg-surface-950 rounded-xl border border-slate-800">
+                <div className="col-span-2 font-semibold text-slate-300">Sample Test Case (Visible to Student)</div>
+                <div>
+                  <label className="block text-slate-500 mb-1">Sample Input</label>
+                  <input
+                    type="text"
                     value={newProblemData.input1}
                     onChange={(e) => setNewProblemData({ ...newProblemData, input1: e.target.value })}
-                    placeholder="Input stdin..."
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono mb-2"
-                  />
-                  <textarea
-                    rows={2}
-                    value={newProblemData.output1}
-                    onChange={(e) => setNewProblemData({ ...newProblemData, output1: e.target.value })}
-                    placeholder="Expected stdout..."
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono"
+                    placeholder="e.g. 5\n1 2 3 4 5"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
                   />
                 </div>
-
-                <div className="p-3 bg-surface-950 border border-slate-800 rounded-xl">
-                  <div className="font-semibold text-slate-300 mb-1">Hidden Test Case (Scoring)</div>
-                  <textarea
-                    rows={2}
-                    value={newProblemData.input2}
-                    onChange={(e) => setNewProblemData({ ...newProblemData, input2: e.target.value })}
-                    placeholder="Hidden stdin..."
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono mb-2"
-                  />
-                  <textarea
-                    rows={2}
-                    value={newProblemData.output2}
-                    onChange={(e) => setNewProblemData({ ...newProblemData, output2: e.target.value })}
-                    placeholder="Expected stdout..."
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono"
+                <div>
+                  <label className="block text-slate-500 mb-1">Expected Output</label>
+                  <input
+                    type="text"
+                    value={newProblemData.output1}
+                    onChange={(e) => setNewProblemData({ ...newProblemData, output1: e.target.value })}
+                    placeholder="e.g. 5"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <div className="grid grid-cols-2 gap-3 p-3 bg-surface-950 rounded-xl border border-slate-800">
+                <div className="col-span-2 font-semibold text-slate-300">Hidden Test Case (Evaluator Only)</div>
+                <div>
+                  <label className="block text-slate-500 mb-1">Hidden Input</label>
+                  <input
+                    type="text"
+                    value={newProblemData.input2}
+                    onChange={(e) => setNewProblemData({ ...newProblemData, input2: e.target.value })}
+                    placeholder="e.g. 3\n-5 -2 -1"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-500 mb-1">Expected Output</label>
+                  <input
+                    type="text"
+                    value={newProblemData.output2}
+                    onChange={(e) => setNewProblemData({ ...newProblemData, output2: e.target.value })}
+                    placeholder="e.g. -1"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowAddProblemModal(false)}
@@ -841,10 +1301,70 @@ export default function AdminDashboard({ user, onLogout }) {
                   type="submit"
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold"
                 >
-                  Create Problem
+                  Create & Save
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Submission Details Modal (Admin Diagnostics) */}
+      {selectedSubmission && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col p-6 shadow-2xl text-xs">
+            <div className="flex justify-between items-start border-b border-slate-800 pb-3 mb-4">
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  Submission Diagnostics
+                  {selectedSubmission.pass ? (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs">
+                      PASS
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs">
+                      FAIL ({selectedSubmission.status})
+                    </span>
+                  )}
+                </h3>
+                <p className="text-slate-400 mt-1">
+                  Student: <strong className="text-slate-200">{selectedSubmission.studentName}</strong> ({selectedSubmission.studentUsername}) • Problem: <strong className="text-slate-200">{selectedSubmission.problemTitle}</strong>
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedSubmission(null)}
+                className="text-slate-400 hover:text-white text-lg font-bold p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+              <div>
+                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-1">Submitted Source Code</div>
+                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
+                  <pre>{selectedSubmission.code}</pre>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-1">
+                  Raw Compiler & Evaluator Internal Diagnostics
+                </div>
+                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-300 text-[11px] max-h-48 overflow-y-auto whitespace-pre-wrap">
+                  {selectedSubmission.rawOutput || 'No output recorded'}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-4 border-t border-slate-800 mt-4">
+              <button
+                onClick={() => setSelectedSubmission(null)}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
