@@ -718,105 +718,104 @@ export default function AdminDashboard({ user, onLogout }) {
             </div>
 
             {/* Students Table with Dedicated Scroll Container & Sticky Header */}
-            <div
-              ref={studentTableContainerRef}
-              className="bg-surface-900 border border-slate-800 rounded-2xl max-h-[460px] overflow-y-auto overflow-x-auto shadow-xl relative scroll-smooth"
-            >
-              <table className="w-full text-left text-xs min-w-[850px]">
-                <thead className="sticky top-0 bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800 z-10 shadow">
-                  <tr>
-                    <th className="py-3.5 px-4 bg-surface-950">Status</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Student / Team Name</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Username</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Currently Assigned Problem</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Progress</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Submissions</th>
-                    <th className="py-3.5 px-4 bg-surface-950 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60 font-sans">
-                  {paginatedStudents.map((s) => (
-                    <tr key={s.id} className="hover:bg-slate-800/30 transition">
-                      <td className="py-3.5 px-4">
-                        {s.isOnline ? (
-                          <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            Online
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1.5 text-slate-500 font-medium">
-                            <span className="w-2 h-2 rounded-full bg-slate-600" />
-                            Offline
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 font-semibold text-slate-100">{s.name}</td>
-                      <td className="py-3.5 px-4 font-mono text-slate-400">{s.username}</td>
-                      <td className="py-3.5 px-4">
-                        {s.assignment ? (
-                          <div className="flex items-center gap-2">
-                            <span className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] uppercase font-mono text-emerald-400 border border-slate-700">
-                              {s.assignment.language}
-                            </span>
-                            <span className="text-slate-200 font-medium">{s.assignment.title}</span>
-                          </div>
-                        ) : (
-                          <span className="text-slate-500 italic">No problem assigned</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        {s.hasPassed ? (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
-                            <CheckCircle2 className="w-3 h-3" /> Solved
-                          </span>
-                        ) : s.assignment ? (
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
-                            <Clock className="w-3 h-3" /> In Progress
-                          </span>
-                        ) : (
-                          <span className="text-slate-600">-</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-300 font-mono">
-                        <span className="px-2 py-0.5 bg-surface-950 rounded border border-slate-800">
-                          {s.submissionsCount} attempt{s.submissionsCount !== 1 ? 's' : ''}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => handleInspectStudent(s.id)}
-                            className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
-                            title="Inspect Student Code & Status"
-                          >
-                            <Eye className="w-3 h-3 text-blue-400" />
-                            <span>Details</span>
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              setSelectedStudentId(s.id);
-                              handlePushProblem(s.id);
-                            }}
-                            className="px-2.5 py-1.5 bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
-                            title="Push Selected Problem to this student"
-                          >
-                            <Send className="w-3 h-3 text-emerald-400" />
-                            <span>Push</span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {paginatedStudents.length === 0 && (
+            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+              <div ref={studentTableContainerRef} className="max-h-[420px] overflow-y-auto overflow-x-auto scroll-smooth">
+                <table className="w-full text-left text-xs min-w-[850px]">
+                  <thead className="bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800 sticky top-0 z-10 shadow">
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
-                        No students match your search or filter criteria.
-                      </td>
+                      <th className="py-3 px-4 bg-surface-950">Status</th>
+                      <th className="py-3 px-4 bg-surface-950">Student / Team Name</th>
+                      <th className="py-3 px-4 bg-surface-950">Username</th>
+                      <th className="py-3 px-4 bg-surface-950">Currently Assigned Problem</th>
+                      <th className="py-3 px-4 bg-surface-950">Progress</th>
+                      <th className="py-3 px-4 bg-surface-950">Submissions</th>
+                      <th className="py-3 px-4 bg-surface-950 text-right">Actions</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/60 font-sans">
+                    {paginatedStudents.map((s) => (
+                      <tr key={s.id} className="hover:bg-slate-800/30 transition">
+                        <td className="py-3 px-4">
+                          {s.isOnline ? (
+                            <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                              Online
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1.5 text-slate-500 font-medium">
+                              <span className="w-2 h-2 rounded-full bg-slate-600" />
+                              Offline
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 font-semibold text-slate-100">{s.name}</td>
+                        <td className="py-3 px-4 font-mono text-slate-400">{s.username}</td>
+                        <td className="py-3 px-4">
+                          {s.assignment ? (
+                            <div className="flex items-center gap-2">
+                              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] uppercase font-mono text-emerald-400 border border-slate-700">
+                                {s.assignment.language}
+                              </span>
+                              <span className="text-slate-200 font-medium">{s.assignment.title}</span>
+                            </div>
+                          ) : (
+                            <span className="text-slate-500 italic">No problem assigned</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          {s.hasPassed ? (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
+                              <CheckCircle2 className="w-3 h-3" /> Solved
+                            </span>
+                          ) : s.assignment ? (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
+                              <Clock className="w-3 h-3" /> In Progress
+                            </span>
+                          ) : (
+                            <span className="text-slate-600">-</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-slate-300 font-mono">
+                          <span className="px-2 py-0.5 bg-surface-950 rounded border border-slate-800">
+                            {s.submissionsCount} attempt{s.submissionsCount !== 1 ? 's' : ''}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => handleInspectStudent(s.id)}
+                              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
+                              title="Inspect Student Code & Status"
+                            >
+                              <Eye className="w-3 h-3 text-blue-400" />
+                              <span>Details</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setSelectedStudentId(s.id);
+                                handlePushProblem(s.id);
+                              }}
+                              className="px-2.5 py-1.5 bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
+                              title="Push Selected Problem to this student"
+                            >
+                              <Send className="w-3 h-3 text-emerald-400" />
+                              <span>Push</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {paginatedStudents.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
+                          No students match your search or filter criteria.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Bottom Quick Scroll & Pagination Bar */}

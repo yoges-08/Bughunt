@@ -12,6 +12,10 @@
 }
 
 /* Custom scrollbars */
+.max-h-\[420px\]::-webkit-scrollbar { width: 6px; }
+.max-h-\[420px\]::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+.max-h-\[420px\]::-webkit-scrollbar-track { background: transparent; }
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
