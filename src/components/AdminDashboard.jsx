@@ -28,7 +28,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const [studentFilter, setStudentFilter] = useState('all'); // 'all', 'online', 'offline', 'solved', 'in_progress', 'unassigned'
 
   // Pagination & Scroll State
-  const [rowsPerPage, setRowsPerPage] = useState(10); // 10, 25, 50, 'all'
+  const [rowsPerPage, setRowsPerPage] = useState('all'); // 10, 25, 50, 'all'
   const [currentPage, setCurrentPage] = useState(1);
   const studentTableContainerRef = useRef(null);
 
@@ -745,7 +745,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
             {/* Students Table with Dedicated Scroll Container & Sticky Header */}
             <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-              <div ref={studentTableContainerRef} className="max-h-[420px] overflow-y-auto overflow-x-auto scroll-smooth">
+              <div ref={studentTableContainerRef} className="max-h-[60vh] overflow-y-auto overflow-x-auto scroll-smooth">
                 <table className="w-full text-left text-xs min-w-[850px]">
                   <thead className="bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800 sticky top-0 z-10 shadow">
                     <tr>
