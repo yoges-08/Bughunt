@@ -145,13 +145,13 @@ export default function AdminDashboard({ user, onLogout }) {
   // Smooth table scroll helpers
   const handleScrollUp = () => {
     if (studentTableContainerRef.current) {
-      studentTableContainerRef.current.scrollBy({ top: -220, behavior: 'smooth' });
+      studentTableContainerRef.current.scrollBy({ top: -240, behavior: 'smooth' });
     }
   };
 
   const handleScrollDown = () => {
     if (studentTableContainerRef.current) {
-      studentTableContainerRef.current.scrollBy({ top: 220, behavior: 'smooth' });
+      studentTableContainerRef.current.scrollBy({ top: 240, behavior: 'smooth' });
     }
   };
 
@@ -218,7 +218,6 @@ export default function AdminDashboard({ user, onLogout }) {
       if (isAll) {
         setPushSuccessMsg(`✅ Problem successfully pushed to ALL ${students.length} students over LAN!`);
       } else {
-        const targetStudent = students.find(s => s.id === targetId);
         setPushSuccessMsg(`✅ Problem sent to ${targetStudent?.name || 'student'} (${res.deliveredImmediately ? 'Delivered Live' : 'Queued for Connect'})`);
       }
       loadData();
@@ -326,26 +325,26 @@ export default function AdminDashboard({ user, onLogout }) {
   };
 
   return (
-    <div className="min-h-screen bg-surface-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-surface-950 text-slate-100 flex flex-col font-sans">
       {/* Top LAN Server Banner */}
       <HostBanner isHost={true} />
 
       {/* Main Navigation Header */}
       <header className="bg-surface-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm shadow-inner">
             BH
           </div>
           <div>
-            <h1 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-              Bug Hunt <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Admin Dashboard</span>
+            <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-2">
+              Bug Hunt <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold">Admin Dashboard</span>
             </h1>
             <p className="text-xs text-slate-400">Contest Host & LAN Management Console</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-surface-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-surface-950 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-slate-300 font-medium">{user.name}</span>
             <span className="text-slate-500">(Admin)</span>
@@ -353,7 +352,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
           <button
             onClick={loadData}
-            className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-slate-200 transition border border-slate-800"
+            className="p-2.5 bg-surface-950 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-slate-200 transition border border-slate-800"
             title="Refresh contest data"
           >
             <RefreshCw className="w-4 h-4" />
@@ -361,7 +360,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
           <button
             onClick={onLogout}
-            className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-rose-500/10 text-rose-400 hover:text-rose-300 rounded-xl text-xs font-medium border border-rose-500/20 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-surface-950 hover:bg-rose-500/10 text-rose-400 hover:text-rose-300 rounded-xl text-xs font-semibold border border-slate-800 hover:border-rose-500/30 transition"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Logout</span>
@@ -369,66 +368,75 @@ export default function AdminDashboard({ user, onLogout }) {
         </div>
       </header>
 
-      {/* Overview Metric Cards */}
-      <div className="grid grid-cols-4 gap-4 p-6 pb-2">
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-4">
-          <div className="flex justify-between items-start text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">
-            <span>Total Students</span>
-            <Users className="w-4 h-4 text-blue-400" />
+      {/* Overview Metric Cards (Consistent 24px grid & equal height cards) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Students</span>
+            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+              <Users className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-100">{overview?.totalStudents ?? students.length}</div>
-          <div className="text-xs text-emerald-400 mt-1 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-            <span>{students.filter(s => s.isOnline).length} online on LAN</span>
+          <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalStudents ?? students.length}</div>
+          <div className="text-xs text-slate-400 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+            <span className="text-emerald-400 font-medium">{students.filter(s => s.isOnline).length} online</span>
+            <span className="text-slate-500">on LAN</span>
           </div>
         </div>
 
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-4">
-          <div className="flex justify-between items-start text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">
-            <span>Buggy Problems</span>
-            <FileCode className="w-4 h-4 text-emerald-400" />
+        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Buggy Problems</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <FileCode className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-100">{overview?.totalProblems ?? problems.length}</div>
-          <div className="text-xs text-slate-500 mt-1">C, C++, and Python</div>
+          <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalProblems ?? problems.length}</div>
+          <div className="text-xs text-slate-400">C, C++, and Python bank</div>
         </div>
 
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-4">
-          <div className="flex justify-between items-start text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">
-            <span>Submissions</span>
-            <Terminal className="w-4 h-4 text-purple-400" />
+        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Submissions</span>
+            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+              <Terminal className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-100">{overview?.totalSubmissions ?? submissions.length}</div>
-          <div className="text-xs text-slate-500 mt-1">Recorded & re-verified</div>
+          <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalSubmissions ?? submissions.length}</div>
+          <div className="text-xs text-slate-400">Recorded & re-verified</div>
         </div>
 
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-4">
-          <div className="flex justify-between items-start text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">
-            <span>Passed Solutions</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Passed Solutions</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-emerald-400">{overview?.passedSubmissions ?? submissions.filter(s => s.pass).length}</div>
-          <div className="text-xs text-slate-500 mt-1">
+          <div className="text-3xl font-bold tracking-tight text-emerald-400 mb-1">{overview?.passedSubmissions ?? submissions.filter(s => s.pass).length}</div>
+          <div className="text-xs text-slate-400">
             {overview?.totalSubmissions ? Math.round(((overview?.passedSubmissions || 0) / overview.totalSubmissions) * 100) : 0}% success rate
           </div>
         </div>
       </div>
 
-      {/* LAN Problem Push Quick Bar */}
-      <div className="mx-6 my-4 p-4 bg-gradient-to-r from-surface-900 to-surface-950 border border-emerald-500/20 rounded-2xl shadow-lg">
-        <div className="flex items-center gap-2 mb-3">
+      {/* LAN Problem Push Dispatch Panel (Consistent 24px spacing & high-priority primary button) */}
+      <div className="mx-6 mb-6 p-6 bg-surface-900 border border-slate-800 rounded-2xl shadow-xl">
+        <div className="flex items-center gap-2.5 mb-4">
           <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-200">
             LAN Problem Dispatch (Direct File Push)
           </h2>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex-1 min-w-[200px]">
-            <label className="block text-[11px] text-slate-400 uppercase font-semibold mb-1">Select Problem</label>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
+          <div className="lg:col-span-5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Select Problem</label>
             <select
               value={selectedProblemId}
               onChange={(e) => setSelectedProblemId(e.target.value)}
-              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+              className="w-full h-11 bg-surface-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-medium shadow-inner"
             >
               {problems.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -438,12 +446,12 @@ export default function AdminDashboard({ user, onLogout }) {
             </select>
           </div>
 
-          <div className="w-72">
-            <label className="block text-[11px] text-slate-400 uppercase font-semibold mb-1">Select Target</label>
+          <div className="lg:col-span-4">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Select Target</label>
             <select
               value={selectedStudentId}
               onChange={(e) => setSelectedStudentId(e.target.value)}
-              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+              className="w-full h-11 bg-surface-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono font-medium shadow-inner"
             >
               <option value="ALL">📢 All Students ({students.length} Total)</option>
               {students.map((s) => (
@@ -454,34 +462,35 @@ export default function AdminDashboard({ user, onLogout }) {
             </select>
           </div>
 
-          <div className="pt-5">
+          <div className="lg:col-span-3">
+            {/* Primary Action Button: Clear visual priority & large touch target */}
             <button
               onClick={() => handlePushProblem()}
               disabled={pushLoading || !selectedProblemId}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition"
+              className="w-full h-11 px-6 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.99]"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Send className="w-4 h-4 text-slate-950 stroke-[2.5]" />
               <span>{pushLoading ? 'Pushing...' : 'Push File to Student(s)'}</span>
             </button>
           </div>
         </div>
 
         {pushSuccessMsg && (
-          <div className="mt-3 p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
-            <Check className="w-4 h-4" />
-            <span>{pushSuccessMsg}</span>
+          <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-400" />
+            <span className="font-medium">{pushSuccessMsg}</span>
           </div>
         )}
       </div>
 
-      {/* Main Tabs Navigation */}
-      <div className="px-6 flex gap-2 border-b border-slate-800">
+      {/* Main Tabs Navigation (Clear active-state indicator & consistent padding) */}
+      <div className="px-6 mb-6 flex gap-2 border-b border-slate-800">
         <button
           onClick={() => setActiveTab('students')}
-          className={`pb-3 px-4 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
+          className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
             activeTab === 'students'
-              ? 'border-emerald-500 text-emerald-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -490,10 +499,10 @@ export default function AdminDashboard({ user, onLogout }) {
 
         <button
           onClick={() => setActiveTab('problems')}
-          className={`pb-3 px-4 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
+          className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
             activeTab === 'problems'
-              ? 'border-emerald-500 text-emerald-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
           }`}
         >
           <FileCode className="w-4 h-4" />
@@ -502,10 +511,10 @@ export default function AdminDashboard({ user, onLogout }) {
 
         <button
           onClick={() => setActiveTab('submissions')}
-          className={`pb-3 px-4 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
+          className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
             activeTab === 'submissions'
-              ? 'border-emerald-500 text-emerald-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
           }`}
         >
           <Terminal className="w-4 h-4" />
@@ -514,71 +523,76 @@ export default function AdminDashboard({ user, onLogout }) {
       </div>
 
       {/* Tab Contents */}
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 px-6 pb-6 overflow-y-auto">
         {/* Tab 1: Students Monitor */}
         {activeTab === 'students' && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Header with Search, Filter & Actions */}
             <div className="flex flex-wrap justify-between items-center gap-4">
               <div>
-                <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
                   <span>Live Connected Students</span>
-                  <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-xs rounded-full font-normal">
+                  <span className="px-2.5 py-0.5 bg-slate-800 text-slate-400 text-xs rounded-full font-medium">
                     Showing {paginatedStudents.length} on page ({totalFiltered} matching of {students.length} total)
                   </span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">Real-time status, problem tracking, and code inspector</p>
+                <p className="text-xs text-slate-400 mt-1">Real-time status, problem tracking, and code inspector</p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                {/* Secondary action button */}
                 <button
                   onClick={() => setShowBulkStudentModal(true)}
-                  className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition shadow"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-2 transition active:scale-[0.99] shadow"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Bulk Generate / CSV</span>
                 </button>
 
+                {/* Primary action button */}
                 <button
                   onClick={() => setShowAddStudentModal(true)}
-                  className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow shadow-emerald-950"
+                  className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>Add Single Student</span>
                 </button>
               </div>
             </div>
 
-            {/* Search & Filter Toolbar */}
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
+            {/* Search & Filter Toolbar (Visually separated search box & uniform status pills) */}
+            <div className="bg-surface-900 border border-slate-800 rounded-2xl p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
               {/* Search Bar */}
-              <div className="relative flex-1 min-w-[240px]">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <div className="relative flex-1 max-w-md">
+                <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={studentSearch}
                   onChange={(e) => setStudentSearch(e.target.value)}
                   placeholder="Search by student name, username, or problem..."
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl pl-10 pr-8 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 shadow-inner"
                 />
                 {studentSearch && (
                   <button
                     onClick={() => setStudentSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs font-bold"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs font-bold"
                   >
                     ×
                   </button>
                 )}
               </div>
 
-              {/* Status Filter Chips */}
-              <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              {/* Visual Divider */}
+              <div className="hidden lg:block w-px h-8 bg-slate-800 self-center" />
+
+              {/* Uniform Status Filter Pills */}
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setStudentFilter('all')}
-                  className={`px-2.5 py-1 rounded-lg font-medium transition ${
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
                     studentFilter === 'all'
-                      ? 'bg-slate-700 text-white font-bold'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                   }`}
                 >
                   All ({students.length})
@@ -586,10 +600,10 @@ export default function AdminDashboard({ user, onLogout }) {
 
                 <button
                   onClick={() => setStudentFilter('online')}
-                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
                     studentFilter === 'online'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                   }`}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
@@ -598,10 +612,10 @@ export default function AdminDashboard({ user, onLogout }) {
 
                 <button
                   onClick={() => setStudentFilter('offline')}
-                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
                     studentFilter === 'offline'
-                      ? 'bg-slate-700 text-slate-200 font-bold'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      ? 'bg-slate-800 text-slate-200 border-slate-700 shadow-sm'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                   }`}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
@@ -610,66 +624,66 @@ export default function AdminDashboard({ user, onLogout }) {
 
                 <button
                   onClick={() => setStudentFilter('solved')}
-                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
                     studentFilter === 'solved'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                   }`}
                 >
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Solved ({students.filter(s => s.hasPassed).length})</span>
                 </button>
 
                 <button
                   onClick={() => setStudentFilter('in_progress')}
-                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
                     studentFilter === 'in_progress'
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      ? 'bg-slate-800 text-amber-300 border-amber-500/40 shadow-sm'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                   }`}
                 >
-                  <Clock className="w-3 h-3 text-amber-400" />
+                  <Clock className="w-3.5 h-3.5 text-amber-400" />
                   <span>In Progress ({students.filter(s => s.assignment && !s.hasPassed && s.assignment.status !== 'expired').length})</span>
                 </button>
 
                 <button
                   onClick={() => setStudentFilter('expired')}
-                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
                     studentFilter === 'expired'
-                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      ? 'bg-slate-800 text-rose-300 border-rose-500/40 shadow-sm'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                   }`}
                 >
-                  <Clock className="w-3 h-3 text-rose-400" />
+                  <Clock className="w-3.5 h-3.5 text-rose-400" />
                   <span>Timed Out ({students.filter(s => s.assignment?.status === 'expired').length})</span>
                 </button>
 
                 <button
                   onClick={() => setStudentFilter('unassigned')}
-                  className={`px-2.5 py-1 rounded-lg font-medium transition ${
+                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
                     studentFilter === 'unassigned'
-                      ? 'bg-slate-700 text-slate-200 font-bold'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                   }`}
                 >
-                  Unassigned ({students.filter(s => !s.assignment).length})
+                  <span>Unassigned ({students.filter(s => !s.assignment).length})</span>
                 </button>
               </div>
             </div>
 
             {/* Scroll Navigation & Pagination Control Bar (Top) */}
-            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-3">
+            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-4 text-xs">
+              <div className="flex items-center gap-4">
                 <span className="text-slate-400 font-medium">
-                  Showing <strong className="text-slate-200">{startIndex + 1} - {Math.min(startIndex + paginatedStudents.length, totalFiltered)}</strong> of <strong className="text-slate-200">{totalFiltered}</strong> students
+                  Showing <strong className="text-slate-200 font-semibold">{startIndex + 1} - {Math.min(startIndex + paginatedStudents.length, totalFiltered)}</strong> of <strong className="text-slate-200 font-semibold">{totalFiltered}</strong> students
                 </span>
 
-                <div className="flex items-center gap-1.5 text-slate-400">
+                <div className="flex items-center gap-2 text-slate-400">
                   <span>Per page:</span>
                   <select
                     value={rowsPerPage}
                     onChange={(e) => setRowsPerPage(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                    className="bg-surface-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    className="bg-surface-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none focus:border-emerald-500"
                   >
                     <option value={10}>10</option>
                     <option value={25}>25</option>
@@ -693,16 +707,16 @@ export default function AdminDashboard({ user, onLogout }) {
                   <button
                     onClick={handleScrollUp}
                     title="Scroll Up"
-                    className="px-2 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1 transition font-medium"
+                    className="px-2.5 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1.5 transition font-medium"
                   >
                     <ChevronUp className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Scroll Up</span>
                   </button>
-                  <div className="w-[1px] h-4 bg-slate-800" />
+                  <div className="w-px h-4 bg-slate-800" />
                   <button
                     onClick={handleScrollDown}
                     title="Scroll Down"
-                    className="px-2 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1 transition font-medium"
+                    className="px-2.5 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1.5 transition font-medium"
                   >
                     <ChevronDown className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Scroll Down</span>
@@ -722,7 +736,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     <button
                       onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                       disabled={effectivePage <= 1}
-                      className="px-2.5 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
+                      className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
                     >
                       <ChevronLeft className="w-3.5 h-3.5" />
                       <span>Prev</span>
@@ -733,7 +747,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     <button
                       onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                       disabled={effectivePage >= totalPages}
-                      className="px-2.5 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
+                      className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
                     >
                       <span>Next</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -743,93 +757,100 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             </div>
 
-            {/* Students Table with Dedicated Scroll Container & Sticky Header */}
+            {/* Students Table with Dedicated Responsive Scroll Container & Sticky Header */}
             <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
               <div ref={studentTableContainerRef} className="max-h-[60vh] overflow-y-auto overflow-x-auto scroll-smooth">
-                <table className="w-full text-left text-xs min-w-[850px]">
-                  <thead className="bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800 sticky top-0 z-10 shadow">
+                <table className="w-full text-left text-xs min-w-[880px]">
+                  <thead className="bg-surface-950 text-slate-400 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-800 sticky top-0 z-10 shadow">
                     <tr>
-                      <th className="py-3 px-4 bg-surface-950">Status</th>
-                      <th className="py-3 px-4 bg-surface-950">Student / Team Name</th>
-                      <th className="py-3 px-4 bg-surface-950">Username</th>
-                      <th className="py-3 px-4 bg-surface-950">Currently Assigned Problem</th>
-                      <th className="py-3 px-4 bg-surface-950">Progress</th>
-                      <th className="py-3 px-4 bg-surface-950">Submissions</th>
-                      <th className="py-3 px-4 bg-surface-950 text-right">Actions</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Status</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Student / Team Name</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Username</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Currently Assigned Problem</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Progress</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Submissions</th>
+                      <th className="py-3.5 px-4 bg-surface-950 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/60 font-sans">
                     {paginatedStudents.map((s) => (
                       <tr key={s.id} className="hover:bg-slate-800/30 transition">
-                        <td className="py-3 px-4">
-                          {s.isOnline ? (
-                            <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                              Online
+                        {/* Status Column: aligned dot + label */}
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full ${s.isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                            <span className={`font-medium ${s.isOnline ? 'text-emerald-400' : 'text-slate-500'}`}>
+                              {s.isOnline ? 'Online' : 'Offline'}
                             </span>
-                          ) : (
-                            <span className="flex items-center gap-1.5 text-slate-500 font-medium">
-                              <span className="w-2 h-2 rounded-full bg-slate-600" />
-                              Offline
-                            </span>
-                          )}
+                          </div>
                         </td>
-                        <td className="py-3 px-4 font-semibold text-slate-100">{s.name}</td>
-                        <td className="py-3 px-4 font-mono text-slate-400">{s.username}</td>
-                        <td className="py-3 px-4">
+
+                        <td className="py-4 px-4 font-semibold text-slate-100">{s.name}</td>
+                        <td className="py-4 px-4 font-mono text-slate-400">{s.username}</td>
+
+                        {/* Assigned Problem: consistent badge + title spacing */}
+                        <td className="py-4 px-4">
                           {s.assignment ? (
-                            <div className="flex items-center gap-2">
-                              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] uppercase font-mono text-emerald-400 border border-slate-700">
+                            <div className="flex items-center gap-2.5">
+                              <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] uppercase font-mono text-emerald-400 border border-slate-700 font-semibold tracking-wider">
                                 {s.assignment.language}
                               </span>
-                              <span className="text-slate-200 font-medium">{s.assignment.title}</span>
+                              <span className="text-slate-200 font-medium truncate max-w-[260px]">{s.assignment.title}</span>
                             </div>
                           ) : (
                             <span className="text-slate-500 italic">No problem assigned</span>
                           )}
                         </td>
-                        <td className="py-3 px-4">
+
+                        {/* Progress badge */}
+                        <td className="py-4 px-4">
                           {s.hasPassed ? (
-                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
-                              <CheckCircle2 className="w-3 h-3" /> Solved
+                            <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Solved
                             </span>
                           ) : s.assignment?.status === 'expired' ? (
-                            <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit" title="Contest timer expired with no submission">
-                              <Clock className="w-3 h-3" /> Timed Out
+                            <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit" title="Contest timer expired with no submission">
+                              <Clock className="w-3.5 h-3.5" /> Timed Out
                             </span>
                           ) : s.assignment ? (
-                            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
-                              <Clock className="w-3 h-3" /> In Progress
+                            <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
+                              <Clock className="w-3.5 h-3.5" /> In Progress
                             </span>
                           ) : (
                             <span className="text-slate-600">-</span>
                           )}
                         </td>
-                        <td className="py-3 px-4 text-slate-300 font-mono">
-                          <span className="px-2 py-0.5 bg-surface-950 rounded border border-slate-800">
+
+                        {/* Submissions count */}
+                        <td className="py-4 px-4 text-slate-300 font-mono">
+                          <span className="px-2.5 py-1 bg-surface-950 rounded-lg border border-slate-800">
                             {s.submissionsCount} attempt{s.submissionsCount !== 1 ? 's' : ''}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right">
+
+                        {/* Actions: Equal button dimensions & alignment */}
+                        <td className="py-4 px-4 text-right">
                           <div className="flex items-center justify-end gap-2">
+                            {/* Outline / Secondary action button: equal w-20 h-8 */}
                             <button
                               onClick={() => handleInspectStudent(s.id)}
-                              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
+                              className="w-20 h-8 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 hover:border-slate-700 transition flex items-center justify-center gap-1.5"
                               title="Inspect Student Code & Status"
                             >
-                              <Eye className="w-3 h-3 text-blue-400" />
+                              <Eye className="w-3.5 h-3.5 text-blue-400" />
                               <span>Details</span>
                             </button>
 
+                            {/* Push action button: equal w-20 h-8 */}
                             <button
                               onClick={() => {
                                 setSelectedStudentId(s.id);
                                 handlePushProblem(s.id);
                               }}
-                              className="px-2.5 py-1.5 bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1 transition"
+                              className="w-20 h-8 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 rounded-lg text-xs font-semibold border border-emerald-500/20 hover:border-emerald-500 transition flex items-center justify-center gap-1.5"
                               title="Push Selected Problem to this student"
                             >
-                              <Send className="w-3 h-3 text-emerald-400" />
+                              <Send className="w-3.5 h-3.5" />
                               <span>Push</span>
                             </button>
                           </div>
@@ -849,7 +870,7 @@ export default function AdminDashboard({ user, onLogout }) {
             </div>
 
             {/* Bottom Quick Scroll & Pagination Bar */}
-            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-4 text-xs">
               <div className="text-slate-400">
                 {totalFiltered} students found • Use scroll buttons or page controls to navigate
               </div>
@@ -857,14 +878,14 @@ export default function AdminDashboard({ user, onLogout }) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleScrollUp}
-                  className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
+                  className="px-3.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
                 >
                   <ChevronUp className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Scroll Up</span>
                 </button>
                 <button
                   onClick={handleScrollDown}
-                  className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
+                  className="px-3.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
                 >
                   <ChevronDown className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Scroll Down</span>
@@ -883,34 +904,35 @@ export default function AdminDashboard({ user, onLogout }) {
 
         {/* Tab 2: Problem Bank */}
         {activeTab === 'problems' && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
                 Buggy Problem Repository ({problems.length})
               </h2>
+              {/* Primary action button */}
               <button
                 onClick={() => setShowAddProblemModal(true)}
-                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow shadow-emerald-950"
+                className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>Create New Buggy Problem</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {problems.map((p) => (
-                <div key={p.id} className="bg-surface-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+                <div key={p.id} className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between shadow-lg hover:border-slate-700 transition">
                   <div>
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-bold text-slate-100">{p.title}</h3>
-                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-mono uppercase font-bold">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-bold text-white text-sm">{p.title}</h3>
+                      <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-mono uppercase font-bold">
                         {p.language}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mb-3">{p.description}</p>
-                    <div className="text-[11px] font-mono text-slate-500 mb-2">Filename: {p.filename}</div>
+                    <p className="text-xs text-slate-400 mb-4 line-clamp-2">{p.description}</p>
+                    <div className="text-[11px] font-mono text-slate-400 mb-3">Filename: <span className="text-slate-200">{p.filename}</span></div>
 
-                    <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 max-h-36 overflow-y-auto mb-3">
+                    <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 max-h-36 overflow-y-auto mb-4">
                       <pre>{p.starterCode}</pre>
                     </div>
 
@@ -926,15 +948,16 @@ export default function AdminDashboard({ user, onLogout }) {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-800 flex justify-end">
+                  <div className="mt-6 pt-4 border-t border-slate-800 flex justify-end">
+                    {/* Secondary action button */}
                     <button
                       onClick={() => {
                         setSelectedProblemId(p.id);
                         setActiveTab('students');
                       }}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-700 transition active:scale-[0.99]"
                     >
-                      <Send className="w-3 h-3 text-emerald-400" />
+                      <Send className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Select for LAN Push</span>
                     </button>
                   </div>
@@ -946,51 +969,51 @@ export default function AdminDashboard({ user, onLogout }) {
 
         {/* Tab 3: Submissions View */}
         {activeTab === 'submissions' && (
-          <div className="space-y-4">
-            <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
+          <div className="space-y-6">
+            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
               Contest Submissions & Internal Diagnostics ({submissions.length})
             </h2>
 
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-x-auto">
+            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
               <table className="w-full text-left text-xs min-w-[700px]">
-                <thead className="bg-surface-950 text-slate-400 uppercase font-semibold border-b border-slate-800">
+                <thead className="bg-surface-950 text-slate-400 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-800">
                   <tr>
-                    <th className="py-3 px-4">Time</th>
-                    <th className="py-3 px-4">Student</th>
-                    <th className="py-3 px-4">Problem</th>
-                    <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4">Runtime</th>
-                    <th className="py-3 px-4 text-right">Internal Raw Diagnostics</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Time</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Student</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Problem</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Status</th>
+                    <th className="py-3.5 px-4 bg-surface-950">Runtime</th>
+                    <th className="py-3.5 px-4 bg-surface-950 text-right">Internal Raw Diagnostics</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60 font-sans">
                   {submissions.map((sub) => (
                     <tr key={sub.id} className="hover:bg-slate-800/30 transition">
-                      <td className="py-3 px-4 font-mono text-slate-400 text-[11px]">
+                      <td className="py-4 px-4 font-mono text-slate-400 text-[11px]">
                         {new Date(sub.createdAt).toLocaleTimeString()}
                       </td>
-                      <td className="py-3 px-4 font-semibold text-slate-200">
+                      <td className="py-4 px-4 font-semibold text-slate-200">
                         {sub.studentName} <span className="text-slate-500 font-mono text-[11px]">({sub.studentUsername})</span>
                       </td>
-                      <td className="py-3 px-4 text-slate-300">{sub.problemTitle}</td>
-                      <td className="py-3 px-4">
+                      <td className="py-4 px-4 text-slate-300">{sub.problemTitle}</td>
+                      <td className="py-4 px-4">
                         {sub.pass ? (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[10px]">
+                          <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[10px]">
                             PASS
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-[10px]">
+                          <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-[10px]">
                             FAIL ({sub.status})
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 font-mono text-slate-400 text-[11px]">
+                      <td className="py-4 px-4 font-mono text-slate-400 text-[11px]">
                         {sub.executionTimeMs}ms
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-4 px-4 text-right">
                         <button
                           onClick={() => setSelectedSubmission(sub)}
-                          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 transition"
+                          className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 hover:border-slate-700 transition"
                         >
                           View Logs & Code
                         </button>
@@ -999,7 +1022,7 @@ export default function AdminDashboard({ user, onLogout }) {
                   ))}
                   {submissions.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-slate-500 text-xs">
+                      <td colSpan={6} className="py-12 text-center text-slate-500 text-xs">
                         No submissions recorded yet.
                       </td>
                     </tr>
@@ -1024,11 +1047,11 @@ export default function AdminDashboard({ user, onLogout }) {
                   <h3 className="text-base font-bold text-white flex items-center gap-2">
                     {selectedStudentDetails.student.name}
                     {selectedStudentDetails.student.isOnline ? (
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
                         🟢 Online on LAN
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 border border-slate-700 text-[10px] font-bold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-500 border border-slate-700 text-[10px] font-bold">
                         ⚪ Offline
                       </span>
                     )}
@@ -1041,7 +1064,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
               <button
                 onClick={() => setSelectedStudentDetails(null)}
-                className="text-slate-400 hover:text-white text-lg font-bold p-1"
+                className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
               >
                 ✕
               </button>
@@ -1083,7 +1106,7 @@ export default function AdminDashboard({ user, onLogout }) {
               {/* Student Current Draft Code */}
               {selectedStudentDetails.assignment && selectedStudentDetails.assignment.currentCode && (
                 <div>
-                  <div className="flex justify-between items-center mb-1">
+                  <div className="flex justify-between items-center mb-2">
                     <span className="text-slate-400 font-semibold uppercase text-[10px]">
                       Student Current Code Draft
                     </span>
@@ -1093,13 +1116,13 @@ export default function AdminDashboard({ user, onLogout }) {
                         setCopiedCode(true);
                         setTimeout(() => setCopiedCode(false), 2000);
                       }}
-                      className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[10px] flex items-center gap-1 hover:bg-slate-700"
+                      className="px-2.5 py-1 bg-surface-950 hover:bg-slate-800 text-slate-300 rounded-lg text-xs flex items-center gap-1.5 border border-slate-800 transition"
                     >
-                      {copiedCode ? <CheckCheck className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                      {copiedCode ? <CheckCheck className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedCode ? 'Copied' : 'Copy Code'}</span>
                     </button>
                   </div>
-                  <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
+                  <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
                     <pre>{selectedStudentDetails.assignment.currentCode}</pre>
                   </div>
                 </div>
@@ -1146,22 +1169,22 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
+            <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center">
               <button
                 onClick={() => {
                   const studentId = selectedStudentDetails.student.id;
                   setSelectedStudentDetails(null);
                   handlePushProblem(studentId);
                 }}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow"
+                className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.99]"
               >
-                <Send className="w-3.5 h-3.5" />
+                <Send className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>Push Selected Problem to This Student</span>
               </button>
 
               <button
                 onClick={() => setSelectedStudentDetails(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium"
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium border border-slate-700 transition"
               >
                 Close
               </button>
@@ -1174,52 +1197,52 @@ export default function AdminDashboard({ user, onLogout }) {
       {showAddStudentModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
-            <h3 className="text-base font-bold text-slate-100 mb-4">Create New Student Account</h3>
+            <h3 className="text-base font-bold text-white mb-4">Create New Student Account</h3>
             <form onSubmit={handleCreateStudent} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Student Full Name / Team</label>
+                <label className="block text-slate-400 font-semibold mb-1.5">Student Full Name / Team</label>
                 <input
                   type="text"
                   required
                   value={newStudentData.name}
                   onChange={(e) => setNewStudentData({ ...newStudentData, name: e.target.value })}
                   placeholder="e.g. Eve Adams (Team E)"
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Username</label>
+                <label className="block text-slate-400 font-semibold mb-1.5">Username</label>
                 <input
                   type="text"
                   required
                   value={newStudentData.username}
                   onChange={(e) => setNewStudentData({ ...newStudentData, username: e.target.value })}
                   placeholder="e.g. student5"
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Password</label>
+                <label className="block text-slate-400 font-semibold mb-1.5">Password</label>
                 <input
                   type="text"
                   required
                   value={newStudentData.password}
                   onChange={(e) => setNewStudentData({ ...newStudentData, password: e.target.value })}
                   placeholder="e.g. pass5"
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                 />
               </div>
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowAddStudentModal(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold"
+                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-bold transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
                 >
                   Create Account
                 </button>
@@ -1233,7 +1256,7 @@ export default function AdminDashboard({ user, onLogout }) {
       {showBulkStudentModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl">
-            <h3 className="text-base font-bold text-slate-100 mb-1 flex items-center gap-2">
+            <h3 className="text-base font-bold text-white mb-1 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-emerald-400" />
               <span>Bulk Student Account Creation</span>
             </h3>
@@ -1244,9 +1267,9 @@ export default function AdminDashboard({ user, onLogout }) {
               <button
                 type="button"
                 onClick={() => setBulkAddMode('generate')}
-                className={`flex-1 py-2 font-bold transition flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2.5 font-bold transition flex items-center justify-center gap-2 ${
                   bulkAddMode === 'generate'
-                    ? 'text-emerald-400 border-b-2 border-emerald-500'
+                    ? 'text-emerald-400 border-b-2 border-emerald-400'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -1255,9 +1278,9 @@ export default function AdminDashboard({ user, onLogout }) {
               <button
                 type="button"
                 onClick={() => setBulkAddMode('csv')}
-                className={`flex-1 py-2 font-bold transition flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2.5 font-bold transition flex items-center justify-center gap-2 ${
                   bulkAddMode === 'csv'
-                    ? 'text-emerald-400 border-b-2 border-emerald-500'
+                    ? 'text-emerald-400 border-b-2 border-emerald-400'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -1267,46 +1290,46 @@ export default function AdminDashboard({ user, onLogout }) {
 
             <form onSubmit={handleBulkCreateStudents} className="space-y-4 text-xs">
               {bulkAddMode === 'generate' ? (
-                <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-slate-400 font-semibold mb-1">Username Prefix</label>
+                      <label className="block text-slate-400 font-semibold mb-1.5">Username Prefix</label>
                       <input
                         type="text"
                         required
                         value={bulkGenData.prefix}
                         onChange={(e) => setBulkGenData({ ...bulkGenData, prefix: e.target.value })}
                         placeholder="e.g. student"
-                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                        className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-400 font-semibold mb-1">Password Prefix</label>
+                      <label className="block text-slate-400 font-semibold mb-1.5">Password Prefix</label>
                       <input
                         type="text"
                         required
                         value={bulkGenData.passwordPrefix}
                         onChange={(e) => setBulkGenData({ ...bulkGenData, passwordPrefix: e.target.value })}
                         placeholder="e.g. pass"
-                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                        className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-slate-400 font-semibold mb-1">Start Number</label>
+                      <label className="block text-slate-400 font-semibold mb-1.5">Start Number</label>
                       <input
                         type="number"
                         min="1"
                         required
                         value={bulkGenData.startNumber}
                         onChange={(e) => setBulkGenData({ ...bulkGenData, startNumber: e.target.value })}
-                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                        className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-400 font-semibold mb-1">How Many Accounts?</label>
+                      <label className="block text-slate-400 font-semibold mb-1.5">How Many Accounts?</label>
                       <input
                         type="number"
                         min="1"
@@ -1314,7 +1337,7 @@ export default function AdminDashboard({ user, onLogout }) {
                         required
                         value={bulkGenData.count}
                         onChange={(e) => setBulkGenData({ ...bulkGenData, count: e.target.value })}
-                        className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                        className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                       />
                     </div>
                   </div>
@@ -1334,25 +1357,25 @@ export default function AdminDashboard({ user, onLogout }) {
                     value={bulkCsvText}
                     onChange={(e) => setBulkCsvText(e.target.value)}
                     placeholder="student10, pass10, Alice (Team 10)&#10;student11, pass11, Bob (Team 11)&#10;student12, pass12, Charlie (Team 12)"
-                    className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3 text-slate-200 font-mono focus:outline-none focus:border-emerald-500 text-xs"
+                    className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3.5 text-slate-200 font-mono focus:outline-none focus:border-emerald-500 text-xs"
                   />
                 </div>
               )}
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowBulkStudentModal(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={bulkLoading}
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center gap-1.5 shadow"
+                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.99]"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>{bulkLoading ? 'Creating...' : 'Create Accounts'}</span>
                 </button>
               </div>
@@ -1365,26 +1388,26 @@ export default function AdminDashboard({ user, onLogout }) {
       {showAddProblemModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col p-6 shadow-2xl">
-            <h3 className="text-base font-bold text-slate-100 mb-4">Create New Buggy Problem</h3>
+            <h3 className="text-base font-bold text-white mb-4">Create New Buggy Problem</h3>
             <form onSubmit={handleCreateProblem} className="space-y-4 text-xs overflow-y-auto flex-1 pr-2">
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-1">
-                  <label className="block text-slate-400 font-semibold mb-1">Problem Title</label>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Problem Title</label>
                   <input
                     type="text"
                     required
                     value={newProblemData.title}
                     onChange={(e) => setNewProblemData({ ...newProblemData, title: e.target.value })}
                     placeholder="e.g. Fix Stack Underflow"
-                    className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Language</label>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Language</label>
                   <select
                     value={newProblemData.language}
                     onChange={(e) => setNewProblemData({ ...newProblemData, language: e.target.value })}
-                    className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-medium"
                   >
                     <option value="python">Python</option>
                     <option value="cpp">C++</option>
@@ -1392,7 +1415,7 @@ export default function AdminDashboard({ user, onLogout }) {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1 flex items-center gap-1">
+                  <label className="block text-slate-400 font-semibold mb-1.5 flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Contest Timer (Mins)</span>
                   </label>
@@ -1404,47 +1427,47 @@ export default function AdminDashboard({ user, onLogout }) {
                     value={newProblemData.durationMinutes}
                     onChange={(e) => setNewProblemData({ ...newProblemData, durationMinutes: e.target.value })}
                     placeholder="e.g. 15"
-                    className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Filename</label>
+                <label className="block text-slate-400 font-semibold mb-1.5">Filename</label>
                 <input
                   type="text"
                   value={newProblemData.filename}
                   onChange={(e) => setNewProblemData({ ...newProblemData, filename: e.target.value })}
                   placeholder="e.g. stack_fix.py"
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Description / Contest Prompt</label>
+                <label className="block text-slate-400 font-semibold mb-1.5">Description / Contest Prompt</label>
                 <textarea
                   rows={2}
                   value={newProblemData.description}
                   onChange={(e) => setNewProblemData({ ...newProblemData, description: e.target.value })}
                   placeholder="Explain the bug hunt objective..."
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3 text-slate-200 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Starter Buggy Code</label>
+                <label className="block text-slate-400 font-semibold mb-1.5">Starter Buggy Code</label>
                 <textarea
                   rows={6}
                   required
                   value={newProblemData.starterCode}
                   onChange={(e) => setNewProblemData({ ...newProblemData, starterCode: e.target.value })}
                   placeholder="Paste buggy code that students will fix..."
-                  className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3.5 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3 p-3 bg-surface-950 rounded-xl border border-slate-800">
-                <div className="col-span-2 font-semibold text-slate-300">Sample Test Case (Visible to Student)</div>
+              <div className="grid grid-cols-2 gap-4 p-4 bg-surface-950 rounded-xl border border-slate-800">
+                <div className="col-span-2 font-semibold text-slate-200">Sample Test Case (Visible to Student)</div>
                 <div>
                   <label className="block text-slate-500 mb-1">Sample Input</label>
                   <input
@@ -1452,7 +1475,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     value={newProblemData.input1}
                     onChange={(e) => setNewProblemData({ ...newProblemData, input1: e.target.value })}
                     placeholder="e.g. 5\n1 2 3 4 5"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
+                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
                   />
                 </div>
                 <div>
@@ -1462,13 +1485,13 @@ export default function AdminDashboard({ user, onLogout }) {
                     value={newProblemData.output1}
                     onChange={(e) => setNewProblemData({ ...newProblemData, output1: e.target.value })}
                     placeholder="e.g. 5"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
+                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 p-3 bg-surface-950 rounded-xl border border-slate-800">
-                <div className="col-span-2 font-semibold text-slate-300">Hidden Test Case (Evaluator Only)</div>
+              <div className="grid grid-cols-2 gap-4 p-4 bg-surface-950 rounded-xl border border-slate-800">
+                <div className="col-span-2 font-semibold text-slate-200">Hidden Test Case (Evaluator Only)</div>
                 <div>
                   <label className="block text-slate-500 mb-1">Hidden Input</label>
                   <input
@@ -1476,7 +1499,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     value={newProblemData.input2}
                     onChange={(e) => setNewProblemData({ ...newProblemData, input2: e.target.value })}
                     placeholder="e.g. 3\n-5 -2 -1"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
+                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
                   />
                 </div>
                 <div>
@@ -1486,22 +1509,22 @@ export default function AdminDashboard({ user, onLogout }) {
                     value={newProblemData.output2}
                     onChange={(e) => setNewProblemData({ ...newProblemData, output2: e.target.value })}
                     placeholder="e.g. -1"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg px-2.5 py-1.5 font-mono text-slate-200"
+                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowAddProblemModal(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold"
+                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-bold transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
                 >
                   Create & Save
                 </button>
@@ -1515,16 +1538,16 @@ export default function AdminDashboard({ user, onLogout }) {
       {selectedSubmission && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col p-6 shadow-2xl text-xs">
-            <div className="flex justify-between items-start border-b border-slate-800 pb-3 mb-4">
+            <div className="flex justify-between items-start border-b border-slate-800 pb-4 mb-4">
               <div>
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
                   Submission Diagnostics
                   {selectedSubmission.pass ? (
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
                       PASS
                     </span>
                   ) : (
-                    <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-semibold">
                       FAIL ({selectedSubmission.status})
                     </span>
                   )}
@@ -1535,7 +1558,7 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
               <button
                 onClick={() => setSelectedSubmission(null)}
-                className="text-slate-400 hover:text-white text-lg font-bold p-1"
+                className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
               >
                 ✕
               </button>
@@ -1543,17 +1566,17 @@ export default function AdminDashboard({ user, onLogout }) {
 
             <div className="space-y-4 overflow-y-auto flex-1 pr-2">
               <div>
-                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-1">Submitted Source Code</div>
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
+                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2">Submitted Source Code</div>
+                <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
                   <pre>{selectedSubmission.code}</pre>
                 </div>
               </div>
 
               <div>
-                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-1">
+                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2">
                   Raw Compiler & Evaluator Internal Diagnostics
                 </div>
-                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-300 text-[11px] max-h-48 overflow-y-auto whitespace-pre-wrap">
+                <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 font-mono text-slate-300 text-[11px] max-h-48 overflow-y-auto whitespace-pre-wrap">
                   {selectedSubmission.rawOutput || 'No output recorded'}
                 </div>
               </div>
@@ -1562,7 +1585,7 @@ export default function AdminDashboard({ user, onLogout }) {
             <div className="flex justify-end pt-4 border-t border-slate-800 mt-4">
               <button
                 onClick={() => setSelectedSubmission(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
               >
                 Close
               </button>
