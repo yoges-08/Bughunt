@@ -325,12 +325,14 @@ export default function AdminDashboard({ user, onLogout }) {
   };
 
   return (
-    <div className="min-h-screen bg-surface-950 text-slate-100 flex flex-col font-sans">
-      {/* Top LAN Server Banner */}
-      <HostBanner isHost={true} />
+    <div className="h-screen w-full bg-surface-950 text-slate-100 flex flex-col font-sans overflow-hidden">
+      {/* Top LAN Server Banner - Fixed at top */}
+      <div className="shrink-0">
+        <HostBanner isHost={true} />
+      </div>
 
-      {/* Main Navigation Header */}
-      <header className="bg-surface-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+      {/* Main Navigation Header - Fixed at top */}
+      <header className="shrink-0 bg-surface-900 border-b border-slate-800 px-6 py-3.5 flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm shadow-inner">
             BH
@@ -368,499 +370,662 @@ export default function AdminDashboard({ user, onLogout }) {
         </div>
       </header>
 
-      {/* Overview Metric Cards (Consistent 24px grid & equal height cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Students</span>
-            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-              <Users className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalStudents ?? students.length}</div>
-          <div className="text-xs text-slate-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
-            <span className="text-emerald-400 font-medium">{students.filter(s => s.isOnline).length} online</span>
-            <span className="text-slate-500">on LAN</span>
-          </div>
-        </div>
-
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Buggy Problems</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <FileCode className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalProblems ?? problems.length}</div>
-          <div className="text-xs text-slate-400">C, C++, and Python bank</div>
-        </div>
-
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Submissions</span>
-            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              <Terminal className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalSubmissions ?? submissions.length}</div>
-          <div className="text-xs text-slate-400">Recorded & re-verified</div>
-        </div>
-
-        <div className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-36 shadow-lg hover:border-slate-700 transition">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Passed Solutions</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-3xl font-bold tracking-tight text-emerald-400 mb-1">{overview?.passedSubmissions ?? submissions.filter(s => s.pass).length}</div>
-          <div className="text-xs text-slate-400">
-            {overview?.totalSubmissions ? Math.round(((overview?.passedSubmissions || 0) / overview.totalSubmissions) * 100) : 0}% success rate
-          </div>
-        </div>
-      </div>
-
-      {/* LAN Problem Push Dispatch Panel (Consistent 24px spacing & high-priority primary button) */}
-      <div className="mx-6 mb-6 p-6 bg-surface-900 border border-slate-800 rounded-2xl shadow-xl">
-        <div className="flex items-center gap-2.5 mb-4">
-          <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-200">
-            LAN Problem Dispatch (Direct File Push)
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
-          <div className="lg:col-span-5">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Select Problem</label>
-            <select
-              value={selectedProblemId}
-              onChange={(e) => setSelectedProblemId(e.target.value)}
-              className="w-full h-11 bg-surface-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-medium shadow-inner"
-            >
-              {problems.map((p) => (
-                <option key={p.id} value={p.id}>
-                  [{p.language.toUpperCase()}] {p.title} ({p.filename}) • ⏱️ {p.durationMinutes || 15}m
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="lg:col-span-4">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Select Target</label>
-            <select
-              value={selectedStudentId}
-              onChange={(e) => setSelectedStudentId(e.target.value)}
-              className="w-full h-11 bg-surface-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono font-medium shadow-inner"
-            >
-              <option value="ALL">📢 All Students ({students.length} Total)</option>
-              {students.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.isOnline ? '🟢' : '⚪'} {s.name} ({s.username}) {s.assignment ? `[${s.assignment.title.slice(0, 15)}...]` : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="lg:col-span-3">
-            {/* Primary Action Button: Clear visual priority & large touch target */}
-            <button
-              onClick={() => handlePushProblem()}
-              disabled={pushLoading || !selectedProblemId}
-              className="w-full h-11 px-6 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.99]"
-            >
-              <Send className="w-4 h-4 text-slate-950 stroke-[2.5]" />
-              <span>{pushLoading ? 'Pushing...' : 'Push File to Student(s)'}</span>
-            </button>
-          </div>
-        </div>
-
-        {pushSuccessMsg && (
-          <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-400" />
-            <span className="font-medium">{pushSuccessMsg}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Main Tabs Navigation (Clear active-state indicator & consistent padding) */}
-      <div className="px-6 mb-6 flex gap-2 border-b border-slate-800">
-        <button
-          onClick={() => setActiveTab('students')}
-          className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
-            activeTab === 'students'
-              ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
-              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          <span>Live Students Monitor ({students.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('problems')}
-          className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
-            activeTab === 'problems'
-              ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
-              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
-          }`}
-        >
-          <FileCode className="w-4 h-4" />
-          <span>Problem Bank ({problems.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('submissions')}
-          className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
-            activeTab === 'submissions'
-              ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
-              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
-          }`}
-        >
-          <Terminal className="w-4 h-4" />
-          <span>Submissions & Compiler Diagnostics ({submissions.length})</span>
-        </button>
-      </div>
-
-      {/* Tab Contents */}
-      <div className="flex-1 px-6 pb-6 overflow-y-auto">
-        {/* Tab 1: Students Monitor */}
-        {activeTab === 'students' && (
-          <div className="space-y-6">
-            {/* Header with Search, Filter & Actions */}
-            <div className="flex flex-wrap justify-between items-center gap-4">
-              <div>
-                <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <span>Live Connected Students</span>
-                  <span className="px-2.5 py-0.5 bg-slate-800 text-slate-400 text-xs rounded-full font-medium">
-                    Showing {paginatedStudents.length} on page ({totalFiltered} matching of {students.length} total)
-                  </span>
-                </h2>
-                <p className="text-xs text-slate-400 mt-1">Real-time status, problem tracking, and code inspector</p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                {/* Secondary action button */}
-                <button
-                  onClick={() => setShowBulkStudentModal(true)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-2 transition active:scale-[0.99] shadow"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Bulk Generate / CSV</span>
-                </button>
-
-                {/* Primary action button */}
-                <button
-                  onClick={() => setShowAddStudentModal(true)}
-                  className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
-                >
-                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Add Single Student</span>
-                </button>
+      {/* Main Scrollable Viewport */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        {/* Overview Metric Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6 pb-2">
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-32 shadow-lg hover:border-slate-700 transition">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Students</span>
+              <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                <Users className="w-4 h-4" />
               </div>
             </div>
+            <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalStudents ?? students.length}</div>
+            <div className="text-xs text-slate-400 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+              <span className="text-emerald-400 font-medium">{students.filter(s => s.isOnline).length} online</span>
+              <span className="text-slate-500">on LAN</span>
+            </div>
+          </div>
 
-            {/* Search & Filter Toolbar (Visually separated search box & uniform status pills) */}
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-              {/* Search Bar */}
-              <div className="relative flex-1 max-w-md">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={studentSearch}
-                  onChange={(e) => setStudentSearch(e.target.value)}
-                  placeholder="Search by student name, username, or problem..."
-                  className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl pl-10 pr-8 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 shadow-inner"
-                />
-                {studentSearch && (
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-32 shadow-lg hover:border-slate-700 transition">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Buggy Problems</span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <FileCode className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalProblems ?? problems.length}</div>
+            <div className="text-xs text-slate-400">C, C++, and Python bank</div>
+          </div>
+
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-32 shadow-lg hover:border-slate-700 transition">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Submissions</span>
+              <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <Terminal className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold tracking-tight text-white mb-1">{overview?.totalSubmissions ?? submissions.length}</div>
+            <div className="text-xs text-slate-400">Recorded & re-verified</div>
+          </div>
+
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-32 shadow-lg hover:border-slate-700 transition">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Passed Solutions</span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold tracking-tight text-emerald-400 mb-1">{overview?.passedSubmissions ?? submissions.filter(s => s.pass).length}</div>
+            <div className="text-xs text-slate-400">
+              {overview?.totalSubmissions ? Math.round(((overview?.passedSubmissions || 0) / overview.totalSubmissions) * 100) : 0}% success rate
+            </div>
+          </div>
+        </div>
+
+        {/* LAN Problem Push Dispatch Panel */}
+        <div className="mx-6 my-4 p-5 bg-surface-900 border border-slate-800 rounded-2xl shadow-xl">
+          <div className="flex items-center gap-2.5 mb-3">
+            <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+              LAN Problem Dispatch (Direct File Push)
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+            <div className="lg:col-span-5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Select Problem</label>
+              <select
+                value={selectedProblemId}
+                onChange={(e) => setSelectedProblemId(e.target.value)}
+                className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-medium shadow-inner"
+              >
+                {problems.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    [{p.language.toUpperCase()}] {p.title} ({p.filename}) • ⏱️ {p.durationMinutes || 15}m
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="lg:col-span-4">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Select Target</label>
+              <select
+                value={selectedStudentId}
+                onChange={(e) => setSelectedStudentId(e.target.value)}
+                className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono font-medium shadow-inner"
+              >
+                <option value="ALL">📢 All Students ({students.length} Total)</option>
+                {students.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.isOnline ? '🟢' : '⚪'} {s.name} ({s.username}) {s.assignment ? `[${s.assignment.title.slice(0, 15)}...]` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="lg:col-span-3">
+              <button
+                onClick={() => handlePushProblem()}
+                disabled={pushLoading || !selectedProblemId}
+                className="w-full h-10 px-5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.99]"
+              >
+                <Send className="w-4 h-4 text-slate-950 stroke-[2.5]" />
+                <span>{pushLoading ? 'Pushing...' : 'Push File to Student(s)'}</span>
+              </button>
+            </div>
+          </div>
+
+          {pushSuccessMsg && (
+            <div className="mt-3 p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
+              <Check className="w-4 h-4 text-emerald-400" />
+              <span className="font-medium">{pushSuccessMsg}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Main Tabs Navigation (Sticky at top of scroll viewport) */}
+        <div className="px-6 mb-4 flex gap-2 border-b border-slate-800 sticky top-0 bg-surface-950/95 backdrop-blur z-20">
+          <button
+            onClick={() => setActiveTab('students')}
+            className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
+              activeTab === 'students'
+                ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Live Students Monitor ({students.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('problems')}
+            className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
+              activeTab === 'problems'
+                ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
+            }`}
+          >
+            <FileCode className="w-4 h-4" />
+            <span>Problem Bank ({problems.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('submissions')}
+            className={`px-4 py-3 text-xs font-semibold transition-all flex items-center gap-2 border-b-2 -mb-[1px] rounded-t-xl ${
+              activeTab === 'submissions'
+                ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10 font-bold'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-surface-900/50'
+            }`}
+          >
+            <Terminal className="w-4 h-4" />
+            <span>Submissions & Compiler Diagnostics ({submissions.length})</span>
+          </button>
+        </div>
+
+        {/* Tab Contents */}
+        <div className="px-6 pb-8">
+          {/* Tab 1: Students Monitor */}
+          {activeTab === 'students' && (
+            <div className="space-y-4">
+              {/* Header with Search, Filter & Actions */}
+              <div className="flex flex-wrap justify-between items-center gap-4">
+                <div>
+                  <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <span>Live Connected Students</span>
+                    <span className="px-2.5 py-0.5 bg-slate-800 text-slate-400 text-xs rounded-full font-medium">
+                      Showing {paginatedStudents.length} on page ({totalFiltered} matching of {students.length} total)
+                    </span>
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-1">Real-time status, problem tracking, and code inspector</p>
+                </div>
+
+                <div className="flex items-center gap-3">
                   <button
-                    onClick={() => setStudentSearch('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs font-bold"
+                    onClick={() => setShowBulkStudentModal(true)}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-2 transition active:scale-[0.99] shadow"
                   >
-                    ×
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Bulk Generate / CSV</span>
                   </button>
-                )}
-              </div>
 
-              {/* Visual Divider */}
-              <div className="hidden lg:block w-px h-8 bg-slate-800 self-center" />
-
-              {/* Uniform Status Filter Pills */}
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  onClick={() => setStudentFilter('all')}
-                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                    studentFilter === 'all'
-                      ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  All ({students.length})
-                </button>
-
-                <button
-                  onClick={() => setStudentFilter('online')}
-                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                    studentFilter === 'online'
-                      ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                  <span>Online ({students.filter(s => s.isOnline).length})</span>
-                </button>
-
-                <button
-                  onClick={() => setStudentFilter('offline')}
-                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                    studentFilter === 'offline'
-                      ? 'bg-slate-800 text-slate-200 border-slate-700 shadow-sm'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
-                  <span>Offline ({students.filter(s => !s.isOnline).length})</span>
-                </button>
-
-                <button
-                  onClick={() => setStudentFilter('solved')}
-                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                    studentFilter === 'solved'
-                      ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Solved ({students.filter(s => s.hasPassed).length})</span>
-                </button>
-
-                <button
-                  onClick={() => setStudentFilter('in_progress')}
-                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                    studentFilter === 'in_progress'
-                      ? 'bg-slate-800 text-amber-300 border-amber-500/40 shadow-sm'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <Clock className="w-3.5 h-3.5 text-amber-400" />
-                  <span>In Progress ({students.filter(s => s.assignment && !s.hasPassed && s.assignment.status !== 'expired').length})</span>
-                </button>
-
-                <button
-                  onClick={() => setStudentFilter('expired')}
-                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                    studentFilter === 'expired'
-                      ? 'bg-slate-800 text-rose-300 border-rose-500/40 shadow-sm'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <Clock className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Timed Out ({students.filter(s => s.assignment?.status === 'expired').length})</span>
-                </button>
-
-                <button
-                  onClick={() => setStudentFilter('unassigned')}
-                  className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                    studentFilter === 'unassigned'
-                      ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
-                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <span>Unassigned ({students.filter(s => !s.assignment).length})</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Scroll Navigation & Pagination Control Bar (Top) */}
-            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-4 text-xs">
-              <div className="flex items-center gap-4">
-                <span className="text-slate-400 font-medium">
-                  Showing <strong className="text-slate-200 font-semibold">{startIndex + 1} - {Math.min(startIndex + paginatedStudents.length, totalFiltered)}</strong> of <strong className="text-slate-200 font-semibold">{totalFiltered}</strong> students
-                </span>
-
-                <div className="flex items-center gap-2 text-slate-400">
-                  <span>Per page:</span>
-                  <select
-                    value={rowsPerPage}
-                    onChange={(e) => setRowsPerPage(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                    className="bg-surface-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  <button
+                    onClick={() => setShowAddStudentModal(true)}
+                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
                   >
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value="all">All ({totalFiltered})</option>
-                  </select>
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Add Single Student</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Interactive Scroll & Page Buttons */}
-              <div className="flex items-center gap-2">
-                {/* Scroll Action Buttons */}
-                <div className="flex items-center bg-surface-950 border border-slate-800 rounded-xl p-0.5 gap-0.5 shadow">
+              {/* Search & Filter Toolbar */}
+              <div className="bg-surface-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+                {/* Search Bar */}
+                <div className="relative flex-1 max-w-md">
+                  <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={studentSearch}
+                    onChange={(e) => setStudentSearch(e.target.value)}
+                    placeholder="Search by student name, username, or problem..."
+                    className="w-full h-9 bg-surface-950 border border-slate-800 rounded-xl pl-10 pr-8 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 shadow-inner"
+                  />
+                  {studentSearch && (
+                    <button
+                      onClick={() => setStudentSearch('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs font-bold"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+
+                {/* Visual Divider */}
+                <div className="hidden lg:block w-px h-7 bg-slate-800 self-center" />
+
+                {/* Status Filter Pills */}
+                <div className="flex flex-wrap items-center gap-1.5">
                   <button
-                    onClick={handleScrollTop}
-                    title="Jump to Top"
-                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition"
+                    onClick={() => setStudentFilter('all')}
+                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                      studentFilter === 'all'
+                        ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
+                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                    }`}
                   >
-                    <ChevronsUp className="w-3.5 h-3.5" />
+                    All ({students.length})
                   </button>
+
+                  <button
+                    onClick={() => setStudentFilter('online')}
+                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                      studentFilter === 'online'
+                        ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
+                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                    }`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                    <span>Online ({students.filter(s => s.isOnline).length})</span>
+                  </button>
+
+                  <button
+                    onClick={() => setStudentFilter('offline')}
+                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                      studentFilter === 'offline'
+                        ? 'bg-slate-800 text-slate-200 border-slate-700 shadow-sm'
+                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                    }`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
+                    <span>Offline ({students.filter(s => !s.isOnline).length})</span>
+                  </button>
+
+                  <button
+                    onClick={() => setStudentFilter('solved')}
+                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                      studentFilter === 'solved'
+                        ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
+                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                    }`}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Solved ({students.filter(s => s.hasPassed).length})</span>
+                  </button>
+
+                  <button
+                    onClick={() => setStudentFilter('in_progress')}
+                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                      studentFilter === 'in_progress'
+                        ? 'bg-slate-800 text-amber-300 border-amber-500/40 shadow-sm'
+                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>In Progress ({students.filter(s => s.assignment && !s.hasPassed && s.assignment.status !== 'expired').length})</span>
+                  </button>
+
+                  <button
+                    onClick={() => setStudentFilter('expired')}
+                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                      studentFilter === 'expired'
+                        ? 'bg-slate-800 text-rose-300 border-rose-500/40 shadow-sm'
+                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Timed Out ({students.filter(s => s.assignment?.status === 'expired').length})</span>
+                  </button>
+
+                  <button
+                    onClick={() => setStudentFilter('unassigned')}
+                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                      studentFilter === 'unassigned'
+                        ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
+                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                    }`}
+                  >
+                    <span>Unassigned ({students.filter(s => !s.assignment).length})</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Scroll Navigation & Pagination Control Bar (Top) */}
+              <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-4">
+                  <span className="text-slate-400 font-medium">
+                    Showing <strong className="text-slate-200 font-semibold">{startIndex + 1} - {Math.min(startIndex + paginatedStudents.length, totalFiltered)}</strong> of <strong className="text-slate-200 font-semibold">{totalFiltered}</strong> students
+                  </span>
+
+                  <div className="flex items-center gap-2 text-slate-400">
+                    <span>Per page:</span>
+                    <select
+                      value={rowsPerPage}
+                      onChange={(e) => setRowsPerPage(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+                      className="bg-surface-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    >
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                      <option value="all">All ({totalFiltered})</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Interactive Scroll & Page Buttons */}
+                <div className="flex items-center gap-2">
+                  {/* Scroll Action Buttons */}
+                  <div className="flex items-center bg-surface-950 border border-slate-800 rounded-xl p-0.5 gap-0.5 shadow">
+                    <button
+                      onClick={handleScrollTop}
+                      title="Jump to Top"
+                      className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition"
+                    >
+                      <ChevronsUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={handleScrollUp}
+                      title="Scroll Up"
+                      className="px-2.5 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1.5 transition font-medium"
+                    >
+                      <ChevronUp className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Scroll Up</span>
+                    </button>
+                    <div className="w-px h-4 bg-slate-800" />
+                    <button
+                      onClick={handleScrollDown}
+                      title="Scroll Down"
+                      className="px-2.5 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1.5 transition font-medium"
+                    >
+                      <ChevronDown className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Scroll Down</span>
+                    </button>
+                    <button
+                      onClick={handleScrollBottom}
+                      title="Jump to Bottom"
+                      className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition"
+                    >
+                      <ChevronsDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Page Prev/Next Buttons */}
+                  {rowsPerPage !== 'all' && totalPages > 1 && (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={effectivePage <= 1}
+                        className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span>Prev</span>
+                      </button>
+                      <span className="px-2 text-slate-400 font-mono">
+                        Page {effectivePage} of {totalPages}
+                      </span>
+                      <button
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={effectivePage >= totalPages}
+                        className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
+                      >
+                        <span>Next</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Students Table with Dedicated Scroll Container & Defined Min/Max Height */}
+              <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                <div 
+                  ref={studentTableContainerRef} 
+                  className="min-h-[360px] max-h-[500px] overflow-y-auto overflow-x-auto scroll-smooth block w-full"
+                >
+                  <table className="w-full text-left text-xs min-w-[880px] border-collapse">
+                    <thead className="bg-surface-950 text-slate-400 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-800 sticky top-0 z-10 shadow">
+                      <tr>
+                        <th className="py-3.5 px-4 bg-surface-950">Status</th>
+                        <th className="py-3.5 px-4 bg-surface-950">Student / Team Name</th>
+                        <th className="py-3.5 px-4 bg-surface-950">Username</th>
+                        <th className="py-3.5 px-4 bg-surface-950">Currently Assigned Problem</th>
+                        <th className="py-3.5 px-4 bg-surface-950">Progress</th>
+                        <th className="py-3.5 px-4 bg-surface-950">Submissions</th>
+                        <th className="py-3.5 px-4 bg-surface-950 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60 font-sans">
+                      {paginatedStudents.map((s) => (
+                        <tr key={s.id} className="hover:bg-slate-800/30 transition">
+                          {/* Status Column: aligned dot + label */}
+                          <td className="py-4 px-4">
+                            <div className="flex items-center gap-2">
+                              <span className={`w-2 h-2 rounded-full ${s.isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                              <span className={`font-medium ${s.isOnline ? 'text-emerald-400' : 'text-slate-500'}`}>
+                                {s.isOnline ? 'Online' : 'Offline'}
+                              </span>
+                            </div>
+                          </td>
+
+                          <td className="py-4 px-4 font-semibold text-slate-100">{s.name}</td>
+                          <td className="py-4 px-4 font-mono text-slate-400">{s.username}</td>
+
+                          {/* Assigned Problem: consistent badge + title spacing */}
+                          <td className="py-4 px-4">
+                            {s.assignment ? (
+                              <div className="flex items-center gap-2.5">
+                                <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] uppercase font-mono text-emerald-400 border border-slate-700 font-semibold tracking-wider">
+                                  {s.assignment.language}
+                                </span>
+                                <span className="text-slate-200 font-medium truncate max-w-[260px]">{s.assignment.title}</span>
+                              </div>
+                            ) : (
+                              <span className="text-slate-500 italic">No problem assigned</span>
+                            )}
+                          </td>
+
+                          {/* Progress badge */}
+                          <td className="py-4 px-4">
+                            {s.hasPassed ? (
+                              <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Solved
+                              </span>
+                            ) : s.assignment?.status === 'expired' ? (
+                              <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit" title="Contest timer expired with no submission">
+                                <Clock className="w-3.5 h-3.5" /> Timed Out
+                              </span>
+                            ) : s.assignment ? (
+                              <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
+                                <Clock className="w-3.5 h-3.5" /> In Progress
+                              </span>
+                            ) : (
+                              <span className="text-slate-600">-</span>
+                            )}
+                          </td>
+
+                          {/* Submissions count */}
+                          <td className="py-4 px-4 text-slate-300 font-mono">
+                            <span className="px-2.5 py-1 bg-surface-950 rounded-lg border border-slate-800">
+                              {s.submissionsCount} attempt{s.submissionsCount !== 1 ? 's' : ''}
+                            </span>
+                          </td>
+
+                          {/* Actions: Equal button dimensions & alignment */}
+                          <td className="py-4 px-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              {/* Details button: equal w-20 h-8 */}
+                              <button
+                                onClick={() => handleInspectStudent(s.id)}
+                                className="w-20 h-8 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 hover:border-slate-700 transition flex items-center justify-center gap-1.5"
+                                title="Inspect Student Code & Status"
+                              >
+                                <Eye className="w-3.5 h-3.5 text-blue-400" />
+                                <span>Details</span>
+                              </button>
+
+                              {/* Push action button: equal w-20 h-8 */}
+                              <button
+                                onClick={() => {
+                                  setSelectedStudentId(s.id);
+                                  handlePushProblem(s.id);
+                                }}
+                                className="w-20 h-8 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 rounded-lg text-xs font-semibold border border-emerald-500/20 hover:border-emerald-500 transition flex items-center justify-center gap-1.5"
+                                title="Push Selected Problem to this student"
+                              >
+                                <Send className="w-3.5 h-3.5" />
+                                <span>Push</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      {paginatedStudents.length === 0 && (
+                        <tr>
+                          <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
+                            No students match your search or filter criteria.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Bottom Quick Scroll & Pagination Bar */}
+              <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="text-slate-400">
+                  {totalFiltered} students found • Use scroll buttons or page controls to navigate
+                </div>
+
+                <div className="flex items-center gap-2">
                   <button
                     onClick={handleScrollUp}
-                    title="Scroll Up"
-                    className="px-2.5 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1.5 transition font-medium"
+                    className="px-3.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
                   >
                     <ChevronUp className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Scroll Up</span>
                   </button>
-                  <div className="w-px h-4 bg-slate-800" />
                   <button
                     onClick={handleScrollDown}
-                    title="Scroll Down"
-                    className="px-2.5 py-1 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg flex items-center gap-1.5 transition font-medium"
+                    className="px-3.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
                   >
                     <ChevronDown className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Scroll Down</span>
                   </button>
                   <button
-                    onClick={handleScrollBottom}
-                    title="Jump to Bottom"
-                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg transition"
+                    onClick={handleScrollTop}
+                    className="px-2.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg border border-slate-800 transition font-medium"
+                    title="Scroll to Top"
                   >
-                    <ChevronsDown className="w-3.5 h-3.5" />
+                    <ChevronsUp className="w-4 h-4" />
                   </button>
                 </div>
-
-                {/* Page Prev/Next Buttons */}
-                {rowsPerPage !== 'all' && totalPages > 1 && (
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      disabled={effectivePage <= 1}
-                      className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Prev</span>
-                    </button>
-                    <span className="px-2 text-slate-400 font-mono">
-                      Page {effectivePage} of {totalPages}
-                    </span>
-                    <button
-                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      disabled={effectivePage >= totalPages}
-                      className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-lg border border-slate-800 flex items-center gap-1 transition font-medium"
-                    >
-                      <span>Next</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
+          )}
 
-            {/* Students Table with Dedicated Responsive Scroll Container & Sticky Header */}
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-              <div ref={studentTableContainerRef} className="max-h-[60vh] overflow-y-auto overflow-x-auto scroll-smooth">
-                <table className="w-full text-left text-xs min-w-[880px]">
+          {/* Tab 2: Problem Bank */}
+          {activeTab === 'problems' && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                  Buggy Problem Repository ({problems.length})
+                </h2>
+                <button
+                  onClick={() => setShowAddProblemModal(true)}
+                  className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
+                >
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
+                  <span>Create New Buggy Problem</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {problems.map((p) => (
+                  <div key={p.id} className="bg-surface-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-lg hover:border-slate-700 transition">
+                    <div>
+                      <div className="flex justify-between items-start mb-2.5">
+                        <h3 className="font-bold text-white text-sm">{p.title}</h3>
+                        <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-mono uppercase font-bold">
+                          {p.language}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 mb-3 line-clamp-2">{p.description}</p>
+                      <div className="text-[11px] font-mono text-slate-400 mb-2.5">Filename: <span className="text-slate-200">{p.filename}</span></div>
+
+                      <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 max-h-36 overflow-y-auto mb-3">
+                        <pre>{p.starterCode}</pre>
+                      </div>
+
+                      <div className="text-[11px] text-slate-400 flex items-center gap-2">
+                        <span>Test cases: {p.testCases?.length || 0}</span>
+                        <span>•</span>
+                        <span className="text-emerald-400 font-medium flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{p.durationMinutes || 15} mins timer</span>
+                        </span>
+                        <span>•</span>
+                        <span>Sandbox: {p.timeLimitMs}ms</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-800 flex justify-end">
+                      <button
+                        onClick={() => {
+                          setSelectedProblemId(p.id);
+                          setActiveTab('students');
+                        }}
+                        className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-700 transition active:scale-[0.99]"
+                      >
+                        <Send className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Select for LAN Push</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Tab 3: Submissions View */}
+          {activeTab === 'submissions' && (
+            <div className="space-y-4">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                Contest Submissions & Internal Diagnostics ({submissions.length})
+              </h2>
+
+              <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                <table className="w-full text-left text-xs min-w-[700px] border-collapse">
                   <thead className="bg-surface-950 text-slate-400 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-800 sticky top-0 z-10 shadow">
                     <tr>
+                      <th className="py-3.5 px-4 bg-surface-950">Time</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Student</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Problem</th>
                       <th className="py-3.5 px-4 bg-surface-950">Status</th>
-                      <th className="py-3.5 px-4 bg-surface-950">Student / Team Name</th>
-                      <th className="py-3.5 px-4 bg-surface-950">Username</th>
-                      <th className="py-3.5 px-4 bg-surface-950">Currently Assigned Problem</th>
-                      <th className="py-3.5 px-4 bg-surface-950">Progress</th>
-                      <th className="py-3.5 px-4 bg-surface-950">Submissions</th>
-                      <th className="py-3.5 px-4 bg-surface-950 text-right">Actions</th>
+                      <th className="py-3.5 px-4 bg-surface-950">Runtime</th>
+                      <th className="py-3.5 px-4 bg-surface-950 text-right">Internal Raw Diagnostics</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/60 font-sans">
-                    {paginatedStudents.map((s) => (
-                      <tr key={s.id} className="hover:bg-slate-800/30 transition">
-                        {/* Status Column: aligned dot + label */}
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-2">
-                            <span className={`w-2 h-2 rounded-full ${s.isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
-                            <span className={`font-medium ${s.isOnline ? 'text-emerald-400' : 'text-slate-500'}`}>
-                              {s.isOnline ? 'Online' : 'Offline'}
-                            </span>
-                          </div>
+                    {submissions.map((sub) => (
+                      <tr key={sub.id} className="hover:bg-slate-800/30 transition">
+                        <td className="py-4 px-4 font-mono text-slate-400 text-[11px]">
+                          {new Date(sub.createdAt).toLocaleTimeString()}
                         </td>
-
-                        <td className="py-4 px-4 font-semibold text-slate-100">{s.name}</td>
-                        <td className="py-4 px-4 font-mono text-slate-400">{s.username}</td>
-
-                        {/* Assigned Problem: consistent badge + title spacing */}
-                        <td className="py-4 px-4">
-                          {s.assignment ? (
-                            <div className="flex items-center gap-2.5">
-                              <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] uppercase font-mono text-emerald-400 border border-slate-700 font-semibold tracking-wider">
-                                {s.assignment.language}
-                              </span>
-                              <span className="text-slate-200 font-medium truncate max-w-[260px]">{s.assignment.title}</span>
-                            </div>
-                          ) : (
-                            <span className="text-slate-500 italic">No problem assigned</span>
-                          )}
+                        <td className="py-4 px-4 font-semibold text-slate-200">
+                          {sub.studentName} <span className="text-slate-500 font-mono text-[11px]">({sub.studentUsername})</span>
                         </td>
-
-                        {/* Progress badge */}
+                        <td className="py-4 px-4 text-slate-300">{sub.problemTitle}</td>
                         <td className="py-4 px-4">
-                          {s.hasPassed ? (
-                            <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
-                              <CheckCircle2 className="w-3.5 h-3.5" /> Solved
-                            </span>
-                          ) : s.assignment?.status === 'expired' ? (
-                            <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit" title="Contest timer expired with no submission">
-                              <Clock className="w-3.5 h-3.5" /> Timed Out
-                            </span>
-                          ) : s.assignment ? (
-                            <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
-                              <Clock className="w-3.5 h-3.5" /> In Progress
+                          {sub.pass ? (
+                            <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[10px]">
+                              PASS
                             </span>
                           ) : (
-                            <span className="text-slate-600">-</span>
+                            <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-[10px]">
+                              FAIL ({sub.status})
+                            </span>
                           )}
                         </td>
-
-                        {/* Submissions count */}
-                        <td className="py-4 px-4 text-slate-300 font-mono">
-                          <span className="px-2.5 py-1 bg-surface-950 rounded-lg border border-slate-800">
-                            {s.submissionsCount} attempt{s.submissionsCount !== 1 ? 's' : ''}
-                          </span>
+                        <td className="py-4 px-4 font-mono text-slate-400 text-[11px]">
+                          {sub.executionTimeMs}ms
                         </td>
-
-                        {/* Actions: Equal button dimensions & alignment */}
                         <td className="py-4 px-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            {/* Outline / Secondary action button: equal w-20 h-8 */}
-                            <button
-                              onClick={() => handleInspectStudent(s.id)}
-                              className="w-20 h-8 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 hover:border-slate-700 transition flex items-center justify-center gap-1.5"
-                              title="Inspect Student Code & Status"
-                            >
-                              <Eye className="w-3.5 h-3.5 text-blue-400" />
-                              <span>Details</span>
-                            </button>
-
-                            {/* Push action button: equal w-20 h-8 */}
-                            <button
-                              onClick={() => {
-                                setSelectedStudentId(s.id);
-                                handlePushProblem(s.id);
-                              }}
-                              className="w-20 h-8 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 rounded-lg text-xs font-semibold border border-emerald-500/20 hover:border-emerald-500 transition flex items-center justify-center gap-1.5"
-                              title="Push Selected Problem to this student"
-                            >
-                              <Send className="w-3.5 h-3.5" />
-                              <span>Push</span>
-                            </button>
-                          </div>
+                          <button
+                            onClick={() => setSelectedSubmission(sub)}
+                            className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 hover:border-slate-700 transition"
+                          >
+                            View Logs & Code
+                          </button>
                         </td>
                       </tr>
                     ))}
-                    {paginatedStudents.length === 0 && (
+                    {submissions.length === 0 && (
                       <tr>
-                        <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
-                          No students match your search or filter criteria.
+                        <td colSpan={6} className="py-12 text-center text-slate-500 text-xs">
+                          No submissions recorded yet.
                         </td>
                       </tr>
                     )}
@@ -868,170 +1033,8 @@ export default function AdminDashboard({ user, onLogout }) {
                 </table>
               </div>
             </div>
-
-            {/* Bottom Quick Scroll & Pagination Bar */}
-            <div className="bg-surface-900 border border-slate-800 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-4 text-xs">
-              <div className="text-slate-400">
-                {totalFiltered} students found • Use scroll buttons or page controls to navigate
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleScrollUp}
-                  className="px-3.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
-                >
-                  <ChevronUp className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Scroll Up</span>
-                </button>
-                <button
-                  onClick={handleScrollDown}
-                  className="px-3.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-800 flex items-center gap-1.5 transition font-medium"
-                >
-                  <ChevronDown className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Scroll Down</span>
-                </button>
-                <button
-                  onClick={handleScrollTop}
-                  className="px-2.5 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 rounded-lg border border-slate-800 transition font-medium"
-                  title="Scroll to Top"
-                >
-                  <ChevronsUp className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Tab 2: Problem Bank */}
-        {activeTab === 'problems' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-                Buggy Problem Repository ({problems.length})
-              </h2>
-              {/* Primary action button */}
-              <button
-                onClick={() => setShowAddProblemModal(true)}
-                className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
-              >
-                <Plus className="w-4 h-4 stroke-[2.5]" />
-                <span>Create New Buggy Problem</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {problems.map((p) => (
-                <div key={p.id} className="bg-surface-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between shadow-lg hover:border-slate-700 transition">
-                  <div>
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-bold text-white text-sm">{p.title}</h3>
-                      <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-mono uppercase font-bold">
-                        {p.language}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-400 mb-4 line-clamp-2">{p.description}</p>
-                    <div className="text-[11px] font-mono text-slate-400 mb-3">Filename: <span className="text-slate-200">{p.filename}</span></div>
-
-                    <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 max-h-36 overflow-y-auto mb-4">
-                      <pre>{p.starterCode}</pre>
-                    </div>
-
-                    <div className="text-[11px] text-slate-400 flex items-center gap-2">
-                      <span>Test cases: {p.testCases?.length || 0}</span>
-                      <span>•</span>
-                      <span className="text-emerald-400 font-medium flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{p.durationMinutes || 15} mins timer</span>
-                      </span>
-                      <span>•</span>
-                      <span>Sandbox: {p.timeLimitMs}ms</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-slate-800 flex justify-end">
-                    {/* Secondary action button */}
-                    <button
-                      onClick={() => {
-                        setSelectedProblemId(p.id);
-                        setActiveTab('students');
-                      }}
-                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-700 transition active:scale-[0.99]"
-                    >
-                      <Send className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Select for LAN Push</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 3: Submissions View */}
-        {activeTab === 'submissions' && (
-          <div className="space-y-6">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-              Contest Submissions & Internal Diagnostics ({submissions.length})
-            </h2>
-
-            <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-              <table className="w-full text-left text-xs min-w-[700px]">
-                <thead className="bg-surface-950 text-slate-400 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-800">
-                  <tr>
-                    <th className="py-3.5 px-4 bg-surface-950">Time</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Student</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Problem</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Status</th>
-                    <th className="py-3.5 px-4 bg-surface-950">Runtime</th>
-                    <th className="py-3.5 px-4 bg-surface-950 text-right">Internal Raw Diagnostics</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60 font-sans">
-                  {submissions.map((sub) => (
-                    <tr key={sub.id} className="hover:bg-slate-800/30 transition">
-                      <td className="py-4 px-4 font-mono text-slate-400 text-[11px]">
-                        {new Date(sub.createdAt).toLocaleTimeString()}
-                      </td>
-                      <td className="py-4 px-4 font-semibold text-slate-200">
-                        {sub.studentName} <span className="text-slate-500 font-mono text-[11px]">({sub.studentUsername})</span>
-                      </td>
-                      <td className="py-4 px-4 text-slate-300">{sub.problemTitle}</td>
-                      <td className="py-4 px-4">
-                        {sub.pass ? (
-                          <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[10px]">
-                            PASS
-                          </span>
-                        ) : (
-                          <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-[10px]">
-                            FAIL ({sub.status})
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4 font-mono text-slate-400 text-[11px]">
-                        {sub.executionTimeMs}ms
-                      </td>
-                      <td className="py-4 px-4 text-right">
-                        <button
-                          onClick={() => setSelectedSubmission(sub)}
-                          className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 hover:border-slate-700 transition"
-                        >
-                          View Logs & Code
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {submissions.length === 0 && (
-                    <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-500 text-xs">
-                        No submissions recorded yet.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Student Detail Inspector Modal */}

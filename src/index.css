@@ -13,15 +13,21 @@
 
 /* Custom scrollbars */
 .max-h-\[420px\]::-webkit-scrollbar,
+.max-h-\[500px\]::-webkit-scrollbar,
+.max-h-\[520px\]::-webkit-scrollbar,
 .max-h-\[60vh\]::-webkit-scrollbar {
   width: 6px;
 }
 .max-h-\[420px\]::-webkit-scrollbar-thumb,
+.max-h-\[500px\]::-webkit-scrollbar-thumb,
+.max-h-\[520px\]::-webkit-scrollbar-thumb,
 .max-h-\[60vh\]::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 9999px;
 }
 .max-h-\[420px\]::-webkit-scrollbar-track,
+.max-h-\[500px\]::-webkit-scrollbar-track,
+.max-h-\[520px\]::-webkit-scrollbar-track,
 .max-h-\[60vh\]::-webkit-scrollbar-track {
   background: transparent;
 }
