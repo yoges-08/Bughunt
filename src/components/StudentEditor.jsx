@@ -58,7 +58,15 @@ export default function StudentEditor({ user, onLogout }) {
     };
   }, []);
 
-  // Live Timer countdown management
+  // Check Single Submission Limit & Expiration (mirror server assignedAt threshold)
+  const currentProblemId = problem?.problemId || problem?.id;
+  const relevantSubmission = submissions.find(s =>
+    s.problemId === currentProblemId &&
+    (!problem?.assignedAt || new Date(s.createdAt) >= new Date(problem.assignedAt))
+  );
+  const hasSubmitted = Boolean(problem?.hasSubmitted || relevantSubmission);
+
+  // Live Timer countdown management - stops when program is submitted
   useEffect(() => {
     if (!problem) {
       setTimeLeftSeconds(null);
@@ -70,11 +78,24 @@ export default function StudentEditor({ user, onLogout }) {
       const expiry = problem.expiresAt 
         ? new Date(problem.expiresAt).getTime()
         : new Date(problem.assignedAt).getTime() + (problem.durationMinutes || 15) * 60 * 1000;
+
+      // If program has already been submitted, freeze timer at the exact submission moment
+      if (relevantSubmission) {
+        const submittedTime = new Date(relevantSubmission.createdAt).getTime();
+        return Math.max(0, Math.floor((expiry - submittedTime) / 1000));
+      }
+
       const diff = Math.max(0, Math.floor((expiry - Date.now()) / 1000));
       return diff;
     };
 
-    setTimeLeftSeconds(calcTimeLeft());
+    const initialLeft = calcTimeLeft();
+    setTimeLeftSeconds(initialLeft);
+
+    // If already submitted, stop countdown immediately
+    if (hasSubmitted) {
+      return;
+    }
 
     const interval = setInterval(() => {
       const remaining = calcTimeLeft();
@@ -85,19 +106,9 @@ export default function StudentEditor({ user, onLogout }) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [problem]);
+  }, [problem, hasSubmitted, relevantSubmission]);
 
-  // Check Single Submission Limit & Expiration (mirror server assignedAt threshold)
-  const currentProblemId = problem?.problemId || problem?.id;
-  const hasSubmitted = Boolean(
-    problem?.hasSubmitted ||
-    (problem?.assignedAt &&
-      submissions.some(s =>
-        s.problemId === currentProblemId &&
-        new Date(s.createdAt) >= new Date(problem.assignedAt)
-      ))
-  );
-  const isTimeExpired = timeLeftSeconds !== null && timeLeftSeconds === 0;
+  const isTimeExpired = !hasSubmitted && timeLeftSeconds !== null && timeLeftSeconds === 0;
 
   // Handle Code Edit & Auto-save
   const handleEditorChange = (newCode) => {
@@ -229,7 +240,9 @@ export default function StudentEditor({ user, onLogout }) {
           {problem && timeLeftSeconds !== null && (
             <div
               className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-bold border transition ${
-                isTimeExpired
+                hasSubmitted
+                  ? 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                  : isTimeExpired
                   ? 'bg-slate-800 text-slate-400 border-slate-700'
                   : timeLeftSeconds <= 120
                   ? 'bg-rose-500/10 text-rose-400 border-rose-500/30 animate-pulse'
@@ -239,7 +252,13 @@ export default function StudentEditor({ user, onLogout }) {
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
-              <span>{isTimeExpired ? 'TIME EXPIRED' : `⏱ ${formatTimer(timeLeftSeconds)}`}</span>
+              <span>
+                {hasSubmitted
+                  ? `⏱ ${formatTimer(timeLeftSeconds)} (STOPPED)`
+                  : isTimeExpired
+                  ? 'TIME EXPIRED'
+                  : `⏱ ${formatTimer(timeLeftSeconds)}`}
+              </span>
             </div>
           )}
 

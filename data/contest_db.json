@@ -33,196 +33,60 @@
       "createdAt": "2026-08-29T16:54:14.626Z"
     },
     {
-      "id": "usr_student_4",
-      "username": "student4",
-      "password": "scrypt$09f5149513bec00b1a5c23b0105ece15$d5bd2c6a1ea3d5df5a0c1567099b5cc1ffb85817699e827db050dfccc2561eb4b66e33533d964447f5ccbb903ab306ae2df6987b0af01cb6c45b9187b4a935c1",
-      "role": "student",
-      "name": "Dana Lee (Team D)",
-      "createdAt": "2026-08-29T16:54:14.626Z"
-    },
-    {
-      "id": "usr_3da73f4d",
-      "username": "yoges_8",
-      "password": "scrypt$0a7bb0169892970b2b665012cd721c06$83a8a7c8dbfd5114e982bd6cf806220cbafa6fd5108e0f2294efd6b09f30c37d8605e5e3b320b33d45069371dc708407419e2b17f799d536858a616be555a3d2",
+      "id": "usr_6deb8247",
+      "username": "yoges",
+      "password": "scrypt$d592818dc8510a4518aff8fbb2a8d925$e32d1ec30b274e20138b74dbb67da47fb00d534018fe4de17c36658702175b988019b4ca318b2a8d47f53be2ac4c20fe3fec982944f47b82d5efb9783e61f0f0",
       "role": "student",
       "name": "yoges",
-      "createdAt": "2026-08-29T17:09:24.342Z"
+      "createdAt": "2026-09-02T15:11:06.884Z"
     },
     {
-      "id": "usr_aad4d81b",
-      "username": "yyyy",
-      "password": "scrypt$d11fa117779feb7fbbf571462befc5f7$305e408f9a251771519c82360e3e09b0291c4e20b82cdbc99142b96eac76af5ddb881cded3d101a979c429e65c32c8a754f3cd2395f8d2bc43cc8d8687f2c969",
-      "role": "student",
-      "name": "yyy",
-      "createdAt": "2026-09-01T10:03:38.155Z"
-    },
-    {
-      "id": "usr_05fbd1f3",
-      "username": "test_asg_1788333417789",
-      "password": "scrypt$319354a34b1a11abbb48ac2a1dc9356d$db20a802a5aa127922ec3f11cc7801e7edda65e98c80c926c4406f545a1e79cb59146342b1b9d110a6e49726352d4a6841d955dec0fc6c3e710ee477a11fe6d6",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T07:16:57.858Z"
-    },
-    {
-      "id": "usr_3ecf1ea2",
-      "username": "test_asg_1788333912647",
-      "password": "scrypt$dbf553236109490c2da78b83eac7b19b$b336104fbffbae81976228bec54d46846011a1cf72505f1634d6525499d1c9f6eb6938d340e24d5921c016d4c373fc304bfb02ab82338cd1bf1216b0302cd0af",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T07:25:12.734Z"
-    },
-    {
-      "id": "usr_3ee1e71a",
-      "username": "test_asg_1788334533662",
-      "password": "scrypt$3559e7b50d7df4cd7c36d7af122af2e8$b49e8904e8331776f67133728a63f201dd3c1613787e29a85797404e3431438d6d5ec299b48d9e4eebd9bf8737dbf268009691d0c9efa8597eb51b8c7c06710a",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T07:35:33.719Z"
-    },
-    {
-      "id": "usr_303f7ae0",
-      "username": "test_asg_1788341063871",
-      "password": "scrypt$2ea7d9d66af79a36e8081e4eb3667dd6$4c0d1e25dcea22a0c2e9bd16aae9c3245e60d6b852b2782b96e37b61d1144fc3dc3a5cf454af2d1602ca634bb73b5d5189e5310398c9abe7b02d14cab74ad0fa",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T09:24:23.900Z"
-    },
-    {
-      "id": "usr_4908b876",
-      "username": "test_asg_1788346102476",
-      "password": "scrypt$fb22215f6f7c9bf563ef60d58500eda6$bb58e794e4db18594d498cfe7a933ebbd19ad8de3650f1dbcd57671bf1400cdbb325d0d5fc6429d29b3df28ad674b7b34073cfa85ac4af9385bdb211e04cd7d9",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T10:48:22.507Z"
-    },
-    {
-      "id": "usr_a4725476",
-      "username": "test_asg_1788346115272",
-      "password": "scrypt$15b633100f1b9c1ce04e453ab5feee2a$6b867ad1153bd5508a3ff004675612922eb79fa1910682ae1082034a99a176ae2f688295629d169fd65aa748ab36acad59285710a108e058208188d73bf28e58",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T10:48:35.302Z"
-    },
-    {
-      "id": "usr_1d54fd16",
-      "username": "test_exp_1788346115323",
-      "password": "scrypt$1642cc7b47b1f7e4df15230d64bb39de$4873723c12aab4bcb8540bc541e3b7932743b95bb566b35f3c6d7d0948cb74f1aa8e3328bc446bdad79ed7bc7df589cd09814a6ac0878b12d5ce6c9a3d526f13",
-      "role": "student",
-      "name": "Expired Student",
-      "createdAt": "2026-09-02T10:48:35.360Z"
-    },
-    {
-      "id": "usr_253684e1",
-      "username": "test_asg_1788346206210",
-      "password": "scrypt$daf0e90ba8a07f01bfbd0bfa57464a73$d116680358d3cda4fb34899be7d9bf0f763368faf4d8b5b05899622cd5d0f798fb4ed41c4dfd8a8fa2f4fea70447b52b26f9d17c09cf9eb3b7c61602d2ea18f3",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T10:50:06.242Z"
-    },
-    {
-      "id": "usr_4a1f2a1b",
-      "username": "test_exp_1788346206270",
-      "password": "scrypt$93d5eb8c621fb1452112c2ab7c3e1552$2ff6a328464d8b2e216939a6d848d729f778eae2f863ce6681a1ac1cf5cfe22cce9f6dafca2c78e52bc868ef60de525491fecdb672377a9e34164c8fab3365a5",
-      "role": "student",
-      "name": "Expired Student",
-      "createdAt": "2026-09-02T10:50:06.307Z"
-    },
-    {
-      "id": "usr_581214e8",
-      "username": "crud_student_1788360649998",
-      "password": "scrypt$e1691511b9e9dc8ea46f3cf53caa5ea4$9655c623612a0238343e814875d2d131a79d5ba1e3fdf3a3bbf20f8b3d00572995c6a6b01f412a20c71607b79ba8f8a9cc6d376bb6478d36c53110635ea0bfdd",
+      "id": "usr_190e27d2",
+      "username": "crud_student_1788363179402",
+      "password": "scrypt$4f5827a19a44a0a80b9fb73ad76075e0$eea23a19fd343b834c3e6c28a6cb70f1d2102b50aa19ce91cf64a7b9402a307ed0aaf7344f14805c1ef62dcd7a21bf145b7abe3fc74f91bba2ca928397010dd7",
       "role": "student",
       "name": "CRUD Student",
-      "createdAt": "2026-09-02T14:50:50.079Z"
+      "createdAt": "2026-09-02T15:32:59.479Z"
     },
     {
-      "id": "usr_d4049508",
-      "username": "ref_student_1788360650100",
-      "password": "scrypt$cf9ee8f4510253d83ec44a692ce1eda9$2c1eef2e679861b9a7e7338477f71412e995705f42e4f512a61b5449c6e9aaaf544b1c61426ade400cb2c45657d7375900ab90bf4f6bb75524791ec5b4219b00",
+      "id": "usr_9de38bb6",
+      "username": "ref_student_1788363179500",
+      "password": "scrypt$874db98fcdb341ffce8c8bb5c3ab6fba$d719c72965460de411ccd22c2ac8f138336fe5a7c15d8a67f3099e205797e966e909dd9d1ffbf3372fbcbf08f35d87f7e30e4f1a0b809f697bd4c47a1648e36d",
       "role": "student",
       "name": "Ref Student",
-      "createdAt": "2026-09-02T14:50:50.182Z"
+      "createdAt": "2026-09-02T15:32:59.566Z"
     },
     {
-      "id": "usr_076329eb",
-      "username": "test_asg_1788360697575",
-      "password": "scrypt$85435a6f8a2f4e201bbf24f6a15e86ef$3823366253c720500a27bbd37c92c30d32b7c488a37dcd46f9f965c1b8312080d4d9a2f8d283c6aa7f6d221dd9b0faaa1a14d2abde5946267f3db6f39fc725db",
+      "id": "usr_e76cc99f",
+      "username": "test_asg_1788363197736",
+      "password": "scrypt$c047d38bd19648b028e84e4daf5e8e8d$38a531651dd0546361b1c16bf66952acae30d6b2503ba13d454b865b29358b394c5c1bfcded9546012bbcdea955ec8e3ca8b69291cec5df5da122b50492a6c63",
       "role": "student",
       "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T14:51:37.644Z"
+      "createdAt": "2026-09-02T15:33:17.789Z"
     },
     {
-      "id": "usr_dbb2daf5",
-      "username": "test_exp_1788360697683",
-      "password": "scrypt$8713e21a9790d0bf11aa1fc460ca5ea9$6181793d49343078f89631fd2f4544fe9fa708a9fdb7c84535f7b5e21d5ed79e9a0df20ef7db611e148bd90f29cc36b7041d0535644f6c03bd12182bc93671ce",
+      "id": "usr_af21920a",
+      "username": "test_exp_1788363197825",
+      "password": "scrypt$483ba24d65d679fe7aa4b2547b421ec6$fee6bd62bcf0a4304d9d5006a2c9b96ce1a9877b4365780b6a9051a9e4390dbfcbe70f1f98325b22063622e9e7be8801e5c561037237f8d7f78ee74a0ce27252",
       "role": "student",
       "name": "Expired Student",
-      "createdAt": "2026-09-02T14:51:37.750Z"
+      "createdAt": "2026-09-02T15:33:17.937Z"
     },
     {
-      "id": "usr_170101d1",
-      "username": "crud_student_1788360698293",
-      "password": "scrypt$9ccd65ee4bd35161cf2f510a05bebaf0$52ce50ea0e29b0d5984069c5655226d0fcacd374a3aa966a3f70711bc6ba2e23b4f85e7d246ebec970eba2d0819c4b84bfd08b72496450ccfa42619e32d714a7",
+      "id": "usr_cf4c779c",
+      "username": "crud_student_1788363198379",
+      "password": "scrypt$90452ffbcf00405b66175d0b13d2eed6$f48dfb08de50f1f929a753a9712502b25fbdbc3be4e9bda0457ea0ec73102079ad0d72d5b23c5ae33083e3bea5d367aee9a23ed633fe333fde28bf6294232839",
       "role": "student",
       "name": "CRUD Student",
-      "createdAt": "2026-09-02T14:51:38.367Z"
+      "createdAt": "2026-09-02T15:33:18.444Z"
     },
     {
-      "id": "usr_adbe51cc",
-      "username": "ref_student_1788360698385",
-      "password": "scrypt$fb6486d2f54bd4eb96d7d6e0c33bdb2b$e0569bb568fbc4d2e959ad3c68c937528a4cd47f40a8d8482d4dc92b37076ce056ef44682a6460526b0fe1d5f4c426af8a47676aa837362993686c3b646bef75",
+      "id": "usr_74f11463",
+      "username": "ref_student_1788363198459",
+      "password": "scrypt$707922f0e8d2d230e13c4efb68ed4311$6981cd8e6dd120013837f96cb7f93cdd511c99073ed739fc1a78cc64dae5076b11a04eecd0376aca7b0a7badace3841b651343a044bbdf96a6b7fd0ce4a3bbca",
       "role": "student",
       "name": "Ref Student",
-      "createdAt": "2026-09-02T14:51:38.462Z"
-    },
-    {
-      "id": "usr_8038a98b",
-      "username": "crud_student_1788361447424",
-      "password": "scrypt$7cb7ef850e4c18248fabbe18cc27f26c$9aeef95db458aff0df20e63813c7692e45ca4e61cb852cb4f685f5e2d8515d58200757b1e8b19df63f659b0155cb5004ba9d99fcd8813db9da64a0f437daaf05",
-      "role": "student",
-      "name": "CRUD Student",
-      "createdAt": "2026-09-02T15:04:07.537Z"
-    },
-    {
-      "id": "usr_7117d962",
-      "username": "ref_student_1788361447570",
-      "password": "scrypt$2fd994d9408c67afc5c3f515265dbc04$ede91dbd01d4d98ec84a04931764c0aba4310342a074394072696cc93d8907d8b1ad0270fae587ca2ba3872fb143898056da669af28cecf75b467979aae499a8",
-      "role": "student",
-      "name": "Ref Student",
-      "createdAt": "2026-09-02T15:04:07.685Z"
-    },
-    {
-      "id": "usr_3e14a6f5",
-      "username": "test_asg_1788361469180",
-      "password": "scrypt$a8a72765034b75ed7b9d914c5e27ea80$33bf561b059520cbb9be04d08a3192d3bc6754f142cccaac5a21ad735d894fef4a41b0221fd1cad5692f7867c2a00e733f1cb0fe2361c70ed323eaa44099b74d",
-      "role": "student",
-      "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T15:04:29.296Z"
-    },
-    {
-      "id": "usr_5f2028b5",
-      "username": "test_exp_1788361469368",
-      "password": "scrypt$8245474b0176b4075be073219eeb4a62$099036f1b8ca33da875251661c07acf603ac30c9242e9fec41b9d91a601f316dfdf7c1964c63190ca94f535b378cff1d12f70f144ec5859bdc7450f416101578",
-      "role": "student",
-      "name": "Expired Student",
-      "createdAt": "2026-09-02T15:04:29.491Z"
-    },
-    {
-      "id": "usr_20dea0c3",
-      "username": "crud_student_1788361470398",
-      "password": "scrypt$d0a9ef69156716402c9ee3c6c1487408$1702852ef67ddfc6d9490aa74c0442824434b90b8d0240a06433baef9a1713f2e93345501bb7fb23f8158f1da34c2187fe81cd5aa33118db5703fcd837e6b89b",
-      "role": "student",
-      "name": "CRUD Student",
-      "createdAt": "2026-09-02T15:04:30.501Z"
-    },
-    {
-      "id": "usr_e3c4c52a",
-      "username": "ref_student_1788361470525",
-      "password": "scrypt$ed8f828f5315654d30af86d2e8340a88$053a03fb52e5eb3b6b6af00efaab09ba8fd39bc57ebee770e8ecc369495f7d8cf1882924f2ac2c423f2f8c44c35546ce5707ee0f056244bd23d353326eec97a3",
-      "role": "student",
-      "name": "Ref Student",
-      "createdAt": "2026-09-02T15:04:30.652Z"
+      "createdAt": "2026-09-02T15:33:18.513Z"
     }
   ],
   "problems": [
@@ -453,6 +317,86 @@
       "timeLimitMs": 3000,
       "durationMinutes": 15,
       "createdAt": "2026-09-02T15:04:30.804Z"
+    },
+    {
+      "id": "prob_c74f11c4",
+      "title": "Updated Problem Title",
+      "language": "python",
+      "filename": "crud_test.py",
+      "description": "Updated description",
+      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "2",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 2500,
+      "durationMinutes": 30,
+      "createdAt": "2026-09-02T15:32:59.390Z",
+      "updatedAt": "2026-09-02T15:32:59.491Z"
+    },
+    {
+      "id": "prob_05013a47",
+      "title": "Prob for Del Student",
+      "language": "python",
+      "filename": "del_prob.py",
+      "description": "",
+      "starterCode": "pass",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "1"
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-02T15:32:59.664Z"
+    },
+    {
+      "id": "prob_empty_tc_test",
+      "title": "Empty Test Cases Problem",
+      "language": "python",
+      "filename": "empty.py",
+      "starterCode": "print(\"hello\")",
+      "testCases": []
+    },
+    {
+      "id": "prob_e974273c",
+      "title": "Updated Problem Title",
+      "language": "python",
+      "filename": "crud_test.py",
+      "description": "Updated description",
+      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "2",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 2500,
+      "durationMinutes": 30,
+      "createdAt": "2026-09-02T15:33:18.370Z",
+      "updatedAt": "2026-09-02T15:33:18.451Z"
+    },
+    {
+      "id": "prob_b79515c0",
+      "title": "Prob for Del Student",
+      "language": "python",
+      "filename": "del_prob.py",
+      "description": "",
+      "starterCode": "pass",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "1"
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-02T15:33:18.616Z"
     }
   ],
   "assignments": [
@@ -463,7 +407,7 @@
       "assignedAt": "2026-09-02T10:10:36.223Z",
       "status": "passed",
       "currentCode": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T15:04:28.149Z",
+      "lastUpdated": "2026-09-02T15:33:17.201Z",
       "expiresAt": "2026-09-02T10:25:36.223Z",
       "durationMinutes": 15
     },
@@ -486,244 +430,81 @@
       "lastUpdated": "2026-08-30T08:04:08.812Z"
     },
     {
-      "id": "asg_6e82d818",
-      "studentId": "usr_student_4",
+      "id": "asg_c00b796f",
+      "studentId": "usr_6deb8247",
       "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-08-29T17:01:42.292Z",
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-08-29T17:01:42.292Z"
-    },
-    {
-      "id": "asg_895112bd",
-      "studentId": "usr_05fbd1f3",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T06:16:57.882Z",
-      "expiresAt": "2026-09-02T06:46:57.882Z",
+      "assignedAt": "2026-09-02T15:11:15.829Z",
+      "expiresAt": "2026-09-02T15:26:15.829Z",
       "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T07:16:57.879Z"
+      "status": "passed",
+      "currentCode": "def is_palindrome(s):\n    cleaned = \"\"\n\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n\n    left = 0\n    right = len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n\n    return True\n\n\nif __name__ == \"__main__\":\n    import sys\n\n    lines = sys.stdin.read().strip().splitlines()\n\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")",
+      "lastUpdated": "2026-09-02T15:16:21.599Z"
     },
     {
-      "id": "asg_ce1b09f2",
-      "studentId": "usr_3ecf1ea2",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T06:25:12.756Z",
-      "expiresAt": "2026-09-02T06:55:12.756Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T07:25:12.752Z"
-    },
-    {
-      "id": "asg_e0a819be",
-      "studentId": "usr_3ee1e71a",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T06:35:33.739Z",
-      "expiresAt": "2026-09-02T07:05:33.739Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T07:35:33.736Z"
-    },
-    {
-      "id": "asg_5f7baf59",
-      "studentId": "usr_303f7ae0",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T08:24:23.911Z",
-      "expiresAt": "2026-09-02T08:54:23.911Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T09:24:23.908Z"
-    },
-    {
-      "id": "asg_f334d68c",
-      "studentId": "usr_4908b876",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T09:48:22.527Z",
-      "expiresAt": "2026-09-02T10:18:22.527Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T10:48:22.525Z"
-    },
-    {
-      "id": "asg_35a4396f",
-      "studentId": "usr_a4725476",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T10:48:35.320Z",
-      "expiresAt": "2026-09-02T11:03:35.320Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T10:48:35.320Z"
-    },
-    {
-      "id": "asg_55a5d8b1",
-      "studentId": "usr_1d54fd16",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T09:48:35.363Z",
-      "expiresAt": "2026-09-02T10:18:35.363Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T10:48:35.362Z"
-    },
-    {
-      "id": "asg_cff2f444",
-      "studentId": "usr_253684e1",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T10:50:06.267Z",
-      "expiresAt": "2026-09-02T11:05:06.267Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T10:50:06.267Z"
-    },
-    {
-      "id": "asg_2cd21592",
-      "studentId": "usr_4a1f2a1b",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T09:50:06.313Z",
-      "expiresAt": "2026-09-02T10:20:06.313Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T10:50:06.310Z"
-    },
-    {
-      "id": "asg_5cdb665c",
-      "studentId": "usr_581214e8",
-      "problemId": "prob_5a68fe79",
-      "assignedAt": "2026-09-02T14:50:50.083Z",
-      "expiresAt": "2026-09-02T15:20:50.083Z",
+      "id": "asg_824bf544",
+      "studentId": "usr_190e27d2",
+      "problemId": "prob_c74f11c4",
+      "assignedAt": "2026-09-02T15:32:59.487Z",
+      "expiresAt": "2026-09-02T16:02:59.487Z",
       "durationMinutes": 30,
       "status": "assigned",
       "currentCode": "# starter code\ndef solve(): pass",
-      "lastUpdated": "2026-09-02T14:50:50.083Z"
+      "lastUpdated": "2026-09-02T15:32:59.487Z"
     },
     {
-      "id": "asg_49ac23a4",
-      "studentId": "usr_d4049508",
-      "problemId": "prob_206f9408",
-      "assignedAt": "2026-09-02T14:50:50.188Z",
-      "expiresAt": "2026-09-02T15:05:50.188Z",
+      "id": "asg_d2d96c5c",
+      "studentId": "usr_9de38bb6",
+      "problemId": "prob_56a39771",
+      "assignedAt": "2026-09-02T15:32:59.569Z",
+      "expiresAt": "2026-09-02T15:47:59.569Z",
       "durationMinutes": 15,
       "status": "assigned",
       "currentCode": "print(1)",
-      "lastUpdated": "2026-09-02T14:50:50.188Z"
+      "lastUpdated": "2026-09-02T15:32:59.569Z"
     },
     {
-      "id": "asg_bdcd2ffc",
-      "studentId": "usr_076329eb",
+      "id": "asg_df4727ce",
+      "studentId": "usr_e76cc99f",
       "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T14:51:37.678Z",
-      "expiresAt": "2026-09-02T15:06:37.678Z",
+      "assignedAt": "2026-09-02T15:33:17.821Z",
+      "expiresAt": "2026-09-02T15:48:17.821Z",
       "durationMinutes": 15,
       "status": "assigned",
       "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T14:51:37.678Z"
+      "lastUpdated": "2026-09-02T15:33:17.821Z"
     },
     {
-      "id": "asg_275738cf",
-      "studentId": "usr_dbb2daf5",
+      "id": "asg_c4b0d704",
+      "studentId": "usr_af21920a",
       "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T13:51:37.760Z",
-      "expiresAt": "2026-09-02T14:21:37.760Z",
+      "assignedAt": "2026-09-02T14:33:17.945Z",
+      "expiresAt": "2026-09-02T15:03:17.945Z",
       "durationMinutes": 15,
       "status": "assigned",
       "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T14:51:37.754Z"
+      "lastUpdated": "2026-09-02T15:33:17.941Z"
     },
     {
-      "id": "asg_3056da10",
-      "studentId": "usr_170101d1",
-      "problemId": "prob_4d5ac739",
-      "assignedAt": "2026-09-02T14:51:38.372Z",
-      "expiresAt": "2026-09-02T15:21:38.372Z",
+      "id": "asg_1f7657da",
+      "studentId": "usr_cf4c779c",
+      "problemId": "prob_e974273c",
+      "assignedAt": "2026-09-02T15:33:18.447Z",
+      "expiresAt": "2026-09-02T16:03:18.447Z",
       "durationMinutes": 30,
       "status": "assigned",
       "currentCode": "# starter code\ndef solve(): pass",
-      "lastUpdated": "2026-09-02T14:51:38.372Z"
+      "lastUpdated": "2026-09-02T15:33:18.447Z"
     },
     {
-      "id": "asg_428e2089",
-      "studentId": "usr_adbe51cc",
-      "problemId": "prob_9ee974f4",
-      "assignedAt": "2026-09-02T14:51:38.468Z",
-      "expiresAt": "2026-09-02T15:06:38.468Z",
+      "id": "asg_f59a76bd",
+      "studentId": "usr_74f11463",
+      "problemId": "prob_d677cff7",
+      "assignedAt": "2026-09-02T15:33:18.518Z",
+      "expiresAt": "2026-09-02T15:48:18.518Z",
       "durationMinutes": 15,
       "status": "assigned",
       "currentCode": "print(1)",
-      "lastUpdated": "2026-09-02T14:51:38.468Z"
-    },
-    {
-      "id": "asg_3359bc6f",
-      "studentId": "usr_8038a98b",
-      "problemId": "prob_b8c7a7af",
-      "assignedAt": "2026-09-02T15:04:07.541Z",
-      "expiresAt": "2026-09-02T15:34:07.541Z",
-      "durationMinutes": 30,
-      "status": "assigned",
-      "currentCode": "# starter code\ndef solve(): pass",
-      "lastUpdated": "2026-09-02T15:04:07.541Z"
-    },
-    {
-      "id": "asg_77c31330",
-      "studentId": "usr_7117d962",
-      "problemId": "prob_a634c330",
-      "assignedAt": "2026-09-02T15:04:07.695Z",
-      "expiresAt": "2026-09-02T15:19:07.695Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "print(1)",
-      "lastUpdated": "2026-09-02T15:04:07.695Z"
-    },
-    {
-      "id": "asg_f1a2060e",
-      "studentId": "usr_3e14a6f5",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T15:04:29.359Z",
-      "expiresAt": "2026-09-02T15:19:29.359Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T15:04:29.359Z"
-    },
-    {
-      "id": "asg_54413517",
-      "studentId": "usr_5f2028b5",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T14:04:29.504Z",
-      "expiresAt": "2026-09-02T14:34:29.504Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T15:04:29.500Z"
-    },
-    {
-      "id": "asg_073d00a3",
-      "studentId": "usr_20dea0c3",
-      "problemId": "prob_de177cfb",
-      "assignedAt": "2026-09-02T15:04:30.505Z",
-      "expiresAt": "2026-09-02T15:34:30.505Z",
-      "durationMinutes": 30,
-      "status": "assigned",
-      "currentCode": "# starter code\ndef solve(): pass",
-      "lastUpdated": "2026-09-02T15:04:30.505Z"
-    },
-    {
-      "id": "asg_1eaf1bf6",
-      "studentId": "usr_e3c4c52a",
-      "problemId": "prob_cbff2f94",
-      "assignedAt": "2026-09-02T15:04:30.657Z",
-      "expiresAt": "2026-09-02T15:19:30.657Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "print(1)",
-      "lastUpdated": "2026-09-02T15:04:30.657Z"
+      "lastUpdated": "2026-09-02T15:33:18.518Z"
     }
   ],
   "submissions": [
@@ -1248,32 +1029,6 @@
       "createdAt": "2026-09-02T10:46:56.769Z"
     },
     {
-      "id": "sub_c7b74df1",
-      "studentId": "usr_4908b876",
-      "problemId": "prob_py_palindrome",
-      "code": "print(42)",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{}",
-      "genericMessage": "Passed",
-      "executionTimeMs": 10,
-      "createdAt": "2026-09-02T10:48:22.517Z"
-    },
-    {
-      "id": "sub_0f24c0f0",
-      "studentId": "usr_a4725476",
-      "problemId": "prob_py_palindrome",
-      "code": "print(42)",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{}",
-      "genericMessage": "Passed",
-      "executionTimeMs": 10,
-      "createdAt": "2026-09-02T10:48:35.313Z"
-    },
-    {
       "id": "sub_2faf2dde",
       "studentId": "usr_student_1",
       "problemId": "prob_py_palindrome",
@@ -1311,19 +1066,6 @@
       "genericMessage": "❌ Program Execution Failed",
       "executionTimeMs": 0,
       "createdAt": "2026-09-02T10:50:05.906Z"
-    },
-    {
-      "id": "sub_886d91d6",
-      "studentId": "usr_253684e1",
-      "problemId": "prob_py_palindrome",
-      "code": "print(42)",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{}",
-      "genericMessage": "Passed",
-      "executionTimeMs": 10,
-      "createdAt": "2026-09-02T10:50:06.255Z"
     },
     {
       "id": "sub_c0cca5d4",
@@ -1365,19 +1107,6 @@
       "createdAt": "2026-09-02T14:51:36.911Z"
     },
     {
-      "id": "sub_48c88db6",
-      "studentId": "usr_076329eb",
-      "problemId": "prob_py_palindrome",
-      "code": "print(42)",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{}",
-      "genericMessage": "Passed",
-      "executionTimeMs": 10,
-      "createdAt": "2026-09-02T14:51:37.664Z"
-    },
-    {
       "id": "sub_3e7f76ed",
       "studentId": "usr_student_1",
       "problemId": "prob_py_palindrome",
@@ -1417,8 +1146,60 @@
       "createdAt": "2026-09-02T15:04:28.154Z"
     },
     {
-      "id": "sub_8c736dcd",
-      "studentId": "usr_3e14a6f5",
+      "id": "sub_d1f2fd40",
+      "studentId": "usr_6deb8247",
+      "problemId": "prob_py_palindrome",
+      "code": "def is_palindrome(s):\n    cleaned = \"\"\n\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n\n    left = 0\n    right = len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n\n    return True\n\n\nif __name__ == \"__main__\":\n    import sys\n\n    lines = sys.stdin.read().strip().splitlines()\n\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":282,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":91},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":91},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":100}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 282,
+      "createdAt": "2026-09-02T15:16:21.599Z"
+    },
+    {
+      "id": "sub_614bb81e",
+      "studentId": "usr_student_1",
+      "problemId": "prob_py_palindrome",
+      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
+      "language": "python",
+      "status": "EXECUTION_FAILED",
+      "pass": false,
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":146,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
+      "genericMessage": "❌ Program Execution Failed",
+      "executionTimeMs": 146,
+      "createdAt": "2026-09-02T15:33:16.486Z"
+    },
+    {
+      "id": "sub_4e9bcc79",
+      "studentId": "usr_student_1",
+      "problemId": "prob_py_palindrome",
+      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":225,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":79},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":73},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":73}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 225,
+      "createdAt": "2026-09-02T15:33:17.201Z"
+    },
+    {
+      "id": "sub_522e670c",
+      "studentId": "usr_student_1",
+      "problemId": "prob_empty_tc_test",
+      "code": "print(\"hello\")",
+      "language": "python",
+      "status": "EXECUTION_FAILED",
+      "pass": false,
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Problem has no test cases configured\",\"rawError\":\"Problem has no test cases configured\",\"testResults\":[{\"testCaseIndex\":0,\"isHidden\":false,\"passed\":false,\"error\":\"Problem has no test cases configured\"}]}",
+      "genericMessage": "❌ Program Execution Failed",
+      "executionTimeMs": 0,
+      "createdAt": "2026-09-02T15:33:17.206Z"
+    },
+    {
+      "id": "sub_ed7a0a35",
+      "studentId": "usr_e76cc99f",
       "problemId": "prob_py_palindrome",
       "code": "print(42)",
       "language": "python",
@@ -1427,7 +1208,7 @@
       "rawOutput": "{}",
       "genericMessage": "Passed",
       "executionTimeMs": 10,
-      "createdAt": "2026-09-02T15:04:29.332Z"
+      "createdAt": "2026-09-02T15:33:17.806Z"
     }
   ],
   "contestSettings": {

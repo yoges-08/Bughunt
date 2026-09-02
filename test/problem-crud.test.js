@@ -4,7 +4,7 @@
 
 import assert from 'assert';
 import { db } from '../server/db.js';
-import { formatTimer } from '../src/utils/time.js';
+import { formatTimer, formatDuration } from '../src/utils/time.js';
 
 let passed = 0;
 let failed = 0;
@@ -33,6 +33,18 @@ async function runTests() {
     assert.strictEqual(formatTimer(60), '01.00');
     assert.strictEqual(formatTimer(959), '15.59');
     assert.strictEqual(formatTimer(958), '15.58');
+  });
+
+  // --- formatDuration tests ---
+  it('formatDuration formats seconds, minutes, and hours accurately', () => {
+    assert.strictEqual(formatDuration(null), '--');
+    assert.strictEqual(formatDuration(undefined), '--');
+    assert.strictEqual(formatDuration(0), '0s');
+    assert.strictEqual(formatDuration(45), '45s');
+    assert.strictEqual(formatDuration(60), '1m 00s');
+    assert.strictEqual(formatDuration(75), '1m 15s');
+    assert.strictEqual(formatDuration(252), '4m 12s');
+    assert.strictEqual(formatDuration(3665), '1h 1m 5s');
   });
 
   // Create a problem for testing

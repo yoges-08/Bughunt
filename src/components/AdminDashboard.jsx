@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
+import { formatDuration } from '../utils/time';
 import HostBanner from './HostBanner';
 
 export default function AdminDashboard({ user, onLogout }) {
@@ -915,11 +916,17 @@ export default function AdminDashboard({ user, onLogout }) {
                           <td className="py-4 px-4">
                             {s.hasPassed ? (
                               <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Solved
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span>Solved {s.timeTakenSeconds !== null && s.timeTakenSeconds !== undefined ? `(${formatDuration(s.timeTakenSeconds)})` : ''}</span>
                               </span>
                             ) : s.assignment?.status === 'expired' ? (
                               <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit" title="Contest timer expired with no submission">
                                 <Clock className="w-3.5 h-3.5" /> Timed Out
+                              </span>
+                            ) : s.assignment?.hasSubmitted ? (
+                              <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Submitted {s.timeTakenSeconds !== null && s.timeTakenSeconds !== undefined ? `(${formatDuration(s.timeTakenSeconds)})` : ''}</span>
                               </span>
                             ) : s.assignment ? (
                               <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1.5 w-fit">
@@ -937,7 +944,7 @@ export default function AdminDashboard({ user, onLogout }) {
                             </span>
                           </td>
 
-                          {/* Actions: Equal button dimensions & alignment */}
+                          {/* Actions: Details & Remove (Push button removed per request) */}
                           <td className="py-4 px-4 text-right">
                             <div className="flex items-center justify-end gap-2">
                               {/* Details button: equal w-20 h-8 */}
@@ -948,19 +955,6 @@ export default function AdminDashboard({ user, onLogout }) {
                               >
                                 <Eye className="w-3.5 h-3.5 text-blue-400" />
                                 <span>Details</span>
-                              </button>
-
-                              {/* Push action button: equal w-20 h-8 */}
-                              <button
-                                onClick={() => {
-                                  setSelectedStudentId(s.id);
-                                  handlePushProblem(s.id);
-                                }}
-                                className="w-20 h-8 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 rounded-lg text-xs font-semibold border border-emerald-500/20 hover:border-emerald-500 transition flex items-center justify-center gap-1.5"
-                                title="Push Selected Problem to this student"
-                              >
-                                <Send className="w-3.5 h-3.5" />
-                                <span>Push</span>
                               </button>
 
                               {/* Remove action button: equal w-20 h-8 */}
@@ -1235,6 +1229,29 @@ export default function AdminDashboard({ user, onLogout }) {
                         Status: {selectedStudentDetails.assignment.status === 'expired' ? '⏱️ Timed Out (No submission)' : selectedStudentDetails.assignment.status}
                       </span>
                     </div>
+
+                    {/* Time Taken to Finish Highlight */}
+                    {selectedStudentDetails.timeTakenSeconds !== null && selectedStudentDetails.timeTakenSeconds !== undefined ? (
+                      <div className="mt-3 p-3 rounded-xl bg-surface-900 border border-emerald-500/30 flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
+                          <Clock className="w-4 h-4" />
+                          <span>Time Taken to Finish Problem:</span>
+                        </div>
+                        <span className="font-mono text-white font-bold text-sm bg-emerald-500/20 px-3 py-1 rounded-lg border border-emerald-500/40 shadow-sm">
+                          {formatDuration(selectedStudentDetails.timeTakenSeconds)}
+                        </span>
+                      </div>
+                    ) : selectedStudentDetails.assignment ? (
+                      <div className="mt-3 p-2.5 rounded-xl bg-surface-900 border border-slate-800 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2 text-slate-400 font-medium">
+                          <Clock className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Status:</span>
+                        </div>
+                        <span className="font-mono text-amber-400 font-semibold">
+                          In Progress (Not yet finished)
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
                 ) : (
                   <div className="text-slate-500 italic">No problem currently assigned to this student.</div>
@@ -1281,8 +1298,18 @@ export default function AdminDashboard({ user, onLogout }) {
                         <div className="font-bold text-slate-200 text-xs">
                           {sub.problemTitle || 'Submission'}
                         </div>
-                        <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                          {new Date(sub.createdAt).toLocaleTimeString()} • {sub.executionTimeMs}ms
+                        <div className="text-[10px] text-slate-500 font-mono mt-0.5 flex items-center gap-2 flex-wrap">
+                          <span>{new Date(sub.createdAt).toLocaleTimeString()}</span>
+                          {sub.elapsedSeconds !== null && sub.elapsedSeconds !== undefined && (
+                            <>
+                              <span>•</span>
+                              <span className="text-emerald-400 font-semibold">
+                                Time taken: {formatDuration(sub.elapsedSeconds)}
+                              </span>
+                            </>
+                          )}
+                          <span>•</span>
+                          <span>{sub.executionTimeMs}ms execution</span>
                         </div>
                       </div>
                       <div>

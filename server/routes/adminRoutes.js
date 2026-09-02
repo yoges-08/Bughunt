@@ -45,6 +45,16 @@ router.get('/students', (req, res) => {
     const submissions = db.getStudentSubmissions(student.id);
     const hasPassed = submissions.some(s => s.pass);
 
+    let timeTakenSeconds = null;
+    if (assignment && assignment.assignedAt) {
+      const assignedTime = new Date(assignment.assignedAt).getTime();
+      const relevantSubs = submissions.filter(s => new Date(s.createdAt).getTime() >= assignedTime);
+      const finishSub = relevantSubs.find(s => s.pass) || relevantSubs[0];
+      if (finishSub) {
+        timeTakenSeconds = Math.max(0, Math.floor((new Date(finishSub.createdAt).getTime() - assignedTime) / 1000));
+      }
+    }
+
     return {
       ...student,
       isOnline,
@@ -57,10 +67,12 @@ router.get('/students', (req, res) => {
         assignedAt: assignment.assignedAt,
         expiresAt: assignment.expiresAt,
         durationMinutes: assignment.durationMinutes,
-        hasSubmitted: assignment.hasSubmitted
+        hasSubmitted: assignment.hasSubmitted,
+        timeTakenSeconds
       } : null,
       submissionsCount: submissions.length,
-      hasPassed
+      hasPassed,
+      timeTakenSeconds
     };
   });
 
@@ -175,6 +187,28 @@ router.get('/students/:id/details', (req, res) => {
   const assignment = db.getStudentAssignment(student.id);
   const submissions = db.getSubmissionsForAdmin().filter(s => s.studentId === student.id);
 
+  let timeTakenSeconds = null;
+  if (assignment && assignment.assignedAt) {
+    const assignedTime = new Date(assignment.assignedAt).getTime();
+    const relevantSubs = submissions.filter(s => new Date(s.createdAt).getTime() >= assignedTime);
+    const finishSub = relevantSubs.find(s => s.pass) || relevantSubs[0];
+    if (finishSub) {
+      timeTakenSeconds = Math.max(0, Math.floor((new Date(finishSub.createdAt).getTime() - assignedTime) / 1000));
+    }
+  }
+
+  // Enrich each submission with elapsed time since assignment
+  const enrichedSubmissions = submissions.map(sub => {
+    let elapsedSeconds = null;
+    if (assignment && assignment.assignedAt) {
+      elapsedSeconds = Math.max(0, Math.floor((new Date(sub.createdAt).getTime() - new Date(assignment.assignedAt).getTime()) / 1000));
+    }
+    return {
+      ...sub,
+      elapsedSeconds
+    };
+  });
+
   res.json({
     student: {
       id: student.id,
@@ -183,8 +217,12 @@ router.get('/students/:id/details', (req, res) => {
       createdAt: student.createdAt,
       isOnline
     },
-    assignment,
-    submissions
+    assignment: assignment ? {
+      ...assignment,
+      timeTakenSeconds
+    } : null,
+    timeTakenSeconds,
+    submissions: enrichedSubmissions
   });
 });
 
