@@ -2,7 +2,7 @@
  * Compiler & Execution Sandbox Tests
  */
 
-import { executeCode } from '../server/compiler.js';
+import { executeCode, getSanitizedEnv } from '../server/compiler.js';
 
 let passed = 0;
 let failed = 0;
@@ -75,6 +75,35 @@ while True:
   });
   assert(res4.timedOut === true, 'Infinite loop timed out within 1s');
   assert(res4.runtimeSuccess === false, 'Timed out process marked as not successful');
+
+  // Test 5: Sandbox PATH isolation does not leak host PATH (Issue 4)
+  const env = getSanitizedEnv(process.cwd(), 'C:\\tools\\bundled_compiler');
+  assert(!env.PATH.includes(process.env.PATH), 'Sanitized env PATH does NOT inherit full host process.env.PATH');
+
+  const pyPathCheck = `
+import shutil
+print(f"git:{shutil.which('git')}")
+`;
+  const res5 = await executeCode({
+    code: pyPathCheck,
+    language: 'python',
+    timeoutMs: 3000
+  });
+  assert(res5.runtimeSuccess === true, 'Path check script executed successfully');
+  assert(res5.stdout.includes('git:None') || res5.stdout.includes('git: None'), 'Sandboxed Python process cannot resolve host-only binary "git"');
+
+  // Test 6: Non-timeout process termination is not conflated with timeout (Issue 5)
+  const pySignalKill = `
+import os, signal
+os.kill(os.getpid(), signal.SIGTERM)
+`;
+  const res6 = await executeCode({
+    code: pySignalKill,
+    language: 'python',
+    timeoutMs: 3000
+  });
+  assert(res6.runtimeSuccess === false, 'Killed process marked as failed');
+  assert(res6.timedOut === false, 'Killed process is NOT marked as timedOut');
 
   console.log(`\nCompiler Tests Result: ${passed} passed, ${failed} failed.\n`);
   if (failed > 0) process.exit(1);

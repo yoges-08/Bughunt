@@ -22,6 +22,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const [selectedStudentId, setSelectedStudentId] = useState('ALL');
   const [pushLoading, setPushLoading] = useState(false);
   const [pushSuccessMsg, setPushSuccessMsg] = useState('');
+  const [keepStudentCode, setKeepStudentCode] = useState(false); // Issue 3: keep draft code on re-assign (unchecked by default)
 
   // Student Search & Filtering
   const [studentSearch, setStudentSearch] = useState('');
@@ -198,10 +199,13 @@ export default function AdminDashboard({ user, onLogout }) {
       const isAll = targetId === 'ALL';
       const targetStudent = students.find(s => s.id === targetId);
 
-      // Issue 2 UX: Confirm if re-pushing same problem to a student already working on it
+      // Issue 3 UX: Confirm if re-pushing same problem to a student already working on it
       if (!isAll && targetStudent?.assignment && targetStudent.assignment.problemId === selectedProblemId) {
+        const actionDesc = keepStudentCode 
+          ? "preserve their current code progress." 
+          : "RESET their code to the fresh starter template.";
         const proceed = window.confirm(
-          `Student "${targetStudent.name}" is already working on "${targetStudent.assignment.title}".\n\nRe-pushing will refresh their timer but preserve their typed code progress.\n\nDo you want to continue?`
+          `Student "${targetStudent.name}" is already working on "${targetStudent.assignment.title}".\n\nRe-pushing will refresh their timer and ${actionDesc}\n\nDo you want to continue?`
         );
         if (!proceed) {
           setPushLoading(false);
@@ -212,7 +216,8 @@ export default function AdminDashboard({ user, onLogout }) {
       const res = await api.assignProblem({
         problemId: selectedProblemId,
         studentId: isAll ? undefined : targetId,
-        assignAll: isAll
+        assignAll: isAll,
+        resetCode: !keepStudentCode
       });
 
       if (isAll) {
@@ -427,11 +432,22 @@ export default function AdminDashboard({ user, onLogout }) {
 
         {/* LAN Problem Push Dispatch Panel */}
         <div className="mx-6 my-4 p-5 bg-surface-900 border border-slate-800 rounded-2xl shadow-xl">
-          <div className="flex items-center gap-2.5 mb-3">
-            <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-200">
-              LAN Problem Dispatch (Direct File Push)
-            </h2>
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-2.5">
+              <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+                LAN Problem Dispatch (Direct File Push)
+              </h2>
+            </div>
+            <label className="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-300 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={keepStudentCode}
+                onChange={(e) => setKeepStudentCode(e.target.checked)}
+                className="w-3.5 h-3.5 rounded border-slate-700 bg-surface-950 text-emerald-500 focus:ring-emerald-500/20 accent-emerald-500"
+              />
+              <span>Keep student's current code on re-assignment</span>
+            </label>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">

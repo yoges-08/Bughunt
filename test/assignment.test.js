@@ -39,24 +39,60 @@ const probB = problems[1];
 const testStudentUsername = `test_asg_${Date.now()}`;
 const student = db.createStudent(testStudentUsername, 'password123', 'Assignment Test Student');
 
-// --- Test Issue 2: Re-pushing problem preserves student draft code ---
+// --- Test Issue 3 & Issue 2: Re-assigning problem code reset & submission re-lock ---
 it('Assigns problem A and sets starter code initially', () => {
   const asg1 = db.assignProblemToStudent(student.id, probA.id);
   assert.strictEqual(asg1.problemId, probA.id);
   assert.strictEqual(asg1.currentCode, probA.starterCode);
 });
 
-it('Student saves draft code and re-assigning problem A preserves progress', () => {
+it('Student saves draft code and re-assigning with resetCode: false preserves progress', () => {
   const myCustomCode = '# Student in-progress solution\ndef solve(): return 42\n';
   db.saveStudentDraftCode(student.id, myCustomCode);
 
   const beforeRepush = db.getStudentAssignment(student.id);
   assert.strictEqual(beforeRepush.currentCode, myCustomCode);
 
-  // Admin re-pushes problem A (e.g. refreshing timer)
-  const asg2 = db.assignProblemToStudent(student.id, probA.id);
+  // Admin re-pushes problem A with explicit resetCode: false
+  const asg2 = db.assignProblemToStudent(student.id, probA.id, false);
   assert.strictEqual(asg2.problemId, probA.id);
-  assert.strictEqual(asg2.currentCode, myCustomCode, 'Draft code MUST NOT be wiped when re-pushing same problem');
+  assert.strictEqual(asg2.currentCode, myCustomCode, 'Draft code MUST NOT be wiped when resetCode: false');
+});
+
+it('Re-assigning same problem with default resetCode: true resets code to starterCode', () => {
+  // Re-push problem A with default resetCode (true)
+  const asgDefault = db.assignProblemToStudent(student.id, probA.id);
+  assert.strictEqual(asgDefault.problemId, probA.id);
+  assert.strictEqual(asgDefault.currentCode, probA.starterCode, 'Draft code MUST be reset to starterCode by default');
+});
+
+it('Submitting problem then re-assigning resets hasSubmitted per assignedAt rule (Issue 2)', () => {
+  // Record a submission for probA
+  db.recordSubmission({
+    studentId: student.id,
+    problemId: probA.id,
+    code: 'print(42)',
+    language: 'python',
+    status: 'SUCCESS',
+    pass: true,
+    rawOutput: '{}',
+    genericMessage: 'Passed',
+    executionTimeMs: 10
+  });
+
+  // Verify that hasSubmitted is now true
+  const beforeReassign = db.getStudentAssignment(student.id);
+  assert.strictEqual(beforeReassign.hasSubmitted, true);
+
+  // Admin re-assigns probA with a fresh timestamp
+  const now = new Date(Date.now() + 5000); // 5s in future
+  const asgNew = db.assignProblemToStudent(student.id, probA.id);
+  asgNew.assignedAt = now.toISOString();
+  db.save();
+
+  // Fresh assignment must allow new submission because past submission is before assignedAt
+  const afterReassign = db.getStudentAssignment(student.id);
+  assert.strictEqual(afterReassign.hasSubmitted, false, 'hasSubmitted must be false after re-assignment');
 });
 
 it('Assigning a genuinely different problem resets draft code to new starter code', () => {
@@ -73,14 +109,17 @@ it('Active assignment with valid timer reports status "assigned"', () => {
 });
 
 it('Expired timer without submission reports status "expired"', () => {
+  const expStudent = db.createStudent(`test_exp_${Date.now()}`, 'password123', 'Expired Student');
+  db.assignProblemToStudent(expStudent.id, probA.id);
+
   // Manually backdate the assignment to simulate timer expiration
-  const rawAsg = db.data.assignments.find(a => a.studentId === student.id);
+  const rawAsg = db.data.assignments.find(a => a.studentId === expStudent.id);
   const pastDate = new Date(Date.now() - 3600 * 1000).toISOString(); // 1 hour ago
   rawAsg.assignedAt = pastDate;
   rawAsg.expiresAt = new Date(Date.now() - 1800 * 1000).toISOString(); // expired 30 mins ago
   db.save();
 
-  const info = db.getStudentAssignment(student.id);
+  const info = db.getStudentAssignment(expStudent.id);
   assert.strictEqual(info.status, 'expired', 'Assignment whose timer expired without submit must report status "expired"');
 });
 

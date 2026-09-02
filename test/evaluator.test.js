@@ -71,6 +71,48 @@ if __name__ == "__main__":
   assert(studentSubs.length >= 2, 'Submissions recorded in DB');
   assert(studentSubs[0].pass === true, 'Latest submission in DB marked as pass');
 
+  // Test 3: Problem with zero test cases must NOT auto-pass (Issue 1)
+  const emptyTcProblem = {
+    id: 'prob_empty_tc_test',
+    title: 'Empty Test Cases Problem',
+    language: 'python',
+    filename: 'empty.py',
+    starterCode: 'print("hello")',
+    testCases: []
+  };
+
+  // Temporarily insert in-memory to test evaluator handling of zero test cases
+  db.data.problems.push(emptyTcProblem);
+
+  const emptyTcSubmission = await evaluateSubmission({
+    studentId: student.id,
+    problemId: emptyTcProblem.id,
+    code: 'print("hello")',
+    language: 'python'
+  });
+
+  assert(emptyTcSubmission.studentResult.success === false, 'Problem with zero test cases does NOT pass');
+  assert(emptyTcSubmission.studentResult.status === 'EXECUTION_FAILED', 'Status is EXECUTION_FAILED for zero test cases');
+  assert(emptyTcSubmission.adminResult.testResults.some(t => t.error.includes('no test cases configured')), 'Admin message reports no test cases configured');
+
+  // Clean up temporary test problem
+  db.data.problems = db.data.problems.filter(p => p.id !== emptyTcProblem.id);
+
+  // Test 4: db.createProblem rejects zero test cases
+  let createRejected = false;
+  try {
+    db.createProblem({
+      title: 'Invalid Problem',
+      language: 'python',
+      filename: 'invalid.py',
+      starterCode: 'print(1)',
+      testCases: []
+    });
+  } catch (err) {
+    createRejected = true;
+  }
+  assert(createRejected === true, 'db.createProblem rejects problem with empty testCases array');
+
   console.log(`\nEvaluator Tests Result: ${passed} passed, ${failed} failed.\n`);
   if (failed > 0) process.exit(1);
 }

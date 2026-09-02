@@ -50,6 +50,19 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
   let rawRuntimeError = '';
   const testResults = [];
 
+  // Issue 1: If problem has zero test cases, do NOT auto-pass
+  if (testCases.length === 0) {
+    allPassed = false;
+    runtimeSuccess = false;
+    rawRuntimeError = 'Problem has no test cases configured';
+    testResults.push({
+      testCaseIndex: 0,
+      isHidden: false,
+      passed: false,
+      error: 'Problem has no test cases configured'
+    });
+  }
+
   for (let i = 0; i < testCases.length; i++) {
     const tc = testCases[i];
     const execResult = await executeCode({

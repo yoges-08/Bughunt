@@ -151,10 +151,10 @@ class ApiService {
     });
   }
 
-  async assignProblem({ problemId, studentId, assignAll }) {
+  async assignProblem({ problemId, studentId, assignAll, resetCode }) {
     return this.request('/api/admin/assign', {
       method: 'POST',
-      body: JSON.stringify({ problemId, studentId, assignAll })
+      body: JSON.stringify({ problemId, studentId, assignAll, resetCode })
     });
   }
 

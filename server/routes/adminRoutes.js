@@ -199,7 +199,8 @@ router.post('/problems', (req, res) => {
  * Admin sends problem file to student or group of students over LAN with live timer.
  */
 router.post('/assign', (req, res) => {
-  const { problemId, studentId, assignAll } = req.body;
+  const { problemId, studentId, assignAll, resetCode } = req.body;
+  const shouldResetCode = resetCode !== false; // Issue 3: default to resetting code to starterCode unless explicitly false
 
   if (!problemId) {
     return res.status(400).json({ error: 'problemId is required' });
@@ -235,7 +236,7 @@ router.post('/assign', (req, res) => {
 
     students.forEach(s => {
       try {
-        db.assignProblemToStudent(s.id, problemId);
+        db.assignProblemToStudent(s.id, problemId, shouldResetCode);
       } catch (err) {
         errors.push({ studentId: s.id, username: s.username, error: err.message });
       }
@@ -259,8 +260,8 @@ router.post('/assign', (req, res) => {
     return res.status(400).json({ error: 'studentId or assignAll must be specified' });
   }
 
-  // Assign to single student in database
-  db.assignProblemToStudent(studentId, problemId);
+  // Assign to single student in database (with configurable resetCode)
+  db.assignProblemToStudent(studentId, problemId, shouldResetCode);
 
   // Push over LAN via WebSocket
   const isOnline = socketManager.pushProblemToStudent(studentId, problemPayload);

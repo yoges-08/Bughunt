@@ -35,19 +35,54 @@ const BUNDLED_COMPILERS = {
 };
 
 /**
- * Build a restricted, isolated environment object for sandboxed subprocesses.
- * Strips all server secrets, database keys, and JWT environment variables.
+ * Helper to locate an executable on the host system PATH.
  */
-function getSanitizedEnv(cwd, extraPath = '') {
+function findExecutableOnSystem(binName) {
   const isWindows = process.platform === 'win32';
-  const basePaths = [extraPath, process.env.PATH].filter(Boolean).join(isWindows ? ';' : ':');
+  const exts = isWindows ? (process.env.PATHEXT || '.EXE;.CMD;.BAT').split(';') : [''];
+  const pathDirs = (process.env.PATH || '').split(isWindows ? ';' : ':');
+
+  for (const dir of pathDirs) {
+    if (!dir) continue;
+    for (const ext of exts) {
+      const full = path.join(dir, binName + (binName.toLowerCase().endsWith(ext.toLowerCase()) ? '' : ext));
+      try {
+        if (fs.existsSync(full)) {
+          return full;
+        }
+      } catch {}
+    }
+  }
+  return null;
+}
+
+/**
+ * Build a restricted, isolated environment object for sandboxed subprocesses.
+ * Issue 4: Strips host process.env.PATH to prevent student code from invoking
+ * arbitrary host utilities. Confinements: only the compiler's directory (extraPath)
+ * plus minimal essential OS runtime directories.
+ */
+export function getSanitizedEnv(cwd, extraPath = '') {
+  const isWindows = process.platform === 'win32';
+  const systemRoot = process.env.SYSTEMROOT || 'C:\\Windows';
+
+  // Minimal system directories required for basic OS primitives / runtime DLL loading
+  const minimalSystemPaths = isWindows
+    ? [
+        path.join(systemRoot, 'System32'),
+        systemRoot,
+        path.join(systemRoot, 'System32', 'Wbem')
+      ]
+    : ['/usr/bin', '/bin', '/usr/local/bin'];
+
+  const basePaths = [extraPath, ...minimalSystemPaths].filter(Boolean).join(isWindows ? ';' : ':');
 
   return {
     PATH: basePaths,
-    SYSTEMROOT: process.env.SYSTEMROOT || 'C:\\Windows',
+    SYSTEMROOT: systemRoot,
     SYSTEMDRIVE: process.env.SYSTEMDRIVE || 'C:',
-    WINDIR: process.env.WINDIR || 'C:\\Windows',
-    COMSPEC: process.env.COMSPEC || 'C:\\Windows\\system32\\cmd.exe',
+    WINDIR: process.env.WINDIR || systemRoot,
+    COMSPEC: process.env.COMSPEC || (isWindows ? 'C:\\Windows\\system32\\cmd.exe' : '/bin/sh'),
     PATHEXT: process.env.PATHEXT || '.COM;.EXE;.BAT;.CMD',
     LOCALAPPDATA: process.env.LOCALAPPDATA,
     APPDATA: process.env.APPDATA,
@@ -60,7 +95,7 @@ function getSanitizedEnv(cwd, extraPath = '') {
 
 /**
  * Locate the compiler executable for the given language.
- * Checks the private bundled directory first, then falls back to system PATH if in dev mode.
+ * Checks the private bundled directory first, then resolves the host executable path in dev mode.
  */
 export function getCompilerPath(lang) {
   const isWindows = process.platform === 'win32';
@@ -69,17 +104,18 @@ export function getCompilerPath(lang) {
   if (lang === 'c') {
     if (fs.existsSync(BUNDLED_COMPILERS.c.gcc)) return BUNDLED_COMPILERS.c.gcc;
     if (fs.existsSync(BUNDLED_COMPILERS.c.tcc)) return BUNDLED_COMPILERS.c.tcc;
-    return `gcc${ext}`;
+    return findExecutableOnSystem(`gcc${ext}`) || `gcc${ext}`;
   }
   
   if (lang === 'cpp') {
     if (fs.existsSync(BUNDLED_COMPILERS.cpp.gpp)) return BUNDLED_COMPILERS.cpp.gpp;
-    return `g++${ext}`;
+    return findExecutableOnSystem(`g++${ext}`) || `g++${ext}`;
   }
 
   if (lang === 'python' || lang === 'py') {
     if (fs.existsSync(BUNDLED_COMPILERS.python.python)) return BUNDLED_COMPILERS.python.python;
-    return isWindows ? 'python' : 'python3';
+    const target = isWindows ? 'python' : 'python3';
+    return findExecutableOnSystem(target) || target;
   }
 
   throw new Error(`Unsupported language: ${lang}`);
@@ -216,7 +252,8 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
       clearTimeout(timer);
       const durationMs = Date.now() - startTime;
 
-      if (timedOut || signal === 'SIGKILL' || signal === 'SIGTERM') {
+      // Issue 5: Only treat true timeout timer triggers as timeouts
+      if (timedOut) {
         resolve({
           runtimeSuccess: false,
           timedOut: true,
@@ -224,6 +261,20 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
           stdout,
           stderr: 'Execution timed out',
           rawError: `Process exceeded execution time limit of ${timeoutMs}ms`,
+          durationMs
+        });
+        return;
+      }
+
+      // Signal-terminated exits (e.g. SIGSEGV, SIGKILL from OS OOM, etc.) are runtime failures, not timeouts
+      if (signal) {
+        resolve({
+          runtimeSuccess: false,
+          timedOut: false,
+          exitCode: -1,
+          stdout,
+          stderr: stderr || `Process terminated by signal ${signal}`,
+          rawError: `Process terminated by signal ${signal}${stderr ? `: ${stderr}` : ''}`,
           durationMs
         });
         return;

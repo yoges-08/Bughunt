@@ -94,10 +94,15 @@ export default function StudentEditor({ user, onLogout }) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Check Single Submission Limit & Expiration
+  // Check Single Submission Limit & Expiration (mirror server assignedAt threshold)
   const currentProblemId = problem?.problemId || problem?.id;
   const hasSubmitted = Boolean(
-    submissions.some(s => s.problemId === currentProblemId) || problem?.hasSubmitted
+    problem?.hasSubmitted ||
+    (problem?.assignedAt &&
+      submissions.some(s =>
+        s.problemId === currentProblemId &&
+        new Date(s.createdAt) >= new Date(problem.assignedAt)
+      ))
   );
   const isTimeExpired = timeLeftSeconds !== null && timeLeftSeconds === 0;
 
@@ -166,6 +171,7 @@ export default function StudentEditor({ user, onLogout }) {
       // Refresh past submissions
       const subs = await api.getStudentSubmissions();
       setSubmissions(subs);
+      setProblem(prev => prev ? { ...prev, hasSubmitted: true } : prev);
 
       // Auto-switch to History tab so student sees their recorded submission in the list
       setActiveTab('history');

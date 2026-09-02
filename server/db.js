@@ -394,6 +394,11 @@ class ContestDatabase {
       throw new Error('Invalid filename: path traversal and directory separators are not allowed');
     }
 
+    // Issue 1: Require at least one test case
+    if (!Array.isArray(testCases) || testCases.length === 0) {
+      throw new Error('Problem must contain at least one test case');
+    }
+
     const validDuration = Math.min(180, Math.max(1, Number(durationMinutes) || 15));
 
     const problem = {
@@ -415,7 +420,7 @@ class ContestDatabase {
   }
 
   // --- Assignments ---
-  assignProblemToStudent(studentId, problemId) {
+  assignProblemToStudent(studentId, problemId, resetCode = true) {
     const problem = this.getProblemById(problemId);
     if (!problem) throw new Error(`Problem ${problemId} not found`);
 
@@ -434,8 +439,8 @@ class ContestDatabase {
       assignment.status = 'assigned';
       assignment.lastUpdated = now.toISOString();
 
-      // Only reset code when switching to a different problem
-      if (!isSameProblem) {
+      // Issue 3: Reset code when switching to a different problem OR when resetCode is true
+      if (!isSameProblem || resetCode) {
         assignment.currentCode = problem.starterCode;
       }
     } else {
