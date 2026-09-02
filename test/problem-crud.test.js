@@ -152,6 +152,47 @@ async function runTests() {
     assert.strictEqual(db.getProblemById(unrefProb.id), undefined);
   });
 
+  // --- Student Deletion Tests ---
+  it('deleteStudent removes student, assignments, and submissions from DB', () => {
+    const student = db.createStudent(`del_student_${Date.now()}`, 'password123', 'Delete Student Test');
+    const dummyProb = db.createProblem({
+      title: 'Prob for Del Student',
+      language: 'python',
+      filename: 'del_prob.py',
+      starterCode: 'pass',
+      testCases: [{ input: '1', expectedOutput: '1' }]
+    });
+
+    db.assignProblemToStudent(student.id, dummyProb.id);
+    db.recordSubmission({
+      studentId: student.id,
+      problemId: dummyProb.id,
+      code: 'pass',
+      language: 'python',
+      status: 'SUCCESS',
+      pass: true,
+      rawOutput: '',
+      genericMessage: 'Passed',
+      executionTimeMs: 10
+    });
+
+    assert(db.findUserById(student.id), 'Student exists before deletion');
+    assert(db.data.assignments.some(a => a.studentId === student.id), 'Assignment exists before deletion');
+    assert(db.data.submissions.some(s => s.studentId === student.id), 'Submission exists before deletion');
+
+    const removed = db.deleteStudent(student.id);
+    assert.strictEqual(removed.id, student.id);
+    assert.strictEqual(db.findUserById(student.id), undefined, 'Student must not exist after deletion');
+    assert(!db.data.assignments.some(a => a.studentId === student.id), 'Assignment must be cleaned up');
+    assert(!db.data.submissions.some(s => s.studentId === student.id), 'Submissions must be cleaned up');
+  });
+
+  it('deleteStudent throws for non-existent student id', () => {
+    assert.throws(() => {
+      db.deleteStudent('non_existent_student_id_888');
+    }, /Student non_existent_student_id_888 not found/);
+  });
+
   console.log(`\nProblem Bank CRUD Tests Result: ${passed} passed, ${failed} failed.\n`);
   if (failed > 0) process.exit(1);
 }

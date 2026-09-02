@@ -140,6 +140,21 @@ class SocketManager {
   }
 
   /**
+   * Forcibly close and remove sockets for a deleted/disconnected student
+   */
+  disconnectStudent(studentId, reason = 'Account removed') {
+    const sockets = this.studentSockets.get(studentId);
+    if (sockets) {
+      for (const ws of sockets) {
+        try {
+          ws.close(4004, reason);
+        } catch {}
+      }
+      this.studentSockets.delete(studentId);
+    }
+  }
+
+  /**
    * Push a problem file directly over LAN to a specific student.
    * 
    * @param {string} studentId

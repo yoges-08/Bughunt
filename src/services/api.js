@@ -140,6 +140,12 @@ class ApiService {
     return this.request(`/api/admin/students/${studentId}/details`);
   }
 
+  async deleteStudent(studentId) {
+    return this.request(`/api/admin/students/${studentId}`, {
+      method: 'DELETE'
+    });
+  }
+
   async getAdminProblems() {
     return this.request('/api/admin/problems');
   }

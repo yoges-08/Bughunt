@@ -365,6 +365,20 @@ class ContestDatabase {
     return { id: student.id, username: student.username, name: student.name };
   }
 
+  deleteStudent(id) {
+    const index = this.data.users.findIndex(u => u.id === id && u.role === 'student');
+    if (index === -1) {
+      throw new Error(`Student ${id} not found`);
+    }
+    const [removed] = this.data.users.splice(index, 1);
+    // Clean up active assignment
+    this.data.assignments = this.data.assignments.filter(a => a.studentId !== id);
+    // Clean up past submissions
+    this.data.submissions = this.data.submissions.filter(s => s.studentId !== id);
+    this.save();
+    return { id: removed.id, username: removed.username, name: removed.name };
+  }
+
   // --- Problems ---
   getAllProblems() {
     return this.data.problems;

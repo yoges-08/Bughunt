@@ -87,6 +87,32 @@ router.post('/students', (req, res) => {
   }
 });
 
+// Delete student account
+router.delete('/students/:id', (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const student = db.findUserById(id);
+    if (!student || student.role !== 'student') {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    const removed = db.deleteStudent(id);
+
+    // Disconnect active socket if student is currently connected
+    socketManager.disconnectStudent(id, 'Account deleted by admin');
+
+    // Broadcast update to all admins
+    socketManager.broadcastToAdmins({
+      type: 'STUDENTS_UPDATED'
+    });
+
+    res.json({ deleted: true, student: removed });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // Bulk create students
 router.post('/students/bulk', (req, res) => {
   const { students: rawStudents, generate } = req.body;

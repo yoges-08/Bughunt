@@ -290,6 +290,23 @@ export default function AdminDashboard({ user, onLogout }) {
     }
   };
 
+  // Remove Student Account
+  const handleRemoveStudent = async (studentId, studentName, studentUsername) => {
+    if (!window.confirm(`Are you sure you want to remove student "${studentName}" (${studentUsername})?\n\nThis will permanently delete their account and associated submissions.`)) {
+      return;
+    }
+    try {
+      await api.deleteStudent(studentId);
+      setStudents(prev => prev.filter(s => s.id !== studentId));
+      if (selectedStudentId === studentId) {
+        setSelectedStudentId('ALL');
+      }
+      loadData();
+    } catch (err) {
+      alert('Failed to remove student: ' + err.message);
+    }
+  };
+
   // Feature 2: Delete Problem with confirmation and reference error handling
   const handleDeleteProblem = async (problemId, title) => {
     if (!window.confirm(`Delete problem "${title}"? This cannot be undone.`)) return;
@@ -945,6 +962,16 @@ export default function AdminDashboard({ user, onLogout }) {
                                 <Send className="w-3.5 h-3.5" />
                                 <span>Push</span>
                               </button>
+
+                              {/* Remove action button: equal w-20 h-8 */}
+                              <button
+                                onClick={() => handleRemoveStudent(s.id, s.name, s.username)}
+                                className="w-20 h-8 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-lg text-xs font-semibold border border-rose-500/20 hover:border-rose-500 transition flex items-center justify-center gap-1.5"
+                                title="Remove Student Account"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                <span>Remove</span>
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -1280,7 +1307,7 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center">
+            <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap justify-between items-center gap-3">
               <button
                 onClick={() => {
                   const studentId = selectedStudentDetails.student.id;
@@ -1293,12 +1320,28 @@ export default function AdminDashboard({ user, onLogout }) {
                 <span>Push Selected Problem to This Student</span>
               </button>
 
-              <button
-                onClick={() => setSelectedStudentDetails(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium border border-slate-700 transition"
-              >
-                Close
-              </button>
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => {
+                    const studentId = selectedStudentDetails.student.id;
+                    const studentName = selectedStudentDetails.student.name;
+                    const studentUsername = selectedStudentDetails.student.username;
+                    setSelectedStudentDetails(null);
+                    handleRemoveStudent(studentId, studentName, studentUsername);
+                  }}
+                  className="px-4 py-2 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-xl text-xs font-semibold border border-rose-500/20 hover:border-rose-500 transition flex items-center gap-1.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Remove Student</span>
+                </button>
+
+                <button
+                  onClick={() => setSelectedStudentDetails(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium border border-slate-700 transition"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
