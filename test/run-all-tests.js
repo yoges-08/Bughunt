@@ -13,7 +13,8 @@ const testFiles = [
   'auth.test.js',
   'compiler.test.js',
   'evaluator.test.js',
-  'assignment.test.js'
+  'assignment.test.js',
+  'problem-crud.test.js'
 ];
 
 async function runTestFile(file) {

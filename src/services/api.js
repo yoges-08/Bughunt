@@ -151,6 +151,19 @@ class ApiService {
     });
   }
 
+  async updateProblem(problemId, problemData) {
+    return this.request(`/api/admin/problems/${problemId}`, {
+      method: 'PUT',
+      body: JSON.stringify(problemData)
+    });
+  }
+
+  async deleteProblem(problemId, force = false) {
+    return this.request(`/api/admin/problems/${problemId}${force ? '?force=true' : ''}`, {
+      method: 'DELETE'
+    });
+  }
+
   async assignProblem({ problemId, studentId, assignAll, resetCode }) {
     return this.request('/api/admin/assign', {
       method: 'POST',

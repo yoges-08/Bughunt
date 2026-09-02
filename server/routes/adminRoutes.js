@@ -193,6 +193,48 @@ router.post('/problems', (req, res) => {
   }
 });
 
+// Feature 3: Update existing problem
+router.put('/problems/:id', (req, res) => {
+  const { id } = req.params;
+  const { title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes } = req.body;
+
+  try {
+    const updated = db.updateProblem(id, {
+      title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes
+    });
+    res.json(updated);
+  } catch (err) {
+    if (err.message.includes('not found')) {
+      return res.status(404).json({ error: err.message });
+    }
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Feature 2: Delete problem with assignment/submission reference guardrail
+router.delete('/problems/:id', (req, res) => {
+  const { id } = req.params;
+  const { force } = req.query;
+
+  const assignedCount = db.data.assignments.filter(a => a.problemId === id).length;
+  const submissionCount = db.data.submissions.filter(s => s.problemId === id).length;
+
+  if ((assignedCount > 0 || submissionCount > 0) && force !== 'true') {
+    return res.status(409).json({
+      error: `Cannot delete problem: it is currently referenced by ${assignedCount} assignment(s) and ${submissionCount} submission(s).`,
+      assignedCount,
+      submissionCount
+    });
+  }
+
+  try {
+    const removed = db.deleteProblem(id);
+    res.json({ deleted: true, problem: removed });
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
 // --- LAN File Push / Problem Assignment ---
 /**
  * CORE REQUIREMENT 1:

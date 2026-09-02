@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
+import { formatTimer } from '../utils/time';
 
 export default function StudentEditor({ user, onLogout }) {
   const [problem, setProblem] = useState(null);
@@ -85,14 +86,6 @@ export default function StudentEditor({ user, onLogout }) {
 
     return () => clearInterval(interval);
   }, [problem]);
-
-  // Format timer as MM:SS
-  const formatTimer = (totalSeconds) => {
-    if (totalSeconds === null || totalSeconds === undefined) return '--:--';
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   // Check Single Submission Limit & Expiration (mirror server assignedAt threshold)
   const currentProblemId = problem?.problemId || problem?.id;

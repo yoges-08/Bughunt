@@ -419,6 +419,66 @@ class ContestDatabase {
     return problem;
   }
 
+  // Feature 3: Update existing problem
+  updateProblem(id, { title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes }) {
+    const problem = this.getProblemById(id);
+    if (!problem) throw new Error(`Problem ${id} not found`);
+
+    if (title !== undefined) {
+      const cleanTitle = title.trim();
+      if (cleanTitle.length < 2 || cleanTitle.length > 100) {
+        throw new Error('Problem title must be between 2 and 100 characters');
+      }
+      problem.title = cleanTitle;
+    }
+
+    if (language !== undefined) {
+      const cleanLang = language.toLowerCase().trim();
+      if (!['python', 'py', 'c', 'cpp', 'c++'].includes(cleanLang)) {
+        throw new Error('Language must be one of: python, c, cpp');
+      }
+      problem.language = cleanLang === 'py' ? 'python' : cleanLang === 'c++' ? 'cpp' : cleanLang;
+    }
+
+    if (filename !== undefined) {
+      const basename = path.basename(filename.trim());
+      if (!basename || basename !== filename.trim() || basename.includes('..')) {
+        throw new Error('Invalid filename: path traversal and directory separators are not allowed');
+      }
+      problem.filename = basename;
+    }
+
+    if (description !== undefined) problem.description = description.trim();
+    if (starterCode !== undefined) problem.starterCode = starterCode;
+
+    if (testCases !== undefined) {
+      if (!Array.isArray(testCases) || testCases.length === 0) {
+        throw new Error('Problem must contain at least one test case');
+      }
+      problem.testCases = testCases;
+    }
+
+    if (timeLimitMs !== undefined) problem.timeLimitMs = Number(timeLimitMs) || problem.timeLimitMs;
+    if (durationMinutes !== undefined) {
+      problem.durationMinutes = Math.min(180, Math.max(1, Number(durationMinutes) || problem.durationMinutes));
+    }
+
+    problem.updatedAt = new Date().toISOString();
+    this.save();
+    return problem;
+  }
+
+  // Feature 2: Delete existing problem
+  deleteProblem(id) {
+    const index = this.data.problems.findIndex(p => p.id === id);
+    if (index === -1) {
+      throw new Error(`Problem ${id} not found`);
+    }
+    const [removed] = this.data.problems.splice(index, 1);
+    this.save();
+    return removed;
+  }
+
   // --- Assignments ---
   assignProblemToStudent(studentId, problemId, resetCode = true) {
     const problem = this.getProblemById(problemId);

@@ -4,7 +4,7 @@ import {
   RefreshCw, LogOut, Radio, Eye, Code, Terminal, Layers, AlertTriangle, Check,
   Search, Filter, Copy, FileText, Sparkles, Download, CheckCheck,
   ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, ChevronLeft, ChevronRight,
-  ArrowUp, ArrowDown
+  ArrowUp, ArrowDown, Pencil, Trash2
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
@@ -50,6 +50,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const [copiedCode, setCopiedCode] = useState(false);
 
   const [showAddProblemModal, setShowAddProblemModal] = useState(false);
+  const [editingProblemId, setEditingProblemId] = useState(null); // null = create mode, id = edit mode
   const [newProblemData, setNewProblemData] = useState({
     title: '',
     language: 'python',
@@ -289,8 +290,61 @@ export default function AdminDashboard({ user, onLogout }) {
     }
   };
 
-  // Create Problem
-  const handleCreateProblem = async (e) => {
+  // Feature 2: Delete Problem with confirmation and reference error handling
+  const handleDeleteProblem = async (problemId, title) => {
+    if (!window.confirm(`Delete problem "${title}"? This cannot be undone.`)) return;
+    try {
+      await api.deleteProblem(problemId);
+      setProblems(prev => prev.filter(p => p.id !== problemId));
+      if (selectedProblemId === problemId) {
+        const remaining = problems.filter(p => p.id !== problemId);
+        setSelectedProblemId(remaining.length > 0 ? remaining[0].id : '');
+      }
+    } catch (err) {
+      if (err.message.includes('referenced by')) {
+        const forceDelete = window.confirm(
+          `${err.message}\n\nDelete anyway? Existing submissions will be kept for records, but future re-pushes of this problem will fail.`
+        );
+        if (forceDelete) {
+          try {
+            await api.deleteProblem(problemId, true);
+            setProblems(prev => prev.filter(p => p.id !== problemId));
+            if (selectedProblemId === problemId) {
+              const remaining = problems.filter(p => p.id !== problemId);
+              setSelectedProblemId(remaining.length > 0 ? remaining[0].id : '');
+            }
+          } catch (forceErr) {
+            alert('Failed to force-delete problem: ' + forceErr.message);
+          }
+        }
+      } else {
+        alert('Failed to delete problem: ' + err.message);
+      }
+    }
+  };
+
+  // Feature 3: Open Edit Problem Modal
+  const handleOpenEditProblem = (p) => {
+    const visibleTc = (p.testCases || []).find(t => !t.isHidden);
+    const hiddenTc = (p.testCases || []).find(t => t.isHidden);
+    setNewProblemData({
+      title: p.title || '',
+      language: p.language || 'python',
+      filename: p.filename || '',
+      description: p.description || '',
+      starterCode: p.starterCode || '',
+      durationMinutes: p.durationMinutes || 15,
+      input1: visibleTc?.input || '',
+      output1: visibleTc?.expectedOutput || '',
+      input2: hiddenTc?.input || '',
+      output2: hiddenTc?.expectedOutput || ''
+    });
+    setEditingProblemId(p.id);
+    setShowAddProblemModal(true);
+  };
+
+  // Feature 3: Create or Update Problem
+  const handleSaveProblem = async (e) => {
     e.preventDefault();
     try {
       const testCases = [];
@@ -301,7 +355,12 @@ export default function AdminDashboard({ user, onLogout }) {
         testCases.push({ input: newProblemData.input2, expectedOutput: newProblemData.output2, isHidden: true });
       }
 
-      await api.createProblem({
+      if (testCases.length === 0) {
+        alert('At least one test case with an expected output is required');
+        return;
+      }
+
+      const payload = {
         title: newProblemData.title,
         language: newProblemData.language,
         filename: newProblemData.filename || `solution.${newProblemData.language === 'python' ? 'py' : newProblemData.language}`,
@@ -309,8 +368,21 @@ export default function AdminDashboard({ user, onLogout }) {
         starterCode: newProblemData.starterCode,
         durationMinutes: Number(newProblemData.durationMinutes) || 15,
         testCases
-      });
+      };
+
+      if (editingProblemId) {
+        const updated = await api.updateProblem(editingProblemId, payload);
+        setProblems(prev => prev.map(p => p.id === editingProblemId ? updated : p));
+      } else {
+        const created = await api.createProblem(payload);
+        setProblems(prev => [...prev, created]);
+        if (!selectedProblemId) {
+          setSelectedProblemId(created.id);
+        }
+      }
+
       setShowAddProblemModal(false);
+      setEditingProblemId(null);
       setNewProblemData({
         title: '',
         language: 'python',
@@ -325,7 +397,7 @@ export default function AdminDashboard({ user, onLogout }) {
       });
       loadData();
     } catch (err) {
-      alert('Failed to create problem: ' + err.message);
+      alert(`Failed to ${editingProblemId ? 'update' : 'create'} problem: ` + err.message);
     }
   };
 
@@ -967,13 +1039,33 @@ export default function AdminDashboard({ user, onLogout }) {
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-800 flex justify-end">
+                    <div className="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleOpenEditProblem(p)}
+                          className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1 border border-slate-700 transition active:scale-[0.99]"
+                          title="Edit Problem"
+                        >
+                          <Pencil className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Edit</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteProblem(p.id, p.title)}
+                          className="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-xs font-semibold flex items-center gap-1 border border-rose-500/20 transition active:scale-[0.99]"
+                          title="Delete Problem"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+
                       <button
                         onClick={() => {
                           setSelectedProblemId(p.id);
                           setActiveTab('students');
                         }}
-                        className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-700 transition active:scale-[0.99]"
+                        className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition active:scale-[0.99]"
                       >
                         <Send className="w-3.5 h-3.5 text-emerald-400" />
                         <span>Select for LAN Push</span>
@@ -1407,8 +1499,29 @@ export default function AdminDashboard({ user, onLogout }) {
       {showAddProblemModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col p-6 shadow-2xl">
-            <h3 className="text-base font-bold text-white mb-4">Create New Buggy Problem</h3>
-            <form onSubmit={handleCreateProblem} className="space-y-4 text-xs overflow-y-auto flex-1 pr-2">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-base font-bold text-white">
+                  {editingProblemId ? 'Edit Buggy Problem' : 'Create New Buggy Problem'}
+                </h3>
+                {editingProblemId && (
+                  <p className="text-xs text-amber-400 mt-1">
+                    💡 Note: Edits apply to future assignments of this problem. Students currently working on it will not be affected.
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAddProblemModal(false);
+                  setEditingProblemId(null);
+                }}
+                className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleSaveProblem} className="space-y-4 text-xs overflow-y-auto flex-1 pr-2">
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-1">
                   <label className="block text-slate-400 font-semibold mb-1.5">Problem Title</label>
@@ -1536,7 +1649,10 @@ export default function AdminDashboard({ user, onLogout }) {
               <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
                 <button
                   type="button"
-                  onClick={() => setShowAddProblemModal(false)}
+                  onClick={() => {
+                    setShowAddProblemModal(false);
+                    setEditingProblemId(null);
+                  }}
                   className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
                 >
                   Cancel
@@ -1545,7 +1661,7 @@ export default function AdminDashboard({ user, onLogout }) {
                   type="submit"
                   className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-bold transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
                 >
-                  Create & Save
+                  {editingProblemId ? 'Save Changes' : 'Create & Save'}
                 </button>
               </div>
             </form>
