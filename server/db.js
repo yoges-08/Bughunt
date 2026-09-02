@@ -44,8 +44,14 @@ export function verifyPassword(plainPassword, storedHash) {
     return crypto.timingSafeEqual(keyBuffer, derivedKey);
   }
 
-  // Fallback for unmigrated legacy plaintext comparison
-  return plainPassword === storedHash;
+  // Fallback for unmigrated legacy plaintext comparison with timing-safe comparison
+  const a = Buffer.from(plainPassword);
+  const b = Buffer.from(storedHash);
+  if (a.length !== b.length) {
+    crypto.timingSafeEqual(a, a);
+    return false;
+  }
+  return crypto.timingSafeEqual(a, b);
 }
 
 // Initial seed data with default admin, students, and sample bug-hunt problems
@@ -419,13 +425,19 @@ class ContestDatabase {
 
     let assignment = this.data.assignments.find(a => a.studentId === studentId);
     if (assignment) {
+      const isSameProblem = assignment.problemId === problemId;
+
       assignment.problemId = problemId;
       assignment.assignedAt = now.toISOString();
       assignment.expiresAt = expiresAt;
       assignment.durationMinutes = durationMinutes;
-      assignment.currentCode = problem.starterCode;
       assignment.status = 'assigned';
       assignment.lastUpdated = now.toISOString();
+
+      // Only reset code when switching to a different problem
+      if (!isSameProblem) {
+        assignment.currentCode = problem.starterCode;
+      }
     } else {
       assignment = {
         id: `asg_${uuidv4().substring(0, 8)}`,
@@ -458,6 +470,14 @@ class ContestDatabase {
       )
     );
 
+    const expiresAt = assignment.expiresAt
+      || new Date(new Date(assignment.assignedAt).getTime() + (problem.durationMinutes || 15) * 60 * 1000).toISOString();
+
+    const isExpired = Date.now() > new Date(expiresAt).getTime();
+    const effectiveStatus = hasSubmitted
+      ? assignment.status
+      : (isExpired ? 'expired' : 'assigned');
+
     return {
       assignmentId: assignment.id,
       problemId: problem.id,
@@ -467,9 +487,9 @@ class ContestDatabase {
       description: problem.description,
       starterCode: problem.starterCode,
       currentCode: assignment.currentCode,
-      status: assignment.status,
+      status: effectiveStatus,
       assignedAt: assignment.assignedAt,
-      expiresAt: assignment.expiresAt || new Date(new Date(assignment.assignedAt).getTime() + (problem.durationMinutes || 15) * 60 * 1000).toISOString(),
+      expiresAt,
       durationMinutes: problem.durationMinutes || assignment.durationMinutes || 15,
       hasSubmitted,
       sampleTestCase: problem.testCases.find(t => !t.isHidden) || null

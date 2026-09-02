@@ -169,14 +169,14 @@ class SocketManager {
   /**
    * Push problem file to all connected students (Group send)
    */
-  pushProblemToAll(problemData) {
-    const allStudents = db.getAllStudents();
+  pushProblemToAll(problemData, studentIds = null) {
+    const targetIds = studentIds || db.getAllStudents().map(s => s.id);
     const results = [];
 
-    for (const student of allStudents) {
-      db.assignProblemToStudent(student.id, problemData.problemId);
-      const online = this.pushProblemToStudent(student.id, problemData);
-      results.push({ studentId: student.id, username: student.username, online });
+    for (const studentId of targetIds) {
+      const student = db.findUserById(studentId);
+      const online = this.pushProblemToStudent(studentId, problemData);
+      results.push({ studentId, username: student?.username, online });
     }
 
     return results;

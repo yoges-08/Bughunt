@@ -229,17 +229,29 @@ router.post('/assign', (req, res) => {
   };
 
   if (assignAll) {
-    // Assign and push to all students
+    // Assign and push to all students with error capture
     const students = db.getAllStudents();
+    const errors = [];
+
     students.forEach(s => {
-      db.assignProblemToStudent(s.id, problemId);
+      try {
+        db.assignProblemToStudent(s.id, problemId);
+      } catch (err) {
+        errors.push({ studentId: s.id, username: s.username, error: err.message });
+      }
     });
 
-    const results = socketManager.pushProblemToAll(problemPayload);
+    const successfulIds = students
+      .filter(s => !errors.some(e => e.studentId === s.id))
+      .map(s => s.id);
+
+    const results = socketManager.pushProblemToAll(problemPayload, successfulIds);
     socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
+
     return res.json({
-      message: `Assigned problem '${problem.title}' (⏱️ ${durationMinutes} mins) to all students`,
-      results
+      message: `Assigned problem '${problem.title}' (⏱️ ${durationMinutes} mins) to ${successfulIds.length}/${students.length} students`,
+      results,
+      errors
     });
   }
 

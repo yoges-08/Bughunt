@@ -116,6 +116,7 @@ async function compileSource(compilerCmd, args, cwd) {
     const child = spawn(compilerCmd, args, {
       cwd,
       windowsHide: true,
+      detached: process.platform !== 'win32',
       env: getSanitizedEnv(cwd, path.dirname(compilerCmd))
     });
 
@@ -167,6 +168,7 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
     const child = spawn(binaryPath, args, {
       cwd,
       windowsHide: true,
+      detached: process.platform !== 'win32',
       env: getSanitizedEnv(cwd, path.dirname(binaryPath))
     });
 

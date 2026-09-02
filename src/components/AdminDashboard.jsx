@@ -118,7 +118,8 @@ export default function AdminDashboard({ user, onLogout }) {
     if (studentFilter === 'online' && !s.isOnline) return false;
     if (studentFilter === 'offline' && s.isOnline) return false;
     if (studentFilter === 'solved' && !s.hasPassed) return false;
-    if (studentFilter === 'in_progress' && (!s.assignment || s.hasPassed)) return false;
+    if (studentFilter === 'in_progress' && (!s.assignment || s.hasPassed || s.assignment.status === 'expired')) return false;
+    if (studentFilter === 'expired' && s.assignment?.status !== 'expired') return false;
     if (studentFilter === 'unassigned' && s.assignment) return false;
 
     // Search query
@@ -195,6 +196,19 @@ export default function AdminDashboard({ user, onLogout }) {
 
     try {
       const isAll = targetId === 'ALL';
+      const targetStudent = students.find(s => s.id === targetId);
+
+      // Issue 2 UX: Confirm if re-pushing same problem to a student already working on it
+      if (!isAll && targetStudent?.assignment && targetStudent.assignment.problemId === selectedProblemId) {
+        const proceed = window.confirm(
+          `Student "${targetStudent.name}" is already working on "${targetStudent.assignment.title}".\n\nRe-pushing will refresh their timer but preserve their typed code progress.\n\nDo you want to continue?`
+        );
+        if (!proceed) {
+          setPushLoading(false);
+          return;
+        }
+      }
+
       const res = await api.assignProblem({
         problemId: selectedProblemId,
         studentId: isAll ? undefined : targetId,
@@ -615,7 +629,19 @@ export default function AdminDashboard({ user, onLogout }) {
                   }`}
                 >
                   <Clock className="w-3 h-3 text-amber-400" />
-                  <span>In Progress ({students.filter(s => s.assignment && !s.hasPassed).length})</span>
+                  <span>In Progress ({students.filter(s => s.assignment && !s.hasPassed && s.assignment.status !== 'expired').length})</span>
+                </button>
+
+                <button
+                  onClick={() => setStudentFilter('expired')}
+                  className={`px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                    studentFilter === 'expired'
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold'
+                      : 'bg-surface-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  }`}
+                >
+                  <Clock className="w-3 h-3 text-rose-400" />
+                  <span>Timed Out ({students.filter(s => s.assignment?.status === 'expired').length})</span>
                 </button>
 
                 <button
@@ -766,6 +792,10 @@ export default function AdminDashboard({ user, onLogout }) {
                           {s.hasPassed ? (
                             <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
                               <CheckCircle2 className="w-3 h-3" /> Solved
+                            </span>
+                          ) : s.assignment?.status === 'expired' ? (
+                            <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit" title="Contest timer expired with no submission">
+                              <Clock className="w-3 h-3" /> Timed Out
                             </span>
                           ) : s.assignment ? (
                             <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold text-[11px] flex items-center gap-1 w-fit">
@@ -1033,12 +1063,16 @@ export default function AdminDashboard({ user, onLogout }) {
                         {selectedStudentDetails.assignment.language}
                       </span>
                     </div>
-                    <div className="flex gap-4 text-slate-400 text-[11px] font-mono">
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-slate-400 text-[11px] font-mono">
                       <span>Target File: {selectedStudentDetails.assignment.filename}</span>
                       <span>•</span>
                       <span>Assigned: {new Date(selectedStudentDetails.assignment.assignedAt).toLocaleTimeString()}</span>
                       <span>•</span>
                       <span>Duration: {selectedStudentDetails.assignment.durationMinutes}m</span>
+                      <span>•</span>
+                      <span className={selectedStudentDetails.assignment.status === 'expired' ? 'text-rose-400 font-bold' : selectedStudentDetails.assignment.status === 'passed' ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
+                        Status: {selectedStudentDetails.assignment.status === 'expired' ? '⏱️ Timed Out (No submission)' : selectedStudentDetails.assignment.status}
+                      </span>
                     </div>
                   </div>
                 ) : (

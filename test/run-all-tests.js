@@ -12,7 +12,8 @@ const testFiles = [
   'sanitization.test.js',
   'auth.test.js',
   'compiler.test.js',
-  'evaluator.test.js'
+  'evaluator.test.js',
+  'assignment.test.js'
 ];
 
 async function runTestFile(file) {
