@@ -122,10 +122,16 @@ class ApiService {
     return this.request('/api/admin/students');
   }
 
-  async createStudent(username, password, name) {
+  async createStudent(usernameOrPayload, password, name) {
+    let body;
+    if (typeof usernameOrPayload === 'object' && usernameOrPayload !== null) {
+      body = usernameOrPayload;
+    } else {
+      body = { username: usernameOrPayload, password, name };
+    }
     return this.request('/api/admin/students', {
       method: 'POST',
-      body: JSON.stringify({ username, password, name })
+      body: JSON.stringify(body)
     });
   }
 

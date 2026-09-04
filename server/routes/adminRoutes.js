@@ -79,16 +79,46 @@ router.get('/students', (req, res) => {
   res.json(studentsWithStatus);
 });
 
-// Create new student
+// Create new student or team
 router.post('/students', (req, res) => {
-  const { username, password, name } = req.body;
+  const { username, password, name, isTeam, teamName, teammates } = req.body;
 
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
+  if (!password) {
+    return res.status(400).json({ error: 'Password is required' });
+  }
+
+  const effectiveName = (name || teamName || '').trim();
+  if (!effectiveName) {
+    return res.status(400).json({ error: isTeam ? 'Team name is required' : 'Student name is required' });
+  }
+
+  // Auto-generate username from name or teamName if not supplied
+  let finalUsername = (username || '').trim();
+  if (!finalUsername) {
+    const base = effectiveName
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_|_$/g, '') || (isTeam ? 'team' : 'student');
+    finalUsername = base.substring(0, 24);
+    if (finalUsername.length < 3) {
+      finalUsername = `${finalUsername}_${isTeam ? 'team' : 'std'}`;
+    }
+    let candidate = finalUsername;
+    let counter = 1;
+    while (db.data.users.some(u => u.username.toLowerCase() === candidate.toLowerCase())) {
+      candidate = `${finalUsername}_${counter}`;
+      counter++;
+    }
+    finalUsername = candidate;
   }
 
   try {
-    const newStudent = db.createStudent(username, password, name);
+    const newStudent = db.createStudent(finalUsername, password, effectiveName, {
+      isTeam: Boolean(isTeam),
+      teamName: teamName || (isTeam ? effectiveName : null),
+      teammates: teammates || null
+    });
     // Broadcast updated student list
     socketManager.broadcastToAdmins({
       type: 'STUDENTS_UPDATED'
@@ -214,6 +244,9 @@ router.get('/students/:id/details', (req, res) => {
       id: student.id,
       username: student.username,
       name: student.name,
+      isTeam: Boolean(student.isTeam),
+      teamName: student.teamName || null,
+      teammates: student.teammates || null,
       createdAt: student.createdAt,
       isOnline
     },

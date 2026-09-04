@@ -205,6 +205,56 @@ async function runTests() {
     }, /Student non_existent_student_id_888 not found/);
   });
 
+  // --- Solo & Team Student Creation Tests ---
+  it('createStudent creates solo student and allows lookup by username and name', () => {
+    const timestamp = Date.now();
+    const soloUsername = `solo_${timestamp}`;
+    const soloName = `Solo Tester ${timestamp}`;
+    const solo = db.createStudent(soloUsername, 'password123', soloName, { isTeam: false });
+    assert.strictEqual(solo.username, soloUsername);
+    assert.strictEqual(solo.name, soloName);
+    assert.strictEqual(solo.isTeam, false);
+
+    // Test findUserByUsername matching by username
+    const foundByUsername = db.findUserByUsername(soloUsername);
+    assert(foundByUsername, 'Found by username');
+    assert.strictEqual(foundByUsername.id, solo.id);
+
+    // Test findUserByUsername matching by name
+    const foundByName = db.findUserByUsername(soloName);
+    assert(foundByName, 'Found by student name');
+    assert.strictEqual(foundByName.id, solo.id);
+  });
+
+  it('createStudent creates team with teamName and teammates and allows lookup by teamName', () => {
+    const timestamp = Date.now();
+    const teamUsername = `team_${timestamp}`;
+    const teamName = `Binary Titans ${timestamp}`;
+    const team = db.createStudent(teamUsername, 'password123', teamName, {
+      isTeam: true,
+      teamName: teamName,
+      teammates: 'Alice, Bob, Charlie'
+    });
+    assert.strictEqual(team.username, teamUsername);
+    assert.strictEqual(team.name, teamName);
+    assert.strictEqual(team.isTeam, true);
+    assert.strictEqual(team.teamName, teamName);
+    assert.strictEqual(team.teammates, 'Alice, Bob, Charlie');
+
+    // Test lookup by team name
+    const foundByTeam = db.findUserByUsername(teamName);
+    assert(foundByTeam, 'Found by team name');
+    assert.strictEqual(foundByTeam.id, team.id);
+
+    // Test getAllStudents includes team fields
+    const allStudents = db.getAllStudents();
+    const match = allStudents.find(s => s.id === team.id);
+    assert(match, 'Team in student list');
+    assert.strictEqual(match.isTeam, true);
+    assert.strictEqual(match.teamName, teamName);
+    assert.strictEqual(match.teammates, 'Alice, Bob, Charlie');
+  });
+
   console.log(`\nProblem Bank CRUD Tests Result: ${passed} passed, ${failed} failed.\n`);
   if (failed > 0) process.exit(1);
 }

@@ -9,87 +9,274 @@
       "createdAt": "2026-08-29T16:54:14.625Z"
     },
     {
-      "id": "usr_student_1",
+      "id": "usr_3783f9e7",
+      "username": "crud_student_1788539478864",
+      "password": "scrypt$5172dff7b377f64fe4722751d1e6bfab$ed7c0a14e02fe7b076bcee0ad0bd63481f0e28ec783b6c3110a513645ffcc77fbfe32f48176da2f134794f5e6eec1456f73b8d1d823e2c677d3caf88a90cb5da",
+      "role": "student",
+      "name": "CRUD Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:31:18.935Z"
+    },
+    {
+      "id": "usr_04654f37",
+      "username": "ref_student_1788539478947",
+      "password": "scrypt$9f464d949e9571144071beadcae6dba8$c085a12a2d1c3f7a1b5577739cbc7bec9597e30ab833a34d39b443682542cfa73dfe18c14159e73797b4ad53365251248bdb0eea7b0b028941f4b62249971b57",
+      "role": "student",
+      "name": "Ref Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:31:19.007Z"
+    },
+    {
+      "id": "usr_519f7da8",
+      "username": "solo_1788539479107",
+      "password": "scrypt$d65e35851d74da638eaf5e10fdb1c0f3$4187936229adeb6a8f852a4dded0cf79124a8dac91798a77d946ebea200712b660230cf219a62a804760c6e3cafe0b5dc7e039bfab62a89b556a92a27b3fcf65",
+      "role": "student",
+      "name": "Solo Tester",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:31:19.193Z"
+    },
+    {
+      "id": "usr_786b28e2",
+      "username": "team_1788539479197",
+      "password": "scrypt$6ee20bb985195bedbc62b2704ff87848$e73ea61b88716b607a19fc12c6203d6e90f0c9923e5198d43dac1700a8c08c6b6645e9a6c4c5d0ffc06d98154d81fef2de62f266ea6bf4fdb07c791649a2a0e1",
+      "role": "student",
+      "name": "Binary Titans",
+      "isTeam": true,
+      "teamName": "Binary Titans",
+      "teammates": "Alice, Bob, Charlie",
+      "createdAt": "2026-09-04T16:31:19.261Z"
+    },
+    {
+      "id": "usr_84debd3c",
       "username": "student1",
-      "password": "scrypt$fbfdb8f66bfca63d340a8eb56435b9c2$7e5d6f0dd2f4e0905307ed9996430d9d9df7b3564511a00e2d8908d320bb1141b470d34ec76363c052b7e14cf175bd831905c3743e5cabdb5337ab13ca496009",
+      "password": "scrypt$81cb5cc54829a657c3bd464310168598$ce3b4a95fdfb3c2e17e9c31a88a6949769f02a406a1a6c1659eea93bfba5dffeab0637524800ec759739dfe4011c7a69bd39a5a97b878428b570b3a630345720",
       "role": "student",
       "name": "Alice Johnson (Team A)",
-      "createdAt": "2026-08-29T16:54:14.626Z"
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:40:31.925Z"
     },
     {
-      "id": "usr_student_2",
-      "username": "student2",
-      "password": "scrypt$955fe75f28880745f224c76888fcfb90$a0a960e9dafd3c01198588dc3fa12ef8fd6e22fbfaa7a6911c9b4a076c56673388095211421a93ffc3fd99bd3acb57edf5b04431d14d2765f145e4fa3a72575b",
-      "role": "student",
-      "name": "Bob Smith (Team B)",
-      "createdAt": "2026-08-29T16:54:14.626Z"
-    },
-    {
-      "id": "usr_student_3",
-      "username": "student3",
-      "password": "scrypt$92d4b5ad66d175b48931b4e0afed2e71$e8b8ca75b9963620f39590a6d29be9920c71be4101be177aef7a15063f91fc23182d178b7d88525bfbc3d11cadabf49ae7a50a7a1e04ee85ec3a571bdbc5cf30",
-      "role": "student",
-      "name": "Charlie Davis (Team C)",
-      "createdAt": "2026-08-29T16:54:14.626Z"
-    },
-    {
-      "id": "usr_6deb8247",
-      "username": "yoges",
-      "password": "scrypt$d592818dc8510a4518aff8fbb2a8d925$e32d1ec30b274e20138b74dbb67da47fb00d534018fe4de17c36658702175b988019b4ca318b2a8d47f53be2ac4c20fe3fec982944f47b82d5efb9783e61f0f0",
-      "role": "student",
-      "name": "yoges",
-      "createdAt": "2026-09-02T15:11:06.884Z"
-    },
-    {
-      "id": "usr_190e27d2",
-      "username": "crud_student_1788363179402",
-      "password": "scrypt$4f5827a19a44a0a80b9fb73ad76075e0$eea23a19fd343b834c3e6c28a6cb70f1d2102b50aa19ce91cf64a7b9402a307ed0aaf7344f14805c1ef62dcd7a21bf145b7abe3fc74f91bba2ca928397010dd7",
-      "role": "student",
-      "name": "CRUD Student",
-      "createdAt": "2026-09-02T15:32:59.479Z"
-    },
-    {
-      "id": "usr_9de38bb6",
-      "username": "ref_student_1788363179500",
-      "password": "scrypt$874db98fcdb341ffce8c8bb5c3ab6fba$d719c72965460de411ccd22c2ac8f138336fe5a7c15d8a67f3099e205797e966e909dd9d1ffbf3372fbcbf08f35d87f7e30e4f1a0b809f697bd4c47a1648e36d",
-      "role": "student",
-      "name": "Ref Student",
-      "createdAt": "2026-09-02T15:32:59.566Z"
-    },
-    {
-      "id": "usr_e76cc99f",
-      "username": "test_asg_1788363197736",
-      "password": "scrypt$c047d38bd19648b028e84e4daf5e8e8d$38a531651dd0546361b1c16bf66952acae30d6b2503ba13d454b865b29358b394c5c1bfcded9546012bbcdea955ec8e3ca8b69291cec5df5da122b50492a6c63",
+      "id": "usr_18431758",
+      "username": "test_asg_1788540223766",
+      "password": "scrypt$591636648a6e49f7a07bf2a436741d93$98d0138cf0d964121f968dd16dd3ef780365bbf2c317d5ca393c71197859bc16d06cff34e1fb74f23ae18e98fc2d98a788de1031b54392d556ada5f27b03dc07",
       "role": "student",
       "name": "Assignment Test Student",
-      "createdAt": "2026-09-02T15:33:17.789Z"
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:43:43.831Z"
     },
     {
-      "id": "usr_af21920a",
-      "username": "test_exp_1788363197825",
-      "password": "scrypt$483ba24d65d679fe7aa4b2547b421ec6$fee6bd62bcf0a4304d9d5006a2c9b96ce1a9877b4365780b6a9051a9e4390dbfcbe70f1f98325b22063622e9e7be8801e5c561037237f8d7f78ee74a0ce27252",
+      "id": "usr_5826ac7b",
+      "username": "test_exp_1788540223859",
+      "password": "scrypt$ed598918641f24e85d30a0a3d59db18e$818e4c5d67e18dcd0b030693b1a0895d04c5ebd8afd482f41240d48f062784577af2f0be946cb65663c5f334417bd768cfa4ce3f0dc7a11e0abee2e0377a87a9",
       "role": "student",
       "name": "Expired Student",
-      "createdAt": "2026-09-02T15:33:17.937Z"
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:43:43.917Z"
     },
     {
-      "id": "usr_cf4c779c",
-      "username": "crud_student_1788363198379",
-      "password": "scrypt$90452ffbcf00405b66175d0b13d2eed6$f48dfb08de50f1f929a753a9712502b25fbdbc3be4e9bda0457ea0ec73102079ad0d72d5b23c5ae33083e3bea5d367aee9a23ed633fe333fde28bf6294232839",
+      "id": "usr_ab3ab41f",
+      "username": "crud_student_1788540224452",
+      "password": "scrypt$37d5f77312f6ff5b0f735e0301516922$d5a885c6eb391b91340dd52a3031ed7e7cea7440d559f627b2e18558b7f8d2eff779a911e6e98464ed409a4e427ca835187bf6ee3bc0b80da6d542fc964c3b97",
       "role": "student",
       "name": "CRUD Student",
-      "createdAt": "2026-09-02T15:33:18.444Z"
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:43:44.545Z"
     },
     {
-      "id": "usr_74f11463",
-      "username": "ref_student_1788363198459",
-      "password": "scrypt$707922f0e8d2d230e13c4efb68ed4311$6981cd8e6dd120013837f96cb7f93cdd511c99073ed739fc1a78cc64dae5076b11a04eecd0376aca7b0a7badace3841b651343a044bbdf96a6b7fd0ce4a3bbca",
+      "id": "usr_8dd37b86",
+      "username": "ref_student_1788540224557",
+      "password": "scrypt$9102941a1817c2a03cac2b1139d6f14d$73d649a7110005b8972a069806a06fa70233c42c230466f1dad08d4bca6dec649610a2589cc7a4fa3fb9aaaffc6f68e861f422661b372b852a51bf392f9432b4",
       "role": "student",
       "name": "Ref Student",
-      "createdAt": "2026-09-02T15:33:18.513Z"
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:43:44.655Z"
+    },
+    {
+      "id": "usr_9af51335",
+      "username": "solo_1788540224757",
+      "password": "scrypt$b14f381a95c272e993a3c5be499637bc$b0a6445568200e48dddcb5bf987578f321d7587ed14890161b9d2a939c47f0f66a5b0bf5fa2f8eaffb3645f30e9997accbcac5b8e24e4aec9d7974f60c791c9f",
+      "role": "student",
+      "name": "Solo Tester",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:43:44.831Z"
+    },
+    {
+      "id": "usr_14917c2d",
+      "username": "team_1788540224838",
+      "password": "scrypt$aa2bf9656cb0ef9a8127db6432614a52$136ca5c7bb523e3fe2baa49fae66e5fcd013034f64de55a7b95045e43c4cb328b579aaae2ac4810a27f5727d545ee3d2421cd2cd9c433ea474b601be37313476",
+      "role": "student",
+      "name": "Binary Titans",
+      "isTeam": true,
+      "teamName": "Binary Titans",
+      "teammates": "Alice, Bob, Charlie",
+      "createdAt": "2026-09-04T16:43:44.913Z"
+    },
+    {
+      "id": "usr_f265f4de",
+      "username": "crud_student_1788540270495",
+      "password": "scrypt$83ee0b260768b63e17519385b99285d6$6478ecbffda1437bdd62a516669f07ea9acea1d2805b9ccde188d4a9066236b80fa771ea4f8245fd6d37b876f70c17896be058f7b5ef6b60fcf04d649c0ed036",
+      "role": "student",
+      "name": "CRUD Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:30.585Z"
+    },
+    {
+      "id": "usr_1c97d1bb",
+      "username": "ref_student_1788540270601",
+      "password": "scrypt$914aedad142e2a1b4c85685dbacbaea2$e2e2f394d339af06015f8bcd86ce5223f22fafd6af1d06f629bfda5052755b529dbeee257c0b51a22415e92e3b7a2e2516f83c41d68ce688e35a1b7f86f79566",
+      "role": "student",
+      "name": "Ref Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:30.702Z"
+    },
+    {
+      "id": "usr_a27cd391",
+      "username": "solo_1788540270811",
+      "password": "scrypt$53007dd9cfcd500c0ca8be313d6b9749$77f3b12899f6630a5ea8d3199a4cc7f83927943491b90abfff553149a8106920ac86a85b4ef700f1dfefa307ff20626e0cfd48c3e1e06bcd3601a104414140bd",
+      "role": "student",
+      "name": "Solo Tester 1788540270811",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:30.893Z"
+    },
+    {
+      "id": "usr_3c37211d",
+      "username": "team_1788540270897",
+      "password": "scrypt$d93a07164631dae80e357aeba529dede$11c0d11be5b6e574248ad8422d6cd5d268b53ea3db43febd1375d1e4b33633a68d3fda2830b274069c91d423f1c43944169b2adc7c7ec6a16e0bbae556d9c4e3",
+      "role": "student",
+      "name": "Binary Titans 1788540270897",
+      "isTeam": true,
+      "teamName": "Binary Titans 1788540270897",
+      "teammates": "Alice, Bob, Charlie",
+      "createdAt": "2026-09-04T16:44:30.976Z"
+    },
+    {
+      "id": "usr_90489aa9",
+      "username": "test_asg_1788540292109",
+      "password": "scrypt$63deaf6867408241bca8b6bd5fde31d0$c8397cadddca2e2074c33b82ff1cc5424adf7045af8fde72ff5aa0b5ba0def9456db2a11be81bcb585fd9f7441cf0eb5347ca53cba53b6020eb8c81b0d7a9aec",
+      "role": "student",
+      "name": "Assignment Test Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:52.166Z"
+    },
+    {
+      "id": "usr_42107773",
+      "username": "test_exp_1788540292192",
+      "password": "scrypt$b67e95d1f4b16f3ae265e6b32394564f$cdc38855b9a85c0a6a2a427a465a72bd03508cb08f577c9113e55f79d335a7a2cb92b797888e7a8bb97c4bfc19efe502ba061ec1c18b97221835b6f436bcddf4",
+      "role": "student",
+      "name": "Expired Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:52.256Z"
+    },
+    {
+      "id": "usr_9a2cbfe3",
+      "username": "crud_student_1788540292726",
+      "password": "scrypt$4ae40f177718aafc31107478f6bf5a23$26b4598dd5b023bd0b6095bfad2bb95b95dec7fdfaeae751ebc389830a40837afdc777ae5cba7842d9869480625d33bb00020f7498db46ddfad4cdc5c2fb47da",
+      "role": "student",
+      "name": "CRUD Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:52.815Z"
+    },
+    {
+      "id": "usr_f63cdb8a",
+      "username": "ref_student_1788540292843",
+      "password": "scrypt$fbf5dc7bf2daa8b1dced66fc4cf824b1$fce08190e68fadca20d6942bed254cc2dc84d159fc9b443f1961d52685e127f7a7bcafd8071a8930b8e9bea14579bc43bee9a0f65de123511700d27b4c76e9e1",
+      "role": "student",
+      "name": "Ref Student",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:52.905Z"
+    },
+    {
+      "id": "usr_9de35060",
+      "username": "solo_1788540292988",
+      "password": "scrypt$45032dedaa69c2dbf5f899094fd7cfee$b8e4eb070e958bbcf7b231f16e1cf63ba301555e2286904419370e83c9c858bdcec335023e17d9b8e6f56d590921b5c8a5dad2bed103a6880ffb9819417c8ab4",
+      "role": "student",
+      "name": "Solo Tester 1788540292988",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-04T16:44:53.052Z"
+    },
+    {
+      "id": "usr_263acdf1",
+      "username": "team_1788540293055",
+      "password": "scrypt$d9161cc090d192d3cbbe1d1af0f9861e$54adccb2b35d843d92b744f109d98f42b646b6d186740f880827acab3a0b371573ef47eb79e913dcf29f8782536cc1a1c44c735b9ce5f0ff6d8fa7639ed5361c",
+      "role": "student",
+      "name": "Binary Titans 1788540293055",
+      "isTeam": true,
+      "teamName": "Binary Titans 1788540293055",
+      "teammates": "Alice, Bob, Charlie",
+      "createdAt": "2026-09-04T16:44:53.118Z"
     }
   ],
   "problems": [
+    {
+      "id": "prob_3619951f",
+      "title": "Updated Problem Title",
+      "language": "python",
+      "filename": "crud_test.py",
+      "description": "Updated description",
+      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "2",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 2500,
+      "durationMinutes": 30,
+      "createdAt": "2026-09-04T16:31:18.855Z",
+      "updatedAt": "2026-09-04T16:31:18.941Z"
+    },
+    {
+      "id": "prob_939d8d5c",
+      "title": "Prob for Del Student",
+      "language": "python",
+      "filename": "del_prob.py",
+      "description": "",
+      "starterCode": "pass",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "1"
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-04T16:31:19.092Z"
+    },
     {
       "id": "prob_py_palindrome",
       "title": "Fix Palindrome & Whitespace Bug",
@@ -115,66 +302,8 @@
         }
       ],
       "timeLimitMs": 3000,
-      "createdAt": "2026-08-29T16:54:14.626Z"
-    },
-    {
-      "id": "prob_cpp_binary_search",
-      "title": "Fix Binary Search Off-by-One",
-      "language": "cpp",
-      "filename": "binary_search.cpp",
-      "description": "A classic binary search implementation with boundary index bugs and integer overflow issue. Fix it to pass all test cases.",
-      "starterCode": "// Bug Hunt Challenge: Binary Search\n// Fix the bugs so the program returns the 0-based index of target, or -1 if not found.\n\n#include <iostream>\n#include <vector>\n\nint binarySearch(const std::vector<int>& arr, int target) {\n    int left = 0;\n    // BUG 1: Should be arr.size() - 1\n    int right = arr.size(); \n\n    // BUG 2: Condition should be left <= right\n    while (left < right) {\n        int mid = (left + right) / 2;\n        if (arr[mid] == target) {\n            return mid;\n        } else if (arr[mid] < target) {\n            left = mid; // BUG 3: Should be mid + 1\n        } else {\n            right = mid; // BUG 4: Should be mid - 1\n        }\n    }\n    return -1;\n}\n\nint main() {\n    int n, target;\n    if (!(std::cin >> n >> target)) return 0;\n    std::vector<int> arr(n);\n    for (int i = 0; i < n; ++i) {\n        std::cin >> arr[i];\n    }\n    std::cout << binarySearch(arr, target) << std::endl;\n    return 0;\n}\n",
-      "testCases": [
-        {
-          "input": "5 7\n1 3 5 7 9\n",
-          "expectedOutput": "3",
-          "isHidden": false
-        },
-        {
-          "input": "5 1\n1 3 5 7 9\n",
-          "expectedOutput": "0",
-          "isHidden": false
-        },
-        {
-          "input": "5 9\n1 3 5 7 9\n",
-          "expectedOutput": "4",
-          "isHidden": true
-        },
-        {
-          "input": "5 4\n1 3 5 7 9\n",
-          "expectedOutput": "-1",
-          "isHidden": true
-        }
-      ],
-      "timeLimitMs": 3000,
-      "createdAt": "2026-08-29T16:54:14.626Z"
-    },
-    {
-      "id": "prob_c_array_max",
-      "title": "Fix Array Maximum and Memory Bounds",
-      "language": "c",
-      "filename": "array_max.c",
-      "description": "Find the maximum element and its count in an integer array. Fix the initialization bug and out-of-bounds loop.",
-      "starterCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Input: n followed by n integers.\n   Output: \"<max_val> <count>\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1 || n <= 0) return 0;\n    int arr[1000];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
-      "testCases": [
-        {
-          "input": "5\n1 5 3 5 2\n",
-          "expectedOutput": "5 2",
-          "isHidden": false
-        },
-        {
-          "input": "4\n-10 -5 -2 -5\n",
-          "expectedOutput": "-2 1",
-          "isHidden": true
-        },
-        {
-          "input": "3\n7 7 7\n",
-          "expectedOutput": "7 3",
-          "isHidden": true
-        }
-      ],
-      "timeLimitMs": 3000,
-      "createdAt": "2026-08-29T16:54:14.626Z"
+      "durationMinutes": 15,
+      "createdAt": "2026-09-04T16:43:18.129Z"
     },
     {
       "id": "prob_empty_tc_test",
@@ -193,7 +322,7 @@
       "testCases": []
     },
     {
-      "id": "prob_5a68fe79",
+      "id": "prob_a7cc78bc",
       "title": "Updated Problem Title",
       "language": "python",
       "filename": "crud_test.py",
@@ -208,57 +337,11 @@
       ],
       "timeLimitMs": 2500,
       "durationMinutes": 30,
-      "createdAt": "2026-09-02T14:50:49.989Z",
-      "updatedAt": "2026-09-02T14:50:50.088Z"
+      "createdAt": "2026-09-04T16:43:44.446Z",
+      "updatedAt": "2026-09-04T16:43:44.549Z"
     },
     {
-      "id": "prob_empty_tc_test",
-      "title": "Empty Test Cases Problem",
-      "language": "python",
-      "filename": "empty.py",
-      "starterCode": "print(\"hello\")",
-      "testCases": []
-    },
-    {
-      "id": "prob_4d5ac739",
-      "title": "Updated Problem Title",
-      "language": "python",
-      "filename": "crud_test.py",
-      "description": "Updated description",
-      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
-      "testCases": [
-        {
-          "input": "1",
-          "expectedOutput": "2",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 2500,
-      "durationMinutes": 30,
-      "createdAt": "2026-09-02T14:51:38.286Z",
-      "updatedAt": "2026-09-02T14:51:38.375Z"
-    },
-    {
-      "id": "prob_b8c7a7af",
-      "title": "Updated Problem Title",
-      "language": "python",
-      "filename": "crud_test.py",
-      "description": "Updated description",
-      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
-      "testCases": [
-        {
-          "input": "1",
-          "expectedOutput": "2",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 2500,
-      "durationMinutes": 30,
-      "createdAt": "2026-09-02T15:04:07.406Z",
-      "updatedAt": "2026-09-02T15:04:07.553Z"
-    },
-    {
-      "id": "prob_34f35abd",
+      "id": "prob_607db0ee",
       "title": "Prob for Del Student",
       "language": "python",
       "filename": "del_prob.py",
@@ -272,7 +355,43 @@
       ],
       "timeLimitMs": 3000,
       "durationMinutes": 15,
-      "createdAt": "2026-09-02T15:04:07.840Z"
+      "createdAt": "2026-09-04T16:43:44.746Z"
+    },
+    {
+      "id": "prob_ed191491",
+      "title": "Updated Problem Title",
+      "language": "python",
+      "filename": "crud_test.py",
+      "description": "Updated description",
+      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "2",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 2500,
+      "durationMinutes": 30,
+      "createdAt": "2026-09-04T16:44:30.488Z",
+      "updatedAt": "2026-09-04T16:44:30.593Z"
+    },
+    {
+      "id": "prob_e5a6d101",
+      "title": "Prob for Del Student",
+      "language": "python",
+      "filename": "del_prob.py",
+      "description": "",
+      "starterCode": "pass",
+      "testCases": [
+        {
+          "input": "1",
+          "expectedOutput": "1"
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-04T16:44:30.792Z"
     },
     {
       "id": "prob_empty_tc_test",
@@ -283,7 +402,7 @@
       "testCases": []
     },
     {
-      "id": "prob_de177cfb",
+      "id": "prob_7996d0c6",
       "title": "Updated Problem Title",
       "language": "python",
       "filename": "crud_test.py",
@@ -298,11 +417,11 @@
       ],
       "timeLimitMs": 2500,
       "durationMinutes": 30,
-      "createdAt": "2026-09-02T15:04:30.375Z",
-      "updatedAt": "2026-09-02T15:04:30.515Z"
+      "createdAt": "2026-09-04T16:44:52.718Z",
+      "updatedAt": "2026-09-04T16:44:52.836Z"
     },
     {
-      "id": "prob_3b6c2198",
+      "id": "prob_b76c4362",
       "title": "Prob for Del Student",
       "language": "python",
       "filename": "del_prob.py",
@@ -316,708 +435,173 @@
       ],
       "timeLimitMs": 3000,
       "durationMinutes": 15,
-      "createdAt": "2026-09-02T15:04:30.804Z"
-    },
-    {
-      "id": "prob_c74f11c4",
-      "title": "Updated Problem Title",
-      "language": "python",
-      "filename": "crud_test.py",
-      "description": "Updated description",
-      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
-      "testCases": [
-        {
-          "input": "1",
-          "expectedOutput": "2",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 2500,
-      "durationMinutes": 30,
-      "createdAt": "2026-09-02T15:32:59.390Z",
-      "updatedAt": "2026-09-02T15:32:59.491Z"
-    },
-    {
-      "id": "prob_05013a47",
-      "title": "Prob for Del Student",
-      "language": "python",
-      "filename": "del_prob.py",
-      "description": "",
-      "starterCode": "pass",
-      "testCases": [
-        {
-          "input": "1",
-          "expectedOutput": "1"
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-09-02T15:32:59.664Z"
-    },
-    {
-      "id": "prob_empty_tc_test",
-      "title": "Empty Test Cases Problem",
-      "language": "python",
-      "filename": "empty.py",
-      "starterCode": "print(\"hello\")",
-      "testCases": []
-    },
-    {
-      "id": "prob_e974273c",
-      "title": "Updated Problem Title",
-      "language": "python",
-      "filename": "crud_test.py",
-      "description": "Updated description",
-      "starterCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
-      "testCases": [
-        {
-          "input": "1",
-          "expectedOutput": "2",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 2500,
-      "durationMinutes": 30,
-      "createdAt": "2026-09-02T15:33:18.370Z",
-      "updatedAt": "2026-09-02T15:33:18.451Z"
-    },
-    {
-      "id": "prob_b79515c0",
-      "title": "Prob for Del Student",
-      "language": "python",
-      "filename": "del_prob.py",
-      "description": "",
-      "starterCode": "pass",
-      "testCases": [
-        {
-          "input": "1",
-          "expectedOutput": "1"
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-09-02T15:33:18.616Z"
+      "createdAt": "2026-09-04T16:44:52.980Z"
     }
   ],
   "assignments": [
     {
-      "id": "asg_2490a8f1",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T10:10:36.223Z",
-      "status": "passed",
-      "currentCode": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T15:33:17.201Z",
-      "expiresAt": "2026-09-02T10:25:36.223Z",
-      "durationMinutes": 15
-    },
-    {
-      "id": "asg_6203c887",
-      "studentId": "usr_student_2",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-08-29T17:01:42.285Z",
-      "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-08-29T17:01:42.285Z"
-    },
-    {
-      "id": "asg_54809c15",
-      "studentId": "usr_student_3",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-08-29T17:01:42.288Z",
-      "status": "passed",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n\ndef is_palindrome(s):\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n\n    left = 0\n    right = len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n\n    return True\n\n\nif __name__ == \"__main__\":\n    import sys\n\n    lines = sys.stdin.read().strip().splitlines()\n\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n\n\n\n\n\n\n\n\n\n            ",
-      "lastUpdated": "2026-08-30T08:04:08.812Z"
-    },
-    {
-      "id": "asg_c00b796f",
-      "studentId": "usr_6deb8247",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T15:11:15.829Z",
-      "expiresAt": "2026-09-02T15:26:15.829Z",
-      "durationMinutes": 15,
-      "status": "passed",
-      "currentCode": "def is_palindrome(s):\n    cleaned = \"\"\n\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n\n    left = 0\n    right = len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n\n    return True\n\n\nif __name__ == \"__main__\":\n    import sys\n\n    lines = sys.stdin.read().strip().splitlines()\n\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")",
-      "lastUpdated": "2026-09-02T15:16:21.599Z"
-    },
-    {
-      "id": "asg_824bf544",
-      "studentId": "usr_190e27d2",
-      "problemId": "prob_c74f11c4",
-      "assignedAt": "2026-09-02T15:32:59.487Z",
-      "expiresAt": "2026-09-02T16:02:59.487Z",
+      "id": "asg_86cc2600",
+      "studentId": "usr_3783f9e7",
+      "problemId": "prob_3619951f",
+      "assignedAt": "2026-09-04T16:31:18.939Z",
+      "expiresAt": "2026-09-04T17:01:18.939Z",
       "durationMinutes": 30,
       "status": "assigned",
       "currentCode": "# starter code\ndef solve(): pass",
-      "lastUpdated": "2026-09-02T15:32:59.487Z"
+      "lastUpdated": "2026-09-04T16:31:18.939Z"
     },
     {
-      "id": "asg_d2d96c5c",
-      "studentId": "usr_9de38bb6",
-      "problemId": "prob_56a39771",
-      "assignedAt": "2026-09-02T15:32:59.569Z",
-      "expiresAt": "2026-09-02T15:47:59.569Z",
+      "id": "asg_410fd3ea",
+      "studentId": "usr_04654f37",
+      "problemId": "prob_0cc6dfa4",
+      "assignedAt": "2026-09-04T16:31:19.010Z",
+      "expiresAt": "2026-09-04T16:46:19.010Z",
       "durationMinutes": 15,
       "status": "assigned",
       "currentCode": "print(1)",
-      "lastUpdated": "2026-09-02T15:32:59.569Z"
+      "lastUpdated": "2026-09-04T16:31:19.010Z"
     },
     {
-      "id": "asg_df4727ce",
-      "studentId": "usr_e76cc99f",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T15:33:17.821Z",
-      "expiresAt": "2026-09-02T15:48:17.821Z",
-      "durationMinutes": 15,
+      "id": "asg_95f85f7b",
+      "studentId": "usr_18431758",
+      "problemId": "prob_3619951f",
+      "assignedAt": "2026-09-04T16:43:43.856Z",
+      "expiresAt": "2026-09-04T17:13:43.856Z",
+      "durationMinutes": 30,
       "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T15:33:17.821Z"
+      "currentCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "lastUpdated": "2026-09-04T16:43:43.856Z"
     },
     {
-      "id": "asg_c4b0d704",
-      "studentId": "usr_af21920a",
-      "problemId": "prob_py_palindrome",
-      "assignedAt": "2026-09-02T14:33:17.945Z",
-      "expiresAt": "2026-09-02T15:03:17.945Z",
-      "durationMinutes": 15,
+      "id": "asg_e320f475",
+      "studentId": "usr_5826ac7b",
+      "problemId": "prob_3619951f",
+      "assignedAt": "2026-09-04T15:43:43.924Z",
+      "expiresAt": "2026-09-04T16:13:43.924Z",
+      "durationMinutes": 30,
       "status": "assigned",
-      "currentCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "lastUpdated": "2026-09-02T15:33:17.941Z"
+      "currentCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "lastUpdated": "2026-09-04T16:43:43.920Z"
     },
     {
-      "id": "asg_1f7657da",
-      "studentId": "usr_cf4c779c",
-      "problemId": "prob_e974273c",
-      "assignedAt": "2026-09-02T15:33:18.447Z",
-      "expiresAt": "2026-09-02T16:03:18.447Z",
+      "id": "asg_01309178",
+      "studentId": "usr_ab3ab41f",
+      "problemId": "prob_a7cc78bc",
+      "assignedAt": "2026-09-04T16:43:44.547Z",
+      "expiresAt": "2026-09-04T17:13:44.547Z",
       "durationMinutes": 30,
       "status": "assigned",
       "currentCode": "# starter code\ndef solve(): pass",
-      "lastUpdated": "2026-09-02T15:33:18.447Z"
+      "lastUpdated": "2026-09-04T16:43:44.547Z"
     },
     {
-      "id": "asg_f59a76bd",
-      "studentId": "usr_74f11463",
-      "problemId": "prob_d677cff7",
-      "assignedAt": "2026-09-02T15:33:18.518Z",
-      "expiresAt": "2026-09-02T15:48:18.518Z",
+      "id": "asg_7d32cac1",
+      "studentId": "usr_8dd37b86",
+      "problemId": "prob_3fbeaaa5",
+      "assignedAt": "2026-09-04T16:43:44.658Z",
+      "expiresAt": "2026-09-04T16:58:44.658Z",
       "durationMinutes": 15,
       "status": "assigned",
       "currentCode": "print(1)",
-      "lastUpdated": "2026-09-02T15:33:18.518Z"
+      "lastUpdated": "2026-09-04T16:43:44.658Z"
+    },
+    {
+      "id": "asg_bae69d9b",
+      "studentId": "usr_f265f4de",
+      "problemId": "prob_ed191491",
+      "assignedAt": "2026-09-04T16:44:30.589Z",
+      "expiresAt": "2026-09-04T17:14:30.589Z",
+      "durationMinutes": 30,
+      "status": "assigned",
+      "currentCode": "# starter code\ndef solve(): pass",
+      "lastUpdated": "2026-09-04T16:44:30.589Z"
+    },
+    {
+      "id": "asg_4b679993",
+      "studentId": "usr_1c97d1bb",
+      "problemId": "prob_d440dbcb",
+      "assignedAt": "2026-09-04T16:44:30.707Z",
+      "expiresAt": "2026-09-04T16:59:30.707Z",
+      "durationMinutes": 15,
+      "status": "assigned",
+      "currentCode": "print(1)",
+      "lastUpdated": "2026-09-04T16:44:30.707Z"
+    },
+    {
+      "id": "asg_42f291c7",
+      "studentId": "usr_90489aa9",
+      "problemId": "prob_3619951f",
+      "assignedAt": "2026-09-04T16:44:52.189Z",
+      "expiresAt": "2026-09-04T17:14:52.189Z",
+      "durationMinutes": 30,
+      "status": "assigned",
+      "currentCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "lastUpdated": "2026-09-04T16:44:52.189Z"
+    },
+    {
+      "id": "asg_0a0261dd",
+      "studentId": "usr_42107773",
+      "problemId": "prob_3619951f",
+      "assignedAt": "2026-09-04T15:44:52.261Z",
+      "expiresAt": "2026-09-04T16:14:52.261Z",
+      "durationMinutes": 30,
+      "status": "assigned",
+      "currentCode": "# BRAND NEW STARTER CODE v2\ndef solve(): return 999\n",
+      "lastUpdated": "2026-09-04T16:44:52.259Z"
+    },
+    {
+      "id": "asg_203efe69",
+      "studentId": "usr_9a2cbfe3",
+      "problemId": "prob_7996d0c6",
+      "assignedAt": "2026-09-04T16:44:52.833Z",
+      "expiresAt": "2026-09-04T17:14:52.833Z",
+      "durationMinutes": 30,
+      "status": "assigned",
+      "currentCode": "# starter code\ndef solve(): pass",
+      "lastUpdated": "2026-09-04T16:44:52.833Z"
+    },
+    {
+      "id": "asg_12f86511",
+      "studentId": "usr_f63cdb8a",
+      "problemId": "prob_7a2df6cb",
+      "assignedAt": "2026-09-04T16:44:52.907Z",
+      "expiresAt": "2026-09-04T16:59:52.907Z",
+      "durationMinutes": 15,
+      "status": "assigned",
+      "currentCode": "print(1)",
+      "lastUpdated": "2026-09-04T16:44:52.907Z"
     }
   ],
   "submissions": [
     {
-      "id": "sub_e0967e1e",
-      "studentId": "usr_student_1",
+      "id": "sub_aa6df703",
+      "studentId": "usr_84debd3c",
       "problemId": "prob_py_palindrome",
       "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
       "language": "python",
       "status": "EXECUTION_FAILED",
       "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":1289,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788022463260_74pcom\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788022463260_74pcom\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788022463260_74pcom\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788022463260_74pcom\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788022463260_74pcom\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788022463260_74pcom\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":150,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540198139_yll4nr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540198139_yll4nr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540198139_yll4nr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540198139_yll4nr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540198139_yll4nr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540198139_yll4nr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
       "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 1289,
-      "createdAt": "2026-08-29T16:54:24.889Z"
+      "executionTimeMs": 150,
+      "createdAt": "2026-09-04T16:43:18.499Z"
     },
     {
-      "id": "sub_750e8c17",
-      "studentId": "usr_student_1",
+      "id": "sub_816eba33",
+      "studentId": "usr_84debd3c",
       "problemId": "prob_py_palindrome",
       "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
       "language": "python",
       "status": "SUCCESS",
       "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":3652,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1197},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1191},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1264}]}",
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":259,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":79},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":94},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":86}]}",
       "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 3652,
-      "createdAt": "2026-08-29T16:54:31.349Z"
+      "executionTimeMs": 259,
+      "createdAt": "2026-09-04T16:43:19.265Z"
     },
     {
-      "id": "sub_781e0aa4",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":3991,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1319},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1345},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1327}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 3991,
-      "createdAt": "2026-08-29T16:57:14.072Z"
-    },
-    {
-      "id": "sub_3f63c4ab",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":1272,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788024383088_b53hoh\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788024383088_b53hoh\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788024383088_b53hoh\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788024383088_b53hoh\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788024383088_b53hoh\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788024383088_b53hoh\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 1272,
-      "createdAt": "2026-08-29T17:26:24.715Z"
-    },
-    {
-      "id": "sub_00c14b5a",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":3676,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1241},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1208},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1227}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 3676,
-      "createdAt": "2026-08-29T17:26:31.240Z"
-    },
-    {
-      "id": "sub_d69585fa",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":3640,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1219},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1207},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1214}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 3640,
-      "createdAt": "2026-08-29T17:38:32.410Z"
-    },
-    {
-      "id": "sub_c31df954",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":438,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788072822100_b6rvvs\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788072822100_b6rvvs\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788072822100_b6rvvs\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788072822100_b6rvvs\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788072822100_b6rvvs\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788072822100_b6rvvs\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 438,
-      "createdAt": "2026-08-30T06:53:43.054Z"
-    },
-    {
-      "id": "sub_ebe01970",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":900,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":281},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":309},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":310}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 900,
-      "createdAt": "2026-08-30T06:53:45.218Z"
-    },
-    {
-      "id": "sub_7cc7bd40",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":399,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788074122853_ma9k1i\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788074122853_ma9k1i\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788074122853_ma9k1i\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788074122853_ma9k1i\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788074122853_ma9k1i\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788074122853_ma9k1i\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 399,
-      "createdAt": "2026-08-30T07:15:23.750Z"
-    },
-    {
-      "id": "sub_36ad72d8",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":934,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":309},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":336},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":289}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 934,
-      "createdAt": "2026-08-30T07:15:25.946Z"
-    },
-    {
-      "id": "sub_274e0f7a",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":1610,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788075400529_ugaxc3\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788075400529_ugaxc3\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788075400529_ugaxc3\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788075400529_ugaxc3\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788075400529_ugaxc3\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788075400529_ugaxc3\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 1610,
-      "createdAt": "2026-08-30T07:36:42.915Z"
-    },
-    {
-      "id": "sub_4a0805b7",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":4590,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1536},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1526},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1528}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 4590,
-      "createdAt": "2026-08-30T07:36:52.610Z"
-    },
-    {
-      "id": "sub_7eda50cc",
-      "studentId": "usr_student_3",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n\ndef is_palindrome(s):\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n\n    left = 0\n    right = len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n\n    return True\n\n\nif __name__ == \"__main__\":\n    import sys\n\n    lines = sys.stdin.read().strip().splitlines()\n\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n\n\n\n\n\n\n\n\n\n            ",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":4417,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1490},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1452},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1475}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 4417,
-      "createdAt": "2026-08-30T08:00:13.168Z"
-    },
-    {
-      "id": "sub_7f3aab0c",
-      "studentId": "usr_student_3",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n\ndef is_palindrome(s):\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n\n    left = 0\n    right = len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n\n    return True\n\n\nif __name__ == \"__main__\":\n    import sys\n\n    lines = sys.stdin.read().strip().splitlines()\n\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n\n\n\n\n\n\n\n\n\n            ",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":4402,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1475},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1469},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1458}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 4402,
-      "createdAt": "2026-08-30T08:04:08.812Z"
-    },
-    {
-      "id": "sub_bedd058b",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":1434,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788079561434_b24jt0\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788079561434_b24jt0\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788079561434_b24jt0\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788079561434_b24jt0\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788079561434_b24jt0\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788079561434_b24jt0\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 1434,
-      "createdAt": "2026-08-30T08:46:03.522Z"
-    },
-    {
-      "id": "sub_6d9f5e8d",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":4327,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1439},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":1420},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":1468}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 4327,
-      "createdAt": "2026-08-30T08:46:12.495Z"
-    },
-    {
-      "id": "sub_a7616954",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":180,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282243282_4909se\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282243282_4909se\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282243282_4909se\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282243282_4909se\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282243282_4909se\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282243282_4909se\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 180,
-      "createdAt": "2026-09-01T17:04:03.671Z"
-    },
-    {
-      "id": "sub_9ab49735",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":411,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":145},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":134},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":132}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 411,
-      "createdAt": "2026-09-01T17:04:04.667Z"
-    },
-    {
-      "id": "sub_a451a512",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":390,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":129},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":129},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":132}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 390,
-      "createdAt": "2026-09-01T17:06:52.074Z"
-    },
-    {
-      "id": "sub_c5dcd431",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":193,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282426309_sas6ti\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282426309_sas6ti\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282426309_sas6ti\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282426309_sas6ti\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282426309_sas6ti\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788282426309_sas6ti\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 193,
-      "createdAt": "2026-09-01T17:07:06.699Z"
-    },
-    {
-      "id": "sub_6da3a22f",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":419,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":146},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":136},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":137}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 419,
-      "createdAt": "2026-09-01T17:07:07.683Z"
-    },
-    {
-      "id": "sub_4c301c5c",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":186,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283371562_t24b2s\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283371562_t24b2s\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283371562_t24b2s\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283371562_t24b2s\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283371562_t24b2s\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283371562_t24b2s\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 186,
-      "createdAt": "2026-09-01T17:22:51.967Z"
-    },
-    {
-      "id": "sub_841ad86b",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":414,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":149},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":132},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":133}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 414,
-      "createdAt": "2026-09-01T17:22:52.979Z"
-    },
-    {
-      "id": "sub_5c27bd1a",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":416,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":133},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":150},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":133}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 416,
-      "createdAt": "2026-09-01T17:22:55.546Z"
-    },
-    {
-      "id": "sub_6e5fdf35",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":176,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283709390_br1uhf\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283709390_br1uhf\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283709390_br1uhf\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283709390_br1uhf\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283709390_br1uhf\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788283709390_br1uhf\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 176,
-      "createdAt": "2026-09-01T17:28:29.762Z"
-    },
-    {
-      "id": "sub_cd1c5822",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":404,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":140},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":133},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":131}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 404,
-      "createdAt": "2026-09-01T17:28:30.740Z"
-    },
-    {
-      "id": "sub_f6ef659a",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":190,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788284232996_sn4jpb\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788284232996_sn4jpb\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788284232996_sn4jpb\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788284232996_sn4jpb\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788284232996_sn4jpb\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788284232996_sn4jpb\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 190,
-      "createdAt": "2026-09-01T17:37:13.404Z"
-    },
-    {
-      "id": "sub_ba92d2e8",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":436,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":144},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":159},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":133}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 436,
-      "createdAt": "2026-09-01T17:37:14.395Z"
-    },
-    {
-      "id": "sub_498e89c8",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":457,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333412917_xq1u9h\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333412917_xq1u9h\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333412917_xq1u9h\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333412917_xq1u9h\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333412917_xq1u9h\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333412917_xq1u9h\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 457,
-      "createdAt": "2026-09-02T07:16:53.864Z"
-    },
-    {
-      "id": "sub_ed549ce7",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":909,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":232},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":265},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":412}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 909,
-      "createdAt": "2026-09-02T07:16:56.032Z"
-    },
-    {
-      "id": "sub_6180be23",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":901,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":313},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":294},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":294}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 901,
-      "createdAt": "2026-09-02T07:17:12.072Z"
-    },
-    {
-      "id": "sub_5cee24a2",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":391,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333908842_rihrk9\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333908842_rihrk9\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333908842_rihrk9\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333908842_rihrk9\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333908842_rihrk9\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788333908842_rihrk9\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 391,
-      "createdAt": "2026-09-02T07:25:09.678Z"
-    },
-    {
-      "id": "sub_dd688946",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":991,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":419},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":299},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":273}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 991,
-      "createdAt": "2026-09-02T07:25:11.897Z"
-    },
-    {
-      "id": "sub_859f06c8",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":353,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788334530467_zcz3vc\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788334530467_zcz3vc\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788334530467_zcz3vc\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788334530467_zcz3vc\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788334530467_zcz3vc\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788334530467_zcz3vc\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 353,
-      "createdAt": "2026-09-02T07:35:31.218Z"
-    },
-    {
-      "id": "sub_199de653",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":832,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":254},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":250},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":328}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 832,
-      "createdAt": "2026-09-02T07:35:33.110Z"
-    },
-    {
-      "id": "sub_364a9a3b",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":183,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788341062011_7cbjob\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788341062011_7cbjob\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788341062011_7cbjob\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788341062011_7cbjob\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788341062011_7cbjob\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788341062011_7cbjob\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 183,
-      "createdAt": "2026-09-02T09:24:22.386Z"
-    },
-    {
-      "id": "sub_fc79e019",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":395,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":131},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":126},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":138}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 395,
-      "createdAt": "2026-09-02T09:24:23.288Z"
-    },
-    {
-      "id": "sub_7585e998",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":183,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346015348_ashxhz\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346015348_ashxhz\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346015348_ashxhz\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346015348_ashxhz\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346015348_ashxhz\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346015348_ashxhz\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 183,
-      "createdAt": "2026-09-02T10:46:55.771Z"
-    },
-    {
-      "id": "sub_7108e57b",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":427,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":148},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":141},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":138}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 427,
-      "createdAt": "2026-09-02T10:46:56.767Z"
-    },
-    {
-      "id": "sub_ca774078",
-      "studentId": "usr_student_1",
+      "id": "sub_7c363f7e",
+      "studentId": "usr_84debd3c",
       "problemId": "prob_empty_tc_test",
       "code": "print(\"hello\")",
       "language": "python",
@@ -1026,37 +610,37 @@
       "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Problem has no test cases configured\",\"rawError\":\"Problem has no test cases configured\",\"testResults\":[{\"testCaseIndex\":0,\"isHidden\":false,\"passed\":false,\"error\":\"Problem has no test cases configured\"}]}",
       "genericMessage": "❌ Program Execution Failed",
       "executionTimeMs": 0,
-      "createdAt": "2026-09-02T10:46:56.769Z"
+      "createdAt": "2026-09-04T16:43:19.268Z"
     },
     {
-      "id": "sub_2faf2dde",
-      "studentId": "usr_student_1",
+      "id": "sub_19b7671d",
+      "studentId": "usr_84debd3c",
       "problemId": "prob_py_palindrome",
       "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
       "language": "python",
       "status": "EXECUTION_FAILED",
       "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":81,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346205259_nyjh0q\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346205259_nyjh0q\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346205259_nyjh0q\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346205259_nyjh0q\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346205259_nyjh0q\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788346205259_nyjh0q\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":177,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540221884_tr7uac\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540221884_tr7uac\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540221884_tr7uac\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540221884_tr7uac\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540221884_tr7uac\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540221884_tr7uac\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
       "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 81,
-      "createdAt": "2026-09-02T10:50:05.445Z"
+      "executionTimeMs": 177,
+      "createdAt": "2026-09-04T16:43:42.303Z"
     },
     {
-      "id": "sub_bfd116b6",
-      "studentId": "usr_student_1",
+      "id": "sub_e336e30b",
+      "studentId": "usr_84debd3c",
       "problemId": "prob_py_palindrome",
       "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
       "language": "python",
       "status": "SUCCESS",
       "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":139,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":49},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":39},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":51}]}",
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":260,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":88},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":107},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":65}]}",
       "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 139,
-      "createdAt": "2026-09-02T10:50:05.903Z"
+      "executionTimeMs": 260,
+      "createdAt": "2026-09-04T16:43:43.256Z"
     },
     {
-      "id": "sub_33cf6e7e",
-      "studentId": "usr_student_1",
+      "id": "sub_a3a556c4",
+      "studentId": "usr_84debd3c",
       "problemId": "prob_empty_tc_test",
       "code": "print(\"hello\")",
       "language": "python",
@@ -1065,142 +649,12 @@
       "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Problem has no test cases configured\",\"rawError\":\"Problem has no test cases configured\",\"testResults\":[{\"testCaseIndex\":0,\"isHidden\":false,\"passed\":false,\"error\":\"Problem has no test cases configured\"}]}",
       "genericMessage": "❌ Program Execution Failed",
       "executionTimeMs": 0,
-      "createdAt": "2026-09-02T10:50:05.906Z"
+      "createdAt": "2026-09-04T16:43:43.258Z"
     },
     {
-      "id": "sub_c0cca5d4",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":192,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788360695637_qbrh7l\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788360695637_qbrh7l\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788360695637_qbrh7l\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788360695637_qbrh7l\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788360695637_qbrh7l\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788360695637_qbrh7l\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 192,
-      "createdAt": "2026-09-02T14:51:36.051Z"
-    },
-    {
-      "id": "sub_1183daac",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":247,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":83},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":78},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":86}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 247,
-      "createdAt": "2026-09-02T14:51:36.907Z"
-    },
-    {
-      "id": "sub_46da060d",
-      "studentId": "usr_student_1",
-      "problemId": "prob_empty_tc_test",
-      "code": "print(\"hello\")",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Problem has no test cases configured\",\"rawError\":\"Problem has no test cases configured\",\"testResults\":[{\"testCaseIndex\":0,\"isHidden\":false,\"passed\":false,\"error\":\"Problem has no test cases configured\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 0,
-      "createdAt": "2026-09-02T14:51:36.911Z"
-    },
-    {
-      "id": "sub_3e7f76ed",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":335,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788361465915_b6mrvf\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788361465915_b6mrvf\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788361465915_b6mrvf\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788361465915_b6mrvf\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788361465915_b6mrvf\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788361465915_b6mrvf\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 335,
-      "createdAt": "2026-09-02T15:04:26.650Z"
-    },
-    {
-      "id": "sub_394dda60",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":452,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":145},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":167},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":140}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 452,
-      "createdAt": "2026-09-02T15:04:28.149Z"
-    },
-    {
-      "id": "sub_e825d605",
-      "studentId": "usr_student_1",
-      "problemId": "prob_empty_tc_test",
-      "code": "print(\"hello\")",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Problem has no test cases configured\",\"rawError\":\"Problem has no test cases configured\",\"testResults\":[{\"testCaseIndex\":0,\"isHidden\":false,\"passed\":false,\"error\":\"Problem has no test cases configured\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 0,
-      "createdAt": "2026-09-02T15:04:28.154Z"
-    },
-    {
-      "id": "sub_d1f2fd40",
-      "studentId": "usr_6deb8247",
-      "problemId": "prob_py_palindrome",
-      "code": "def is_palindrome(s):\n    cleaned = \"\"\n\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n\n    left = 0\n    right = len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n\n    return True\n\n\nif __name__ == \"__main__\":\n    import sys\n\n    lines = sys.stdin.read().strip().splitlines()\n\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":282,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":91},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":91},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":100}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 282,
-      "createdAt": "2026-09-02T15:16:21.599Z"
-    },
-    {
-      "id": "sub_614bb81e",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":146,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788363196128_94ucxr\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 146,
-      "createdAt": "2026-09-02T15:33:16.486Z"
-    },
-    {
-      "id": "sub_4e9bcc79",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":225,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":79},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":73},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":73}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 225,
-      "createdAt": "2026-09-02T15:33:17.201Z"
-    },
-    {
-      "id": "sub_522e670c",
-      "studentId": "usr_student_1",
-      "problemId": "prob_empty_tc_test",
-      "code": "print(\"hello\")",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Problem has no test cases configured\",\"rawError\":\"Problem has no test cases configured\",\"testResults\":[{\"testCaseIndex\":0,\"isHidden\":false,\"passed\":false,\"error\":\"Problem has no test cases configured\"}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 0,
-      "createdAt": "2026-09-02T15:33:17.206Z"
-    },
-    {
-      "id": "sub_ed7a0a35",
-      "studentId": "usr_e76cc99f",
-      "problemId": "prob_py_palindrome",
+      "id": "sub_c2b2c2dd",
+      "studentId": "usr_18431758",
+      "problemId": "prob_3619951f",
       "code": "print(42)",
       "language": "python",
       "status": "SUCCESS",
@@ -1208,7 +662,59 @@
       "rawOutput": "{}",
       "genericMessage": "Passed",
       "executionTimeMs": 10,
-      "createdAt": "2026-09-02T15:33:17.806Z"
+      "createdAt": "2026-09-04T16:43:43.845Z"
+    },
+    {
+      "id": "sub_21a6c59d",
+      "studentId": "usr_84debd3c",
+      "problemId": "prob_py_palindrome",
+      "code": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
+      "language": "python",
+      "status": "EXECUTION_FAILED",
+      "pass": false,
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":155,\"stdout\":\"\",\"stderr\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540290480_cqvnnq\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540290480_cqvnnq\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"rawError\":\"Runtime error (exit code 1): Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540290480_cqvnnq\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540290480_cqvnnq\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"runtimeFailed\":true,\"exitCode\":1,\"stderr\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540290480_cqvnnq\\\\main.py\\\", line 27, in <module>\\r\\n    print(\\\"YES\\\" if is_palindrome(line) else \\\"NO\\\")\\r\\n                   ~~~~~~~~~~~~~^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\yoges\\\\AppData\\\\Local\\\\Temp\\\\bh_run_1788540290480_cqvnnq\\\\main.py\\\", line 16, in is_palindrome\\r\\n    if cleaned[left] != cleaned[right]:\\r\\n                        ~~~~~~~^^^^^^^\\r\\nIndexError: string index out of range\\r\\n\",\"actualOutput\":\"\"}]}",
+      "genericMessage": "❌ Program Execution Failed",
+      "executionTimeMs": 155,
+      "createdAt": "2026-09-04T16:44:50.843Z"
+    },
+    {
+      "id": "sub_0a27e63c",
+      "studentId": "usr_84debd3c",
+      "problemId": "prob_py_palindrome",
+      "code": "\ndef is_palindrome(s):\n    cleaned = \"\".join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":225,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":73},{\"testCaseIndex\":2,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":72},{\"testCaseIndex\":3,\"isHidden\":true,\"passed\":true,\"actualOutput\":\"YES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nNO\",\"durationMs\":80}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 225,
+      "createdAt": "2026-09-04T16:44:51.567Z"
+    },
+    {
+      "id": "sub_b2d3047e",
+      "studentId": "usr_84debd3c",
+      "problemId": "prob_empty_tc_test",
+      "code": "print(\"hello\")",
+      "language": "python",
+      "status": "EXECUTION_FAILED",
+      "pass": false,
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":false,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Problem has no test cases configured\",\"rawError\":\"Problem has no test cases configured\",\"testResults\":[{\"testCaseIndex\":0,\"isHidden\":false,\"passed\":false,\"error\":\"Problem has no test cases configured\"}]}",
+      "genericMessage": "❌ Program Execution Failed",
+      "executionTimeMs": 0,
+      "createdAt": "2026-09-04T16:44:51.570Z"
+    },
+    {
+      "id": "sub_06984b2b",
+      "studentId": "usr_90489aa9",
+      "problemId": "prob_3619951f",
+      "code": "print(42)",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{}",
+      "genericMessage": "Passed",
+      "executionTimeMs": 10,
+      "createdAt": "2026-09-04T16:44:52.179Z"
     }
   ],
   "contestSettings": {

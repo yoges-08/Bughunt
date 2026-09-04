@@ -275,6 +275,17 @@ class ContestDatabase {
       try {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         this.data = JSON.parse(raw);
+        // Ensure default contest problems exist if missing
+        if (!this.data.problems || this.data.problems.length === 0) {
+          this.data.problems = JSON.parse(JSON.stringify(INITIAL_DB.problems));
+          this.save();
+        } else if (!this.data.problems.some(p => p.id === 'prob_py_palindrome')) {
+          const seed = INITIAL_DB.problems.find(p => p.id === 'prob_py_palindrome');
+          if (seed) {
+            this.data.problems.push(JSON.parse(JSON.stringify(seed)));
+            this.save();
+          }
+        }
         // Automated migration: Hash any legacy plaintext passwords
         this.migratePlaintextPasswords();
       } catch (err) {
@@ -319,7 +330,12 @@ class ContestDatabase {
   // --- Users ---
   findUserByUsername(username) {
     if (!username || typeof username !== 'string') return null;
-    return this.data.users.find(u => u.username.toLowerCase() === username.trim().toLowerCase());
+    const clean = username.trim().toLowerCase();
+    return this.data.users.find(u => 
+      u.username.toLowerCase() === clean || 
+      (u.name && u.name.toLowerCase() === clean) ||
+      (u.teamName && u.teamName.toLowerCase() === clean)
+    );
   }
 
   findUserById(id) {
@@ -330,10 +346,18 @@ class ContestDatabase {
   getAllStudents() {
     return this.data.users
       .filter(u => u.role === 'student')
-      .map(u => ({ id: u.id, username: u.username, name: u.name, createdAt: u.createdAt }));
+      .map(u => ({ 
+        id: u.id, 
+        username: u.username, 
+        name: u.name, 
+        isTeam: Boolean(u.isTeam),
+        teamName: u.teamName || null,
+        teammates: u.teammates || null,
+        createdAt: u.createdAt 
+      }));
   }
 
-  createStudent(username, password, name) {
+  createStudent(username, password, name, extra = {}) {
     const cleanUsername = (username || '').trim();
     const cleanPassword = (password || '').trim();
     const cleanName = (name || '').trim();
@@ -347,9 +371,13 @@ class ContestDatabase {
       throw new Error('Password must be between 4 and 128 characters');
     }
 
-    if (this.findUserByUsername(cleanUsername)) {
+    if (this.data.users.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
       throw new Error(`Username '${cleanUsername}' already exists`);
     }
+
+    const isTeam = Boolean(extra.isTeam);
+    const teamName = extra.teamName ? extra.teamName.trim() : (isTeam ? cleanName : null);
+    const teammates = extra.teammates ? extra.teammates.trim() : null;
 
     const student = {
       id: `usr_${uuidv4().substring(0, 8)}`,
@@ -357,12 +385,22 @@ class ContestDatabase {
       password: hashPassword(cleanPassword),
       role: 'student',
       name: cleanName || cleanUsername,
+      isTeam,
+      teamName,
+      teammates,
       createdAt: new Date().toISOString()
     };
 
     this.data.users.push(student);
     this.save();
-    return { id: student.id, username: student.username, name: student.name };
+    return { 
+      id: student.id, 
+      username: student.username, 
+      name: student.name,
+      isTeam: student.isTeam,
+      teamName: student.teamName,
+      teammates: student.teammates
+    };
   }
 
   deleteStudent(id) {

@@ -25,7 +25,11 @@ const adminUser = db.findUserByUsername('admin');
 assert(adminUser !== undefined, 'Admin user exists in database');
 assert(adminUser.role === 'admin', 'Admin user has role "admin"');
 
-const studentUser = db.findUserByUsername('student1');
+let studentUser = db.findUserByUsername('student1');
+if (!studentUser) {
+  db.createStudent('student1', 'pass1', 'Alice Johnson (Team A)');
+  studentUser = db.findUserByUsername('student1');
+}
 assert(studentUser !== undefined, 'Student user exists in database');
 assert(studentUser.role === 'student', 'Student user has role "student"');
 
