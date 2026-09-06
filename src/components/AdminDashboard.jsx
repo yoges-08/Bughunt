@@ -36,7 +36,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
   // Add Students Modal (Solo vs Team)
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
-  const [studentCreationType, setStudentCreationType] = useState('select'); // 'select', 'solo', or 'team'
+  const [studentCreationType, setStudentCreationType] = useState('solo'); // 'solo' or 'team'
   const [soloStudentData, setSoloStudentData] = useState({ name: '', password: '' });
   const [teamStudentData, setTeamStudentData] = useState({ teamName: '', teammates: '', password: '' });
   const [creationLoading, setCreationLoading] = useState(false);
@@ -701,7 +701,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
                   <button
                     onClick={() => {
-                      setStudentCreationType('select');
+                      setStudentCreationType('solo');
                       setSoloStudentData({ name: '', password: '' });
                       setTeamStudentData({ teamName: '', teammates: '', password: '' });
                       setShowAddStudentModal(true);
@@ -1095,7 +1095,22 @@ export default function AdminDashboard({ user, onLogout }) {
                   Buggy Problem Repository ({problems.length})
                 </h2>
                 <button
-                  onClick={() => setShowAddProblemModal(true)}
+                  onClick={() => {
+                    setEditingProblemId(null);
+                    setNewProblemData({
+                      title: '',
+                      language: 'python',
+                      filename: '',
+                      description: '',
+                      starterCode: '',
+                      durationMinutes: 15,
+                      input1: '',
+                      output1: '',
+                      input2: '',
+                      output2: ''
+                    });
+                    setShowAddProblemModal(true);
+                  }}
                   className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
                 >
                   <Plus className="w-4 h-4 stroke-[2.5]" />
@@ -1465,283 +1480,175 @@ export default function AdminDashboard({ user, onLogout }) {
       {showAddStudentModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
           <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
-            {/* Step 1: Selection Screen (Solo or Team) */}
-            {studentCreationType === 'select' && (
+            <div className="flex justify-between items-center mb-4">
               <div>
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <h3 className="text-base font-bold text-white">Add Students</h3>
-                    <p className="text-xs text-slate-400 mt-0.5">Choose participation format</p>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <User className="w-4 h-4 text-emerald-400" />
+                  <span>Add Students</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">Create a Solo Student or Team account</p>
+              </div>
+              <button
+                onClick={() => setShowAddStudentModal(false)}
+                className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Participation Format Tabs */}
+            <div className="flex bg-surface-950 p-1 rounded-xl border border-slate-800 mb-5">
+              <button
+                type="button"
+                onClick={() => setStudentCreationType('solo')}
+                className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
+                  studentCreationType === 'solo'
+                    ? 'bg-emerald-500 text-slate-950 font-bold shadow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>Solo Student</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setStudentCreationType('team')}
+                className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
+                  studentCreationType === 'team'
+                    ? 'bg-blue-500 text-slate-950 font-bold shadow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>Team Account</span>
+              </button>
+            </div>
+
+            {/* Solo Form */}
+            {studentCreationType === 'solo' && (
+              <form onSubmit={handleCreateSoloStudent} className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Student Name</label>
+                  <input
+                    type="text"
+                    required
+                    autoFocus
+                    value={soloStudentData.name}
+                    onChange={(e) => setSoloStudentData({ ...soloStudentData, name: e.target.value })}
+                    placeholder="e.g. Alice Johnson"
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Password</label>
+                  <input
+                    type="text"
+                    required
+                    value={soloStudentData.password}
+                    onChange={(e) => setSoloStudentData({ ...soloStudentData, password: e.target.value })}
+                    placeholder="e.g. pass123"
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                {soloStudentData.name.trim() && (
+                  <div className="p-2.5 rounded-xl bg-surface-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
+                    <span className="text-slate-500">Login username: </span>
+                    <span className="text-emerald-400 font-semibold">{soloStudentData.name.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}</span>
+                    <span className="text-slate-500 block text-[10px] font-sans mt-0.5">
+                      Student can log in using either their name or username.
+                    </span>
                   </div>
-                  <button
-                    onClick={() => setShowAddStudentModal(false)}
-                    className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
-                  >
-                    ✕
-                  </button>
-                </div>
+                )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
-                  {/* Solo Student Option */}
-                  <button
-                    type="button"
-                    onClick={() => setStudentCreationType('solo')}
-                    className="group p-4 bg-surface-950 hover:bg-slate-800/80 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-left transition flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
-                        <User className="w-5 h-5" />
-                      </div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-emerald-400 transition">
-                        Solo Student
-                      </h4>
-                      <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                        Individual participant with student name and password.
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-emerald-400 font-semibold">
-                      <span>Select Solo</span>
-                      <span>→</span>
-                    </div>
-                  </button>
-
-                  {/* Team Option */}
-                  <button
-                    type="button"
-                    onClick={() => setStudentCreationType('team')}
-                    className="group p-4 bg-surface-950 hover:bg-slate-800/80 border border-slate-800 hover:border-blue-500/50 rounded-xl text-left transition flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-3 group-hover:scale-110 transition-transform">
-                        <Users className="w-5 h-5" />
-                      </div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-blue-400 transition">
-                        Team
-                      </h4>
-                      <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                        Team with team name, teammate names, and password.
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-blue-400 font-semibold">
-                      <span>Select Team</span>
-                      <span>→</span>
-                    </div>
-                  </button>
-                </div>
-
-                <div className="flex justify-end pt-3 border-t border-slate-800">
+                <div className="flex justify-end items-center gap-2 pt-3 border-t border-slate-800">
                   <button
                     type="button"
                     onClick={() => setShowAddStudentModal(false)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium border border-slate-700 transition"
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
                   >
                     Cancel
                   </button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Solo Form */}
-            {studentCreationType === 'solo' && (
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setStudentCreationType('select')}
-                      className="p-1.5 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition"
-                      title="Back to Solo/Team selection"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <div>
-                      <h3 className="text-base font-bold text-white flex items-center gap-1.5">
-                        <User className="w-4 h-4 text-emerald-400" />
-                        <span>Add Solo Student</span>
-                      </h3>
-                      <p className="text-xs text-slate-400">Enter student name and password</p>
-                    </div>
-                  </div>
                   <button
-                    onClick={() => setShowAddStudentModal(false)}
-                    className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
+                    type="submit"
+                    disabled={creationLoading}
+                    className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-bold transition shadow-lg shadow-emerald-500/20 active:scale-[0.99] disabled:opacity-50"
                   >
-                    ✕
+                    {creationLoading ? 'Creating...' : 'Create Student'}
                   </button>
                 </div>
-
-                <form onSubmit={handleCreateSoloStudent} className="space-y-4 text-xs">
-                  <div>
-                    <label className="block text-slate-400 font-semibold mb-1.5">Student Name</label>
-                    <input
-                      type="text"
-                      required
-                      autoFocus
-                      value={soloStudentData.name}
-                      onChange={(e) => setSoloStudentData({ ...soloStudentData, name: e.target.value })}
-                      placeholder="e.g. Alice Johnson"
-                      className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-400 font-semibold mb-1.5">Password</label>
-                    <input
-                      type="text"
-                      required
-                      value={soloStudentData.password}
-                      onChange={(e) => setSoloStudentData({ ...soloStudentData, password: e.target.value })}
-                      placeholder="e.g. pass123"
-                      className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
-                    />
-                  </div>
-
-                  {soloStudentData.name.trim() && (
-                    <div className="p-2.5 rounded-xl bg-surface-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
-                      <span className="text-slate-500">Login username: </span>
-                      <span className="text-emerald-400 font-semibold">{soloStudentData.name.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}</span>
-                      <span className="text-slate-500 block text-[10px] font-sans mt-0.5">
-                        Student can log in using either their name or username.
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center pt-3 border-t border-slate-800">
-                    <button
-                      type="button"
-                      onClick={() => setStudentCreationType('select')}
-                      className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 transition"
-                    >
-                      <span>← Switch to Team</span>
-                    </button>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setShowAddStudentModal(false)}
-                        className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={creationLoading}
-                        className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-bold transition shadow-lg shadow-emerald-500/20 active:scale-[0.99] disabled:opacity-50"
-                      >
-                        {creationLoading ? 'Creating...' : 'Create Student'}
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
+              </form>
             )}
 
-            {/* Step 3: Team Form */}
+            {/* Team Form */}
             {studentCreationType === 'team' && (
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setStudentCreationType('select')}
-                      className="p-1.5 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition"
-                      title="Back to Solo/Team selection"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <div>
-                      <h3 className="text-base font-bold text-white flex items-center gap-1.5">
-                        <Users className="w-4 h-4 text-blue-400" />
-                        <span>Add Team</span>
-                      </h3>
-                      <p className="text-xs text-slate-400">Enter team name, teammates, and password</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setShowAddStudentModal(false)}
-                    className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
-                  >
-                    ✕
-                  </button>
+              <form onSubmit={handleCreateTeam} className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Team Name</label>
+                  <input
+                    type="text"
+                    required
+                    autoFocus
+                    value={teamStudentData.teamName}
+                    onChange={(e) => setTeamStudentData({ ...teamStudentData, teamName: e.target.value })}
+                    placeholder="e.g. Code Titans"
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
+                  />
                 </div>
 
-                <form onSubmit={handleCreateTeam} className="space-y-4 text-xs">
-                  <div>
-                    <label className="block text-slate-400 font-semibold mb-1.5">Team Name</label>
-                    <input
-                      type="text"
-                      required
-                      autoFocus
-                      value={teamStudentData.teamName}
-                      onChange={(e) => setTeamStudentData({ ...teamStudentData, teamName: e.target.value })}
-                      placeholder="e.g. Code Titans"
-                      className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-blue-500"
-                    />
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Teammates Names</label>
+                  <textarea
+                    required
+                    rows={2}
+                    value={teamStudentData.teammates}
+                    onChange={(e) => setTeamStudentData({ ...teamStudentData, teammates: e.target.value })}
+                    placeholder="e.g. Alice Johnson, Bob Smith, Charlie Lee"
+                    className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-blue-500 resize-none"
+                  />
+                  <span className="text-[10px] text-slate-500 block mt-1">Enter member names separated by commas or newlines</span>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Password</label>
+                  <input
+                    type="text"
+                    required
+                    value={teamStudentData.password}
+                    onChange={(e) => setTeamStudentData({ ...teamStudentData, password: e.target.value })}
+                    placeholder="e.g. team123"
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                {teamStudentData.teamName.trim() && (
+                  <div className="p-2.5 rounded-xl bg-surface-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
+                    <span className="text-slate-500">Team login username: </span>
+                    <span className="text-blue-400 font-semibold">{teamStudentData.teamName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}</span>
+                    <span className="text-slate-500 block text-[10px] font-sans mt-0.5">
+                      Team members can log in using either team name or username.
+                    </span>
                   </div>
+                )}
 
-                  <div>
-                    <label className="block text-slate-400 font-semibold mb-1.5">Teammates Names</label>
-                    <textarea
-                      required
-                      rows={2}
-                      value={teamStudentData.teammates}
-                      onChange={(e) => setTeamStudentData({ ...teamStudentData, teammates: e.target.value })}
-                      placeholder="e.g. Alice Johnson, Bob Smith, Charlie Lee"
-                      className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-blue-500 resize-none"
-                    />
-                    <span className="text-[10px] text-slate-500 block mt-1">Enter member names separated by commas or newlines</span>
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-400 font-semibold mb-1.5">Password</label>
-                    <input
-                      type="text"
-                      required
-                      value={teamStudentData.password}
-                      onChange={(e) => setTeamStudentData({ ...teamStudentData, password: e.target.value })}
-                      placeholder="e.g. team123"
-                      className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  {teamStudentData.teamName.trim() && (
-                    <div className="p-2.5 rounded-xl bg-surface-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
-                      <span className="text-slate-500">Team login username: </span>
-                      <span className="text-blue-400 font-semibold">{teamStudentData.teamName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}</span>
-                      <span className="text-slate-500 block text-[10px] font-sans mt-0.5">
-                        Team members can log in using either team name or username.
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center pt-3 border-t border-slate-800">
-                    <button
-                      type="button"
-                      onClick={() => setStudentCreationType('select')}
-                      className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 transition"
-                    >
-                      <span>← Switch to Solo</span>
-                    </button>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setShowAddStudentModal(false)}
-                        className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={creationLoading}
-                        className="px-5 py-2 bg-blue-500 hover:bg-blue-400 text-slate-950 rounded-xl font-bold transition shadow-lg shadow-blue-500/20 active:scale-[0.99] disabled:opacity-50"
-                      >
-                        {creationLoading ? 'Creating...' : 'Create Team'}
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
+                <div className="flex justify-end items-center gap-2 pt-3 border-t border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddStudentModal(false)}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={creationLoading}
+                    className="px-5 py-2 bg-blue-500 hover:bg-blue-400 text-slate-950 rounded-xl font-bold transition shadow-lg shadow-blue-500/20 active:scale-[0.99] disabled:opacity-50"
+                  >
+                    {creationLoading ? 'Creating...' : 'Create Team'}
+                  </button>
+                </div>
+              </form>
             )}
           </div>
         </div>
@@ -1912,6 +1819,7 @@ export default function AdminDashboard({ user, onLogout }) {
                   <input
                     type="text"
                     required
+                    autoFocus
                     value={newProblemData.title}
                     onChange={(e) => setNewProblemData({ ...newProblemData, title: e.target.value })}
                     placeholder="e.g. Fix Stack Underflow"
@@ -1986,22 +1894,22 @@ export default function AdminDashboard({ user, onLogout }) {
                 <div className="col-span-2 font-semibold text-slate-200">Sample Test Case (Visible to Student)</div>
                 <div>
                   <label className="block text-slate-500 mb-1">Sample Input</label>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={2}
                     value={newProblemData.input1}
                     onChange={(e) => setNewProblemData({ ...newProblemData, input1: e.target.value })}
-                    placeholder="e.g. 5\n1 2 3 4 5"
-                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
+                    placeholder="e.g. Race car&#10;madam&#10;hello"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
                   />
                 </div>
                 <div>
                   <label className="block text-slate-500 mb-1">Expected Output</label>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={2}
                     value={newProblemData.output1}
                     onChange={(e) => setNewProblemData({ ...newProblemData, output1: e.target.value })}
-                    placeholder="e.g. 5"
-                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
+                    placeholder="e.g. YES&#10;YES&#10;NO"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
                   />
                 </div>
               </div>
@@ -2010,22 +1918,22 @@ export default function AdminDashboard({ user, onLogout }) {
                 <div className="col-span-2 font-semibold text-slate-200">Hidden Test Case (Evaluator Only)</div>
                 <div>
                   <label className="block text-slate-500 mb-1">Hidden Input</label>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={2}
                     value={newProblemData.input2}
                     onChange={(e) => setNewProblemData({ ...newProblemData, input2: e.target.value })}
-                    placeholder="e.g. 3\n-5 -2 -1"
-                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
+                    placeholder="e.g. A man a plan a canal Panama"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
                   />
                 </div>
                 <div>
                   <label className="block text-slate-500 mb-1">Expected Output</label>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={2}
                     value={newProblemData.output2}
                     onChange={(e) => setNewProblemData({ ...newProblemData, output2: e.target.value })}
-                    placeholder="e.g. -1"
-                    className="w-full h-9 bg-surface-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-slate-200"
+                    placeholder="e.g. YES"
+                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
                   />
                 </div>
               </div>
