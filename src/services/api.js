@@ -199,10 +199,10 @@ class ApiService {
     });
   }
 
-  async runStudentCode({ code, language, stdin }) {
+  async runStudentCode({ code, language, stdin, expectedOutput, problemId }) {
     return this.request('/api/student/run', {
       method: 'POST',
-      body: JSON.stringify({ code, language, stdin })
+      body: JSON.stringify({ code, language, stdin, expectedOutput, problemId })
     });
   }
 

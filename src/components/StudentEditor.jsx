@@ -129,17 +129,28 @@ export default function StudentEditor({ user, onLogout }) {
 
   // Local / Sandbox Test Run (Core Requirement 2 & 3)
   const handleRun = async () => {
-    if (!problem || !code) return;
+    if (!problem || !code || !code.trim()) {
+      setLastResult({
+        success: false,
+        status: 'PROGRAM_ERROR',
+        message: '❌ Program Error',
+        isSubmit: false
+      });
+      return;
+    }
     setRunLoading(true);
     setLastResult(null);
 
     try {
-      // Use sample test case stdin if available
+      // Use sample test case stdin and expected output if available
       const stdin = problem.sampleTestCase?.input || '';
+      const expectedOutput = problem.sampleTestCase?.expectedOutput;
       const result = await api.runStudentCode({
         code,
         language: problem.language,
-        stdin
+        stdin,
+        expectedOutput,
+        problemId: currentProblemId
       });
       // result is strictly { success, status, message }
       setLastResult({ ...result, isSubmit: false });
@@ -157,7 +168,7 @@ export default function StudentEditor({ user, onLogout }) {
 
   // Final Submit with Server Re-verification (Core Requirement 2 & 3 - One-time Only)
   const handleSubmit = async () => {
-    if (!problem || !code) return;
+    if (!problem || !code || !code.trim()) return;
     if (hasSubmitted || isTimeExpired) return;
 
     setSubmitLoading(true);
@@ -205,7 +216,7 @@ export default function StudentEditor({ user, onLogout }) {
   })();
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-surface-950 text-slate-100 overflow-hidden select-none">
+    <div className="h-screen w-screen flex flex-col bg-surface-950 text-slate-100 overflow-hidden">
       {/* Top Header - Fixed Height */}
       <header className="shrink-0 bg-surface-900 border-b border-slate-800 px-5 py-2.5 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">

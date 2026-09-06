@@ -70,15 +70,35 @@ router.post('/save-code', (req, res) => {
 /**
  * CORE REQUIREMENT 2 & 3:
  * Executes code in private sandbox. Sanitizes output before sending response.
+ * Evaluates against sample test case expected output to correctly detect failing programs.
  */
 router.post('/run', async (req, res) => {
-  const { code, language, stdin } = req.body;
+  const studentId = req.user.id;
+  const { code, language, stdin, expectedOutput } = req.body;
 
   if (!code || !language) {
     return res.status(400).json({ error: 'Code and language are required' });
   }
 
+  // If code is empty or only whitespace, return failure
+  if (!code.trim()) {
+    return res.json({
+      success: false,
+      status: 'PROGRAM_ERROR',
+      message: '❌ Program Error'
+    });
+  }
+
   try {
+    // Find expected output from problem if not directly provided in request
+    let targetExpectedOutput = expectedOutput;
+    if (targetExpectedOutput === undefined || targetExpectedOutput === null) {
+      const assignment = db.getStudentAssignment(studentId);
+      if (assignment && assignment.sampleTestCase) {
+        targetExpectedOutput = assignment.sampleTestCase.expectedOutput;
+      }
+    }
+
     // Execute code using bundled compiler sandbox with 3s timeout
     const rawResult = await executeCode({
       code,
@@ -86,6 +106,22 @@ router.post('/run', async (req, res) => {
       stdin: stdin || '',
       timeoutMs: 3000
     });
+
+    // If expected output is present, verify that the program's output matches
+    if (targetExpectedOutput !== undefined && targetExpectedOutput !== null && rawResult.compileSuccess !== false && !rawResult.timedOut && rawResult.runtimeSuccess !== false && (rawResult.exitCode === 0 || rawResult.exitCode === undefined)) {
+      const normalize = (str) => {
+        if (typeof str !== 'string') return '';
+        return str
+          .replace(/\r\n/g, '\n')
+          .split('\n')
+          .map(l => l.trimEnd())
+          .join('\n')
+          .trim();
+      };
+      const normalizedActual = normalize(rawResult.stdout);
+      const normalizedExpected = normalize(targetExpectedOutput);
+      rawResult.testPassed = (normalizedActual === normalizedExpected);
+    }
 
     // Strip all stderr, stdout, line numbers, compiler warnings
     const sanitized = sanitizeForStudent(rawResult);

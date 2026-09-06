@@ -9,6 +9,13 @@
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
+  input, textarea, select, [contenteditable="true"] {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+  input[type="text"], input[type="password"], input[type="number"], textarea {
+    cursor: text !important;
+  }
 }
 
 /* Custom scrollbars */

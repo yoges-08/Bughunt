@@ -98,7 +98,7 @@ export default function LoginView({ onLoginSuccess }) {
               value={hostIp}
               onChange={handleHostIpChange}
               placeholder="e.g. 192.168.1.50:4000"
-              className="flex-1 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500 transition"
+              className="flex-1 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500 transition cursor-text select-text"
             />
             <button
               type="button"
@@ -125,7 +125,7 @@ export default function LoginView({ onLoginSuccess }) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your username, name, or team name"
-              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition cursor-text select-text"
             />
           </div>
 
@@ -141,7 +141,7 @@ export default function LoginView({ onLoginSuccess }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              className="w-full bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition cursor-text select-text"
             />
           </div>
 
