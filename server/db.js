@@ -13,7 +13,10 @@ import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DB_FILE = path.resolve(__dirname, '..', 'data', 'contest_db.json');
+const isTestEnv = process.env.NODE_ENV === 'test' || process.env.TEST_DB === 'true';
+const DB_FILE = isTestEnv
+  ? path.resolve(__dirname, '..', 'data', 'test_contest_db.json')
+  : path.resolve(__dirname, '..', 'data', 'contest_db.json');
 
 /**
  * Hash a plain text password using cryptographic scrypt with a unique random salt
@@ -259,6 +262,8 @@ int main() {
 class ContestDatabase {
   constructor() {
     this.data = null;
+    this._saveTimer = null;
+    this._isSaving = false;
     this.init();
   }
 
@@ -270,7 +275,7 @@ class ContestDatabase {
 
     if (!fs.existsSync(DB_FILE)) {
       this.data = JSON.parse(JSON.stringify(INITIAL_DB));
-      this.save();
+      this.saveSync();
     } else {
       try {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
@@ -278,12 +283,12 @@ class ContestDatabase {
         // Ensure default contest problems exist if missing
         if (!this.data.problems || this.data.problems.length === 0) {
           this.data.problems = JSON.parse(JSON.stringify(INITIAL_DB.problems));
-          this.save();
+          this.saveSync();
         } else if (!this.data.problems.some(p => p.id === 'prob_py_palindrome')) {
           const seed = INITIAL_DB.problems.find(p => p.id === 'prob_py_palindrome');
           if (seed) {
             this.data.problems.push(JSON.parse(JSON.stringify(seed)));
-            this.save();
+            this.saveSync();
           }
         }
         // Automated migration: Hash any legacy plaintext passwords
@@ -291,7 +296,7 @@ class ContestDatabase {
       } catch (err) {
         console.error('Error reading database file, re-initializing:', err);
         this.data = JSON.parse(JSON.stringify(INITIAL_DB));
-        this.save();
+        this.saveSync();
       }
     }
   }
@@ -312,18 +317,50 @@ class ContestDatabase {
     }
 
     if (migrated) {
-      this.save();
+      this.saveSync();
       console.log('✅ [Security Migration] All legacy plaintext passwords successfully migrated to scrypt hashes.');
     }
   }
 
+  /**
+   * Debounced asynchronous save for high-frequency operations (e.g. draft code updates)
+   */
   save() {
+    if (this._saveTimer) return;
+    this._saveTimer = setTimeout(async () => {
+      this._saveTimer = null;
+      await this.saveImmediately();
+    }, 300);
+  }
+
+  /**
+   * Immediate atomic disk write for critical state mutations
+   */
+  async saveImmediately() {
+    if (this._isSaving) return;
+    this._isSaving = true;
     try {
-      const tempPath = `${DB_FILE}.tmp`;
+      const tempPath = `${DB_FILE}.tmp_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      const payload = JSON.stringify(this.data, null, 2);
+      await fs.promises.writeFile(tempPath, payload, 'utf-8');
+      await fs.promises.rename(tempPath, DB_FILE);
+    } catch (err) {
+      console.error('Error saving database file:', err.message);
+    } finally {
+      this._isSaving = false;
+    }
+  }
+
+  /**
+   * Synchronous save fallback used during initial boot or synchronous setup
+   */
+  saveSync() {
+    try {
+      const tempPath = `${DB_FILE}.tmp_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
       fs.writeFileSync(tempPath, JSON.stringify(this.data, null, 2), 'utf-8');
       fs.renameSync(tempPath, DB_FILE);
     } catch (err) {
-      console.error('Error saving DB:', err);
+      console.error('Error synchronously saving DB:', err.message);
     }
   }
 

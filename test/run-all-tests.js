@@ -25,7 +25,7 @@ async function runTestFile(file) {
 
     const child = spawn(process.execPath, [path.join(__dirname, file)], {
       stdio: 'inherit',
-      env: process.env
+      env: { ...process.env, NODE_ENV: 'test', TEST_DB: 'true' }
     });
 
     child.on('close', (code) => {

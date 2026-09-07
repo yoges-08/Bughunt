@@ -140,14 +140,15 @@ export function killProcessTree(pid) {
 }
 
 /**
- * Executes a compilation command.
+ * Executes a compilation command with a safety timeout.
  * Returns { success, stdout, stderr, rawError }
  */
-async function compileSource(compilerCmd, args, cwd) {
+async function compileSource(compilerCmd, args, cwd, timeoutMs = 5000) {
   return new Promise((resolve) => {
     let stdout = '';
     let stderr = '';
     let totalBytes = 0;
+    let timedOut = false;
 
     const child = spawn(compilerCmd, args, {
       cwd,
@@ -155,6 +156,11 @@ async function compileSource(compilerCmd, args, cwd) {
       detached: process.platform !== 'win32',
       env: getSanitizedEnv(cwd, path.dirname(compilerCmd))
     });
+
+    const timer = setTimeout(() => {
+      timedOut = true;
+      killProcessTree(child.pid);
+    }, timeoutMs);
 
     child.stdout?.on('data', (d) => {
       if (totalBytes < MAX_OUTPUT_BUFFER_BYTES) {
@@ -171,6 +177,7 @@ async function compileSource(compilerCmd, args, cwd) {
     });
 
     child.on('error', (err) => {
+      clearTimeout(timer);
       resolve({
         success: false,
         stdout,
@@ -180,6 +187,16 @@ async function compileSource(compilerCmd, args, cwd) {
     });
 
     child.on('close', (code) => {
+      clearTimeout(timer);
+      if (timedOut) {
+        resolve({
+          success: false,
+          stdout,
+          stderr: 'Compilation timed out (5s limit exceeded)',
+          rawError: 'Compilation exceeded time limit of 5000ms'
+        });
+        return;
+      }
       resolve({
         success: code === 0,
         stdout,
@@ -213,10 +230,13 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
       killProcessTree(child.pid);
     }, timeoutMs);
 
-    if (stdinText && child.stdin) {
-      child.stdin.write(stdinText);
-      child.stdin.end();
-    } else if (child.stdin) {
+    if (child.stdin) {
+      // Prevent unhandled EPIPE if the binary exits before stdin is written
+      child.stdin.on('error', () => {});
+
+      if (stdinText) {
+        child.stdin.write(stdinText);
+      }
       child.stdin.end();
     }
 

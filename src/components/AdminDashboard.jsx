@@ -118,7 +118,7 @@ export default function AdminDashboard({ user, onLogout }) {
       loadData();
     });
 
-    const interval = setInterval(loadData, 3000); // 3s fallback polling
+    const interval = setInterval(loadData, 15000); // 15s fallback polling
 
     return () => {
       unsubOnline();

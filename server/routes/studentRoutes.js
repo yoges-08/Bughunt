@@ -172,8 +172,8 @@ router.post('/submit', async (req, res) => {
   if (assignment && assignment.expiresAt) {
     const now = Date.now();
     const expiry = new Date(assignment.expiresAt).getTime();
-    // Allow a 15-second network latency grace period
-    if (now > expiry + 15000) {
+    const LAN_GRACE_PERIOD_MS = 3000;
+    if (now > expiry + LAN_GRACE_PERIOD_MS) {
       return res.status(400).json({
         error: 'Contest time has expired for this problem. Submissions are now closed.',
         timeExpired: true

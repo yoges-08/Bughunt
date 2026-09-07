@@ -77,11 +77,11 @@ class ApiService {
         headers
       });
 
-      if (response.status === 401) {
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401 || (response.status === 403 && data.error && (data.error.includes('User not found') || data.error.includes('Invalid or expired')))) {
         this.clearSession();
       }
-
-      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(data.error || data.message || `Request failed with status ${response.status}`);
