@@ -11,6 +11,22 @@ import { socket } from '../services/socket';
 import { formatDuration } from '../utils/time';
 import HostBanner from './HostBanner';
 
+// Exact match with server username sanitization (server/routes/adminRoutes.js)
+function formatUsernamePreview(rawName, isTeam = false) {
+  if (!rawName || !rawName.trim()) return '';
+  const base = rawName
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '') || (isTeam ? 'team' : 'student');
+  let finalUsername = base.substring(0, 24);
+  if (finalUsername.length < 3) {
+    finalUsername = `${finalUsername}_${isTeam ? 'team' : 'std'}`;
+  }
+  return finalUsername;
+}
+
 export default function AdminDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('students'); // 'students', 'problems', 'submissions'
   const [overview, setOverview] = useState(null);
@@ -62,10 +78,10 @@ export default function AdminDashboard({ user, onLogout }) {
     description: '',
     starterCode: '',
     durationMinutes: 15,
-    input1: '',
-    output1: '',
-    input2: '',
-    output2: ''
+    testCases: [
+      { input: '', expectedOutput: '', isHidden: false },
+      { input: '', expectedOutput: '', isHidden: true }
+    ]
   });
 
   const [selectedSubmission, setSelectedSubmission] = useState(null);
@@ -385,8 +401,17 @@ export default function AdminDashboard({ user, onLogout }) {
 
   // Feature 3: Open Edit Problem Modal
   const handleOpenEditProblem = (p) => {
-    const visibleTc = (p.testCases || []).find(t => !t.isHidden);
-    const hiddenTc = (p.testCases || []).find(t => t.isHidden);
+    const rawTestCases = (p.testCases && p.testCases.length > 0)
+      ? p.testCases.map(tc => ({
+          input: tc.input || '',
+          expectedOutput: tc.expectedOutput || '',
+          isHidden: Boolean(tc.isHidden)
+        }))
+      : [
+          { input: '', expectedOutput: '', isHidden: false },
+          { input: '', expectedOutput: '', isHidden: true }
+        ];
+
     setNewProblemData({
       title: p.title || '',
       language: p.language || 'python',
@@ -394,10 +419,7 @@ export default function AdminDashboard({ user, onLogout }) {
       description: p.description || '',
       starterCode: p.starterCode || '',
       durationMinutes: p.durationMinutes || 15,
-      input1: visibleTc?.input || '',
-      output1: visibleTc?.expectedOutput || '',
-      input2: hiddenTc?.input || '',
-      output2: hiddenTc?.expectedOutput || ''
+      testCases: rawTestCases
     });
     setEditingProblemId(p.id);
     setShowAddProblemModal(true);
@@ -407,27 +429,27 @@ export default function AdminDashboard({ user, onLogout }) {
   const handleSaveProblem = async (e) => {
     e.preventDefault();
     try {
-      const testCases = [];
-      if (newProblemData.output1) {
-        testCases.push({ input: newProblemData.input1, expectedOutput: newProblemData.output1, isHidden: false });
-      }
-      if (newProblemData.output2) {
-        testCases.push({ input: newProblemData.input2, expectedOutput: newProblemData.output2, isHidden: true });
-      }
+      const validTestCases = (newProblemData.testCases || [])
+        .filter(tc => tc.expectedOutput && tc.expectedOutput.trim().length > 0)
+        .map(tc => ({
+          input: tc.input || '',
+          expectedOutput: tc.expectedOutput,
+          isHidden: Boolean(tc.isHidden)
+        }));
 
-      if (testCases.length === 0) {
-        alert('At least one test case with an expected output is required');
+      if (validTestCases.length === 0) {
+        alert('At least one test case with an Expected Output is required.');
         return;
       }
 
       const payload = {
-        title: newProblemData.title,
+        title: newProblemData.title.trim(),
         language: newProblemData.language,
-        filename: newProblemData.filename || `solution.${newProblemData.language === 'python' ? 'py' : newProblemData.language}`,
-        description: newProblemData.description,
-        starterCode: newProblemData.starterCode,
+        filename: newProblemData.filename.trim() || `solution.${newProblemData.language === 'python' ? 'py' : newProblemData.language}`,
+        description: newProblemData.description || '',
+        starterCode: newProblemData.starterCode || '',
         durationMinutes: Number(newProblemData.durationMinutes) || 15,
-        testCases
+        testCases: validTestCases
       };
 
       if (editingProblemId) {
@@ -450,10 +472,10 @@ export default function AdminDashboard({ user, onLogout }) {
         description: '',
         starterCode: '',
         durationMinutes: 15,
-        input1: '',
-        output1: '',
-        input2: '',
-        output2: ''
+        testCases: [
+          { input: '', expectedOutput: '', isHidden: false },
+          { input: '', expectedOutput: '', isHidden: true }
+        ]
       });
       loadData();
     } catch (err) {
@@ -1104,10 +1126,10 @@ export default function AdminDashboard({ user, onLogout }) {
                       description: '',
                       starterCode: '',
                       durationMinutes: 15,
-                      input1: '',
-                      output1: '',
-                      input2: '',
-                      output2: ''
+                      testCases: [
+                        { input: '', expectedOutput: '', isHidden: false },
+                        { input: '', expectedOutput: '', isHidden: true }
+                      ]
                     });
                     setShowAddProblemModal(true);
                   }}
@@ -1555,7 +1577,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 {soloStudentData.name.trim() && (
                   <div className="p-2.5 rounded-xl bg-surface-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
                     <span className="text-slate-500">Login username: </span>
-                    <span className="text-emerald-400 font-semibold">{soloStudentData.name.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}</span>
+                    <span className="text-emerald-400 font-semibold">{formatUsernamePreview(soloStudentData.name, false)}</span>
                     <span className="text-slate-500 block text-[10px] font-sans mt-0.5">
                       Student can log in using either their name or username.
                     </span>
@@ -1625,7 +1647,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 {teamStudentData.teamName.trim() && (
                   <div className="p-2.5 rounded-xl bg-surface-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
                     <span className="text-slate-500">Team login username: </span>
-                    <span className="text-blue-400 font-semibold">{teamStudentData.teamName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}</span>
+                    <span className="text-blue-400 font-semibold">{formatUsernamePreview(teamStudentData.teamName, true)}</span>
                     <span className="text-slate-500 block text-[10px] font-sans mt-0.5">
                       Team members can log in using either team name or username.
                     </span>
@@ -1890,51 +1912,110 @@ export default function AdminDashboard({ user, onLogout }) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4 p-4 bg-surface-950 rounded-xl border border-slate-800">
-                <div className="col-span-2 font-semibold text-slate-200">Sample Test Case (Visible to Student)</div>
-                <div>
-                  <label className="block text-slate-500 mb-1">Sample Input</label>
-                  <textarea
-                    rows={2}
-                    value={newProblemData.input1}
-                    onChange={(e) => setNewProblemData({ ...newProblemData, input1: e.target.value })}
-                    placeholder="e.g. Race car&#10;madam&#10;hello"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
-                  />
+              {/* Dynamic Test Cases List */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-slate-300 font-bold uppercase tracking-wider text-xs flex items-center gap-1.5">
+                      <span>Problem Test Cases ({(newProblemData.testCases || []).length})</span>
+                    </label>
+                    <p className="text-[11px] text-slate-500">Visible test cases are shown to students; Hidden test cases are used for final evaluation.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewProblemData(prev => ({
+                        ...prev,
+                        testCases: [
+                          ...(prev.testCases || []),
+                          { input: '', expectedOutput: '', isHidden: true }
+                        ]
+                      }));
+                    }}
+                    className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-emerald-400 hover:text-emerald-300 rounded-lg text-xs font-semibold border border-slate-800 transition flex items-center gap-1.5 active:scale-[0.99] shadow"
+                  >
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Add Test Case</span>
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-slate-500 mb-1">Expected Output</label>
-                  <textarea
-                    rows={2}
-                    value={newProblemData.output1}
-                    onChange={(e) => setNewProblemData({ ...newProblemData, output1: e.target.value })}
-                    placeholder="e.g. YES&#10;YES&#10;NO"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4 p-4 bg-surface-950 rounded-xl border border-slate-800">
-                <div className="col-span-2 font-semibold text-slate-200">Hidden Test Case (Evaluator Only)</div>
-                <div>
-                  <label className="block text-slate-500 mb-1">Hidden Input</label>
-                  <textarea
-                    rows={2}
-                    value={newProblemData.input2}
-                    onChange={(e) => setNewProblemData({ ...newProblemData, input2: e.target.value })}
-                    placeholder="e.g. A man a plan a canal Panama"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-500 mb-1">Expected Output</label>
-                  <textarea
-                    rows={2}
-                    value={newProblemData.output2}
-                    onChange={(e) => setNewProblemData({ ...newProblemData, output2: e.target.value })}
-                    placeholder="e.g. YES"
-                    className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
-                  />
+                <div className="space-y-3">
+                  {(newProblemData.testCases || []).map((tc, idx) => (
+                    <div key={idx} className="p-3.5 bg-surface-950 rounded-xl border border-slate-800 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-200 text-xs font-mono">
+                            Test Case #{idx + 1}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${tc.isHidden ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
+                            {tc.isHidden ? 'Hidden (Evaluator Only)' : 'Visible (Student Sample)'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <label className="flex items-center gap-1.5 text-xs text-slate-400 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={tc.isHidden}
+                              onChange={(e) => {
+                                const updated = [...(newProblemData.testCases || [])];
+                                updated[idx] = { ...updated[idx], isHidden: e.target.checked };
+                                setNewProblemData({ ...newProblemData, testCases: updated });
+                              }}
+                              className="w-3.5 h-3.5 rounded bg-surface-900 border-slate-800 text-emerald-500 focus:ring-0 cursor-pointer"
+                            />
+                            <span>Hidden Case</span>
+                          </label>
+
+                          {(newProblemData.testCases || []).length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = newProblemData.testCases.filter((_, i) => i !== idx);
+                                setNewProblemData({ ...newProblemData, testCases: updated });
+                              }}
+                              className="p-1 text-slate-500 hover:text-rose-400 transition"
+                              title="Delete test case"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-slate-500 text-[11px] mb-1 font-medium">Input (stdin)</label>
+                          <textarea
+                            rows={2}
+                            value={tc.input}
+                            onChange={(e) => {
+                              const updated = [...(newProblemData.testCases || [])];
+                              updated[idx] = { ...updated[idx], input: e.target.value };
+                              setNewProblemData({ ...newProblemData, testCases: updated });
+                            }}
+                            placeholder="e.g. 5\n1 2 3 4 5"
+                            className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 text-[11px] mb-1 font-medium">Expected Output *</label>
+                          <textarea
+                            rows={2}
+                            required
+                            value={tc.expectedOutput}
+                            onChange={(e) => {
+                              const updated = [...(newProblemData.testCases || [])];
+                              updated[idx] = { ...updated[idx], expectedOutput: e.target.value };
+                              setNewProblemData({ ...newProblemData, testCases: updated });
+                            }}
+                            placeholder="e.g. 5"
+                            className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -1962,64 +2043,128 @@ export default function AdminDashboard({ user, onLogout }) {
       )}
 
       {/* Submission Details Modal (Admin Diagnostics) */}
-      {selectedSubmission && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
-          <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col p-6 shadow-2xl text-xs">
-            <div className="flex justify-between items-start border-b border-slate-800 pb-4 mb-4">
-              <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  Submission Diagnostics
-                  {selectedSubmission.pass ? (
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-                      PASS
-                    </span>
-                  ) : (
-                    <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-semibold">
-                      FAIL ({selectedSubmission.status})
-                    </span>
-                  )}
-                </h3>
-                <p className="text-slate-400 mt-1">
-                  Student: <strong className="text-slate-200">{selectedSubmission.studentName}</strong> ({selectedSubmission.studentUsername}) • Problem: <strong className="text-slate-200">{selectedSubmission.problemTitle}</strong>
-                </p>
-              </div>
-              <button
-                onClick={() => setSelectedSubmission(null)}
-                className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
-              >
-                ✕
-              </button>
-            </div>
+      {selectedSubmission && (() => {
+        let parsedDiag = null;
+        if (selectedSubmission.rawOutput) {
+          try {
+            parsedDiag = typeof selectedSubmission.rawOutput === 'object'
+              ? selectedSubmission.rawOutput
+              : JSON.parse(selectedSubmission.rawOutput);
+          } catch {
+            parsedDiag = null;
+          }
+        }
 
-            <div className="space-y-4 overflow-y-auto flex-1 pr-2">
-              <div>
-                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2">Submitted Source Code</div>
-                <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
-                  <pre>{selectedSubmission.code}</pre>
+        return (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+            <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col p-6 shadow-2xl text-xs">
+              <div className="flex justify-between items-start border-b border-slate-800 pb-4 mb-4">
+                <div>
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    Submission Diagnostics
+                    {selectedSubmission.pass ? (
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+                        PASS
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-semibold">
+                        FAIL ({selectedSubmission.status})
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-slate-400 mt-1">
+                    Student: <strong className="text-slate-200">{selectedSubmission.studentName}</strong> ({selectedSubmission.studentUsername}) • Problem: <strong className="text-slate-200">{selectedSubmission.problemTitle}</strong>
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedSubmission(null)}
+                  className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+                <div>
+                  <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2">Submitted Source Code</div>
+                  <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 font-mono text-slate-200 text-[11px] max-h-48 overflow-y-auto">
+                    <pre>{selectedSubmission.code}</pre>
+                  </div>
+                </div>
+
+                {parsedDiag && parsedDiag.testResults && parsedDiag.testResults.length > 0 ? (
+                  <div>
+                    <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2 flex items-center justify-between">
+                      <span>Evaluator Test Case Breakdown ({parsedDiag.testResults.length} Cases)</span>
+                      <span className="text-slate-500 font-mono">Total Execution: {parsedDiag.durationMs || selectedSubmission.executionTimeMs}ms</span>
+                    </div>
+                    <div className="space-y-2">
+                      {parsedDiag.testResults.map((tr, i) => (
+                        <div key={i} className={`p-3 rounded-xl border ${tr.passed ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-rose-950/20 border-rose-500/30'} space-y-2`}>
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-200 text-xs font-mono">
+                              Test Case #{tr.testCaseIndex || i + 1} {tr.isHidden ? '(Hidden)' : '(Visible)'}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${tr.passed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                              {tr.passed ? 'PASSED' : tr.timedOut ? 'TIMEOUT' : tr.compileFailed ? 'COMPILE ERROR' : tr.runtimeFailed ? 'RUNTIME ERROR' : 'FAILED (Wrong Output)'}
+                            </span>
+                          </div>
+
+                          {(tr.expectedOutput !== undefined || tr.actualOutput !== undefined) && (
+                            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                              <div className="bg-surface-950 p-2 rounded-lg border border-slate-800">
+                                <span className="text-slate-500 block text-[10px]">Expected Output:</span>
+                                <span className="text-slate-300 whitespace-pre-wrap">{tr.expectedOutput || '(Empty)'}</span>
+                              </div>
+                              <div className="bg-surface-950 p-2 rounded-lg border border-slate-800">
+                                <span className="text-slate-500 block text-[10px]">Actual Output:</span>
+                                <span className={tr.passed ? 'text-emerald-400 whitespace-pre-wrap' : 'text-rose-400 whitespace-pre-wrap'}>{tr.actualOutput || '(Empty)'}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {tr.error && (
+                            <div className="p-2 bg-rose-950/40 border border-rose-500/30 rounded-lg text-rose-300 font-mono text-[11px] whitespace-pre-wrap">
+                              {tr.error}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {(parsedDiag?.stderr || parsedDiag?.rawError) && (
+                  <div>
+                    <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2">Compiler / Runtime Output</div>
+                    <div className="bg-surface-950 p-4 rounded-xl border border-rose-500/30 font-mono text-rose-300 text-[11px] max-h-48 overflow-y-auto whitespace-pre-wrap">
+                      {parsedDiag.stderr || parsedDiag.rawError}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2">
+                    Raw Internal Diagnostics JSON
+                  </div>
+                  <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 font-mono text-slate-400 text-[10px] max-h-36 overflow-y-auto whitespace-pre-wrap">
+                    <pre>{parsedDiag ? JSON.stringify(parsedDiag, null, 2) : (selectedSubmission.rawOutput || 'No output recorded')}</pre>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <div className="text-slate-400 font-semibold uppercase text-[10px] mb-2">
-                  Raw Compiler & Evaluator Internal Diagnostics
-                </div>
-                <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 font-mono text-slate-300 text-[11px] max-h-48 overflow-y-auto whitespace-pre-wrap">
-                  {selectedSubmission.rawOutput || 'No output recorded'}
-                </div>
+              <div className="flex justify-end pt-4 border-t border-slate-800 mt-4">
+                <button
+                  onClick={() => setSelectedSubmission(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
+                >
+                  Close
+                </button>
               </div>
-            </div>
-
-            <div className="flex justify-end pt-4 border-t border-slate-800 mt-4">
-              <button
-                onClick={() => setSelectedSubmission(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition"
-              >
-                Close
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

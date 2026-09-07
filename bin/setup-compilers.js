@@ -30,8 +30,14 @@ console.log(`📁 Bundled Compilers Directory: ${COMPILERS_DIR}`);
 
 // Check for C/C++ compiler
 let cCompilerFound = false;
-const bundledGcc = path.join(C_CPP_DIR, 'bin', 'gcc.exe');
-const bundledGpp = path.join(C_CPP_DIR, 'bin', 'g++.exe');
+const isWin = process.platform === 'win32';
+const whichCmd = isWin ? 'where' : 'which';
+const gccExe = isWin ? 'gcc.exe' : 'gcc';
+const gppExe = isWin ? 'g++.exe' : 'g++';
+const pythonExe = isWin ? 'python.exe' : 'python3';
+
+const bundledGcc = path.join(C_CPP_DIR, 'bin', gccExe);
+const bundledGpp = path.join(C_CPP_DIR, 'bin', gppExe);
 
 if (fs.existsSync(bundledGcc) && fs.existsSync(bundledGpp)) {
   console.log(`✅ Bundled GCC/G++ present in private directory: ${path.dirname(bundledGcc)}`);
@@ -39,7 +45,7 @@ if (fs.existsSync(bundledGcc) && fs.existsSync(bundledGpp)) {
 } else {
   // Check if system has gcc to create a private portable alias or note status
   try {
-    const sysGcc = execSync('where gcc', { encoding: 'utf-8' }).split('\n')[0].trim();
+    const sysGcc = execSync(`${whichCmd} gcc`, { encoding: 'utf-8' }).split('\n')[0].trim();
     if (sysGcc && fs.existsSync(sysGcc)) {
       console.log(`ℹ️  System GCC detected at: ${sysGcc}`);
       console.log(`   (App will use private bundled fallback or isolated invocation)`);
@@ -52,14 +58,14 @@ if (fs.existsSync(bundledGcc) && fs.existsSync(bundledGpp)) {
 
 // Check for Python interpreter
 let pythonFound = false;
-const bundledPython = path.join(PYTHON_DIR, 'python.exe');
+const bundledPython = path.join(PYTHON_DIR, pythonExe);
 
 if (fs.existsSync(bundledPython)) {
   console.log(`✅ Bundled Python present in private directory: ${bundledPython}`);
   pythonFound = true;
 } else {
   try {
-    const sysPy = execSync('where python', { encoding: 'utf-8' }).split('\n')[0].trim();
+    const sysPy = execSync(`${whichCmd} python3 || ${whichCmd} python`, { encoding: 'utf-8', shell: true }).split('\n')[0].trim();
     if (sysPy && fs.existsSync(sysPy)) {
       console.log(`ℹ️  System Python detected at: ${sysPy}`);
       console.log(`   (App will use private bundled fallback or isolated invocation)`);

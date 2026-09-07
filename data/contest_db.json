@@ -9,15 +9,15 @@
       "createdAt": "2026-08-29T16:54:14.625Z"
     },
     {
-      "id": "usr_bc180a75",
+      "id": "usr_c9794a0f",
       "username": "yoges",
-      "password": "scrypt$71aa8163a9945bad249ee8ec2fbbc4cb$eb320e82ab0f21db2d2fbbb762e86e1f150d596f19ec6dca016f84a0b80019dc107e5001c1de0f9c95229720e49602cf53d28131630fb92f1e1b5180c7de3499",
+      "password": "scrypt$a5d7135d20f817baa11e625f417a189c$2f97d367b3ec8f6952f37c1af61d43b2fd27a69a4de8e795f3e0d32db7b4399171ff545e2ff2659487e95600641ecdacd33ecf52b1c2ed2751274ca0e8ba1c7d",
       "role": "student",
       "name": "yoges",
       "isTeam": false,
       "teamName": null,
       "teammates": null,
-      "createdAt": "2026-09-06T17:37:23.125Z"
+      "createdAt": "2026-09-06T18:01:22.802Z"
     }
   ],
   "problems": [
@@ -158,8 +158,34 @@
       "createdAt": "2026-09-06T17:36:51.946Z"
     }
   ],
-  "assignments": [],
-  "submissions": [],
+  "assignments": [
+    {
+      "id": "asg_73fe7940",
+      "studentId": "usr_c9794a0f",
+      "problemId": "prob_a7cc78bc",
+      "assignedAt": "2026-09-06T18:02:04.966Z",
+      "expiresAt": "2026-09-06T18:32:04.966Z",
+      "durationMinutes": 30,
+      "status": "failed",
+      "currentCode": "\nprint(\"hello\n\")",
+      "lastUpdated": "2026-09-06T18:14:12.938Z"
+    }
+  ],
+  "submissions": [
+    {
+      "id": "sub_42c147b8",
+      "studentId": "usr_c9794a0f",
+      "problemId": "prob_a7cc78bc",
+      "code": "\nprint(\"hello\n\")",
+      "language": "python",
+      "status": "PROGRAM_ERROR",
+      "pass": false,
+      "rawOutput": "{\"success\":false,\"status\":\"PROGRAM_ERROR\",\"genericMessage\":\"❌ Program Error\",\"timedOut\":false,\"compileSuccess\":false,\"runtimeSuccess\":true,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Python SyntaxError:\\n  File \\\"main.py\\\", line 2\\r\\n    print(\\\"hello\\r\\n          ^\\r\\nSyntaxError: unterminated string literal (detected at line 2)\\r\\n\",\"rawError\":\"Python SyntaxError:\\n  File \\\"main.py\\\", line 2\\r\\n    print(\\\"hello\\r\\n          ^\\r\\nSyntaxError: unterminated string literal (detected at line 2)\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"compileFailed\":true,\"timedOut\":false,\"exitCode\":1,\"error\":\"Python SyntaxError:\\n  File \\\"main.py\\\", line 2\\r\\n    print(\\\"hello\\r\\n          ^\\r\\nSyntaxError: unterminated string literal (detected at line 2)\\r\\n\"}]}",
+      "genericMessage": "❌ Program Error",
+      "executionTimeMs": 0,
+      "createdAt": "2026-09-06T18:14:12.938Z"
+    }
+  ],
   "contestSettings": {
     "contestName": "Bug Hunt 2026 - LAN Championship",
     "status": "active"
