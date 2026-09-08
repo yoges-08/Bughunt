@@ -14,7 +14,8 @@ const testFiles = [
   'compiler.test.js',
   'evaluator.test.js',
   'assignment.test.js',
-  'problem-crud.test.js'
+  'problem-crud.test.js',
+  'e2e-lan-contest.test.js'
 ];
 
 async function runTestFile(file) {

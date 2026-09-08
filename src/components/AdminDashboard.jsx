@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Users, User, Send, FileCode, CheckCircle2, XCircle, Clock, Plus, 
-  RefreshCw, LogOut, Radio, Eye, Code, Terminal, Layers, AlertTriangle, Check,
-  Search, Filter, Copy, FileText, Sparkles, Download, CheckCheck,
+  RefreshCw, LogOut, Radio, Eye, Code, Terminal, AlertTriangle, Check,
+  Search, Copy, Sparkles, CheckCheck,
   ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, ChevronLeft, ChevronRight,
-  ArrowUp, ArrowDown, Pencil, Trash2
+  Pencil, Trash2
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';

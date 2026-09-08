@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { 
-  Play, Send, CheckCircle2, XCircle, Clock, AlertTriangle, 
-  FileCode, Terminal, LogOut, Radio, RefreshCw, Save, Layers, Sparkles, Lock
+  Play, Send, CheckCircle2, XCircle, Clock, 
+  FileCode, LogOut, Radio, Save, Sparkles, Lock
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
@@ -47,7 +47,7 @@ export default function StudentEditor({ user, onLogout }) {
     // Listen for real-time problem push over LAN (Core Requirement 1)
     const unsubProblemPush = socket.on('PROBLEM_ASSIGNED', (payload) => {
       setProblem(payload);
-      setCode(payload.starterCode || payload.code || '');
+      setCode(payload.currentCode || payload.starterCode || payload.code || '');
       setLastResult(null);
       setIncomingAlert(`⚡ New Problem Assigned by Admin: "${payload.title}" (${payload.filename}) • ⏱️ ${payload.durationMinutes || 15} Mins`);
       setTimeout(() => setIncomingAlert(null), 6000);

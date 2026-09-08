@@ -372,24 +372,26 @@ router.post('/assign', (req, res) => {
     // Assign and push to all students with error capture
     const students = db.getAllStudents();
     const errors = [];
+    const results = [];
 
     students.forEach(s => {
       try {
-        db.assignProblemToStudent(s.id, problemId, shouldResetCode);
+        const assignment = db.assignProblemToStudent(s.id, problemId, shouldResetCode);
+        const studentPayload = {
+          ...problemPayload,
+          currentCode: assignment.currentCode || problem.starterCode
+        };
+        const online = socketManager.pushProblemToStudent(s.id, studentPayload);
+        results.push({ studentId: s.id, username: s.username, online });
       } catch (err) {
         errors.push({ studentId: s.id, username: s.username, error: err.message });
       }
     });
 
-    const successfulIds = students
-      .filter(s => !errors.some(e => e.studentId === s.id))
-      .map(s => s.id);
-
-    const results = socketManager.pushProblemToAll(problemPayload, successfulIds);
     socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
 
     return res.json({
-      message: `Assigned problem '${problem.title}' (⏱️ ${durationMinutes} mins) to ${successfulIds.length}/${students.length} students`,
+      message: `Assigned problem '${problem.title}' (⏱️ ${durationMinutes} mins) to ${results.length}/${students.length} students`,
       results,
       errors
     });
@@ -400,10 +402,15 @@ router.post('/assign', (req, res) => {
   }
 
   // Assign to single student in database (with configurable resetCode)
-  db.assignProblemToStudent(studentId, problemId, shouldResetCode);
+  const assignment = db.assignProblemToStudent(studentId, problemId, shouldResetCode);
+
+  const studentPayload = {
+    ...problemPayload,
+    currentCode: assignment.currentCode || problem.starterCode
+  };
 
   // Push over LAN via WebSocket
-  const isOnline = socketManager.pushProblemToStudent(studentId, problemPayload);
+  const isOnline = socketManager.pushProblemToStudent(studentId, studentPayload);
 
   // Notify admins of updated status
   socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });

@@ -280,6 +280,21 @@ class ContestDatabase {
       try {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         this.data = JSON.parse(raw);
+
+        // Ensure default contest users exist if missing
+        if (!this.data.users || this.data.users.length === 0) {
+          this.data.users = JSON.parse(JSON.stringify(INITIAL_DB.users));
+          this.saveSync();
+        } else if (!this.data.users.some(u => u.username === 'student1')) {
+          const initialStudents = INITIAL_DB.users.filter(u => u.role === 'student');
+          for (const s of initialStudents) {
+            if (!this.data.users.some(u => u.username === s.username)) {
+              this.data.users.push(JSON.parse(JSON.stringify(s)));
+            }
+          }
+          this.saveSync();
+        }
+
         // Ensure default contest problems exist if missing
         if (!this.data.problems || this.data.problems.length === 0) {
           this.data.problems = JSON.parse(JSON.stringify(INITIAL_DB.problems));

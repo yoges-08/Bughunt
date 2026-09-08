@@ -7,7 +7,7 @@
  * Produces raw diagnostics for Admin, and strictly sanitized messages for Students.
  */
 
-import { executeCode } from './compiler.js';
+import { prepareExecutable } from './compiler.js';
 import { db } from './db.js';
 import { sanitizeForStudent, formatForAdmin, GENERIC_MESSAGES } from './sanitization.js';
 
@@ -26,6 +26,7 @@ function normalizeOutput(str) {
 
 /**
  * Independently evaluate a student submission against all test cases for the problem.
+ * (CQ-01: Compiles source code once, then executes the binary across all test cases)
  * 
  * @param {Object} params
  * @param {string} params.studentId
@@ -63,82 +64,82 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
     });
   }
 
-  for (let i = 0; i < testCases.length; i++) {
-    const tc = testCases[i];
-    const execResult = await executeCode({
-      code,
-      language,
-      stdin: tc.input || '',
-      timeoutMs: problem.timeLimitMs || 3000
-    });
+  // Compile once for all test cases (CQ-01)
+  const prepared = await prepareExecutable({ code, language });
 
-    totalDurationMs += execResult.durationMs || 0;
-
-    // Check if compilation failed
-    if (execResult.compileSuccess === false) {
+  try {
+    if (!prepared.compileSuccess) {
       compileSuccess = false;
       allPassed = false;
-      rawCompileError = execResult.rawError || execResult.stderr;
+      rawCompileError = prepared.rawError || prepared.stderr;
       testResults.push({
-        testCaseIndex: i + 1,
-        isHidden: tc.isHidden,
+        testCaseIndex: 1,
+        isHidden: testCases[0]?.isHidden || false,
         passed: false,
         compileFailed: true,
         timedOut: false,
-        exitCode: execResult.exitCode,
+        exitCode: 1,
         error: rawCompileError
       });
-      break; // No need to continue if code does not compile
+    } else {
+      for (let i = 0; i < testCases.length; i++) {
+        const tc = testCases[i];
+        const execResult = await prepared.run(tc.input || '', problem.timeLimitMs || 3000);
+
+        totalDurationMs += execResult.durationMs || 0;
+
+        // Check if runtime failed or timed out
+        if (execResult.timedOut) {
+          timedOut = true;
+          allPassed = false;
+          testResults.push({
+            testCaseIndex: i + 1,
+            isHidden: tc.isHidden,
+            passed: false,
+            timedOut: true,
+            exitCode: -1,
+            error: 'Time Limit Exceeded'
+          });
+          break;
+        }
+
+        if (execResult.runtimeSuccess === false || execResult.exitCode !== 0) {
+          runtimeSuccess = false;
+          allPassed = false;
+          rawRuntimeError = execResult.rawError || execResult.stderr;
+          testResults.push({
+            testCaseIndex: i + 1,
+            isHidden: tc.isHidden,
+            passed: false,
+            runtimeFailed: true,
+            exitCode: execResult.exitCode,
+            stderr: execResult.stderr,
+            actualOutput: execResult.stdout
+          });
+          break;
+        }
+
+        // Check output correctness
+        const normalizedActual = normalizeOutput(execResult.stdout);
+        const normalizedExpected = normalizeOutput(tc.expectedOutput);
+        const passed = normalizedActual === normalizedExpected;
+
+        if (!passed) {
+          allPassed = false;
+        }
+
+        testResults.push({
+          testCaseIndex: i + 1,
+          isHidden: tc.isHidden,
+          passed,
+          actualOutput: execResult.stdout,
+          expectedOutput: tc.expectedOutput,
+          durationMs: execResult.durationMs
+        });
+      }
     }
-
-    // Check if runtime failed or timed out
-    if (execResult.timedOut) {
-      timedOut = true;
-      allPassed = false;
-      testResults.push({
-        testCaseIndex: i + 1,
-        isHidden: tc.isHidden,
-        passed: false,
-        timedOut: true,
-        exitCode: -1,
-        error: 'Time Limit Exceeded'
-      });
-      break;
-    }
-
-    if (execResult.runtimeSuccess === false || execResult.exitCode !== 0) {
-      runtimeSuccess = false;
-      allPassed = false;
-      rawRuntimeError = execResult.rawError || execResult.stderr;
-      testResults.push({
-        testCaseIndex: i + 1,
-        isHidden: tc.isHidden,
-        passed: false,
-        runtimeFailed: true,
-        exitCode: execResult.exitCode,
-        stderr: execResult.stderr,
-        actualOutput: execResult.stdout
-      });
-      break;
-    }
-
-    // Check output correctness
-    const normalizedActual = normalizeOutput(execResult.stdout);
-    const normalizedExpected = normalizeOutput(tc.expectedOutput);
-    const passed = normalizedActual === normalizedExpected;
-
-    if (!passed) {
-      allPassed = false;
-    }
-
-    testResults.push({
-      testCaseIndex: i + 1,
-      isHidden: tc.isHidden,
-      passed,
-      actualOutput: execResult.stdout,
-      expectedOutput: tc.expectedOutput,
-      durationMs: execResult.durationMs
-    });
+  } finally {
+    prepared.cleanup();
   }
 
   // Determine overall status

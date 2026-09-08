@@ -73,7 +73,7 @@ export function getSanitizedEnv(cwd, extraPath = '') {
         systemRoot,
         path.join(systemRoot, 'System32', 'Wbem')
       ]
-    : ['/usr/bin', '/bin', '/usr/local/bin'];
+    : ['/usr/lib', '/lib', '/usr/local/lib'];
 
   const basePaths = [extraPath, ...minimalSystemPaths].filter(Boolean).join(isWindows ? ';' : ':');
 
@@ -235,7 +235,7 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
       child.stdin.on('error', () => {});
 
       if (stdinText) {
-        child.stdin.write(stdinText);
+        child.stdin.write(stdinText, () => {});
       }
       child.stdin.end();
     }
@@ -314,18 +314,12 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
 }
 
 /**
- * Execute source code for C, C++, or Python in a sandboxed temp directory.
- * 
- * @param {Object} options
- * @param {string} options.code - Source code string
- * @param {string} options.language - 'c', 'cpp', or 'python'
- * @param {string} [options.stdin] - Input to program
- * @param {number} [options.timeoutMs=3000] - Max runtime in ms
- * @returns {Promise<Object>} Raw execution result
+ * Prepares and compiles source code once, returning a runner function for multiple test cases.
+ * (CQ-01 Performance Optimization)
  */
-export async function executeCode({ code, language, stdin = '', timeoutMs = 3000 }) {
-  const normLang = language.toLowerCase().trim();
-  const sandboxId = `bh_run_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+export async function prepareExecutable({ code, language }) {
+  const normLang = (language || '').toLowerCase().trim();
+  const sandboxId = `bh_prep_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
   const sandboxDir = path.join(os.tmpdir(), sandboxId);
 
   try {
@@ -334,6 +328,8 @@ export async function executeCode({ code, language, stdin = '', timeoutMs = 3000
     let sourceFileName;
     let executableName = process.platform === 'win32' ? 'program.exe' : 'program.out';
     let compilerPath;
+    let targetBinary;
+    let targetArgs = [];
 
     if (normLang === 'c') {
       sourceFileName = 'main.c';
@@ -342,27 +338,18 @@ export async function executeCode({ code, language, stdin = '', timeoutMs = 3000
       const exeFilePath = path.join(sandboxDir, executableName);
       fs.writeFileSync(sourceFilePath, code, 'utf-8');
 
-      // Compile C
       const compileRes = await compileSource(compilerPath, [sourceFileName, '-O2', '-o', executableName], sandboxDir);
       if (!compileRes.success) {
         return {
           compileSuccess: false,
-          runtimeSuccess: false,
-          timedOut: false,
-          exitCode: 1,
           stdout: compileRes.stdout,
           stderr: compileRes.stderr,
           rawError: compileRes.rawError,
-          durationMs: 0
+          cleanup: () => { try { fs.rmSync(sandboxDir, { recursive: true, force: true }); } catch {} }
         };
       }
-
-      // Run C executable
-      const runRes = await runBinary(exeFilePath, [], sandboxDir, stdin, timeoutMs);
-      return {
-        compileSuccess: true,
-        ...runRes
-      };
+      targetBinary = exeFilePath;
+      targetArgs = [];
     } else if (normLang === 'cpp' || normLang === 'c++') {
       sourceFileName = 'main.cpp';
       compilerPath = getCompilerPath('cpp');
@@ -370,37 +357,29 @@ export async function executeCode({ code, language, stdin = '', timeoutMs = 3000
       const exeFilePath = path.join(sandboxDir, executableName);
       fs.writeFileSync(sourceFilePath, code, 'utf-8');
 
-      // Compile C++
       const compileRes = await compileSource(compilerPath, [sourceFileName, '-O2', '-std=c++17', '-o', executableName], sandboxDir);
       if (!compileRes.success) {
         return {
           compileSuccess: false,
-          runtimeSuccess: false,
-          timedOut: false,
-          exitCode: 1,
           stdout: compileRes.stdout,
           stderr: compileRes.stderr,
           rawError: compileRes.rawError,
-          durationMs: 0
+          cleanup: () => { try { fs.rmSync(sandboxDir, { recursive: true, force: true }); } catch {} }
         };
       }
-
-      // Run C++ executable
-      const runRes = await runBinary(exeFilePath, [], sandboxDir, stdin, timeoutMs);
-      return {
-        compileSuccess: true,
-        ...runRes
-      };
+      targetBinary = exeFilePath;
+      targetArgs = [];
     } else if (normLang === 'python' || normLang === 'py') {
       sourceFileName = 'main.py';
       compilerPath = getCompilerPath('python');
       const sourceFilePath = path.join(sandboxDir, sourceFileName);
       fs.writeFileSync(sourceFilePath, code, 'utf-8');
 
-      // Syntax check for Python
+      // Syntax check for Python with 5s timeout (CQ-07)
       const syntaxCheck = await new Promise((resolve) => {
         execFile(compilerPath, ['-m', 'py_compile', sourceFileName], {
           cwd: sandboxDir,
+          timeout: 5000,
           env: getSanitizedEnv(sandboxDir, path.dirname(compilerPath))
         }, (err, stdout, stderr) => {
           if (err) {
@@ -414,49 +393,72 @@ export async function executeCode({ code, language, stdin = '', timeoutMs = 3000
       if (!syntaxCheck.success) {
         return {
           compileSuccess: false,
-          runtimeSuccess: false,
-          timedOut: false,
-          exitCode: 1,
           stdout: '',
           stderr: syntaxCheck.stderr,
           rawError: `Python SyntaxError:\n${syntaxCheck.stderr}`,
-          durationMs: 0
+          cleanup: () => { try { fs.rmSync(sandboxDir, { recursive: true, force: true }); } catch {} }
         };
       }
-
-      // Run Python script
-      const runRes = await runBinary(compilerPath, [sourceFileName], sandboxDir, stdin, timeoutMs);
-      return {
-        compileSuccess: true,
-        ...runRes
-      };
+      targetBinary = compilerPath;
+      targetArgs = [sourceFileName];
     } else {
       return {
         compileSuccess: false,
-        runtimeSuccess: false,
-        timedOut: false,
-        exitCode: 1,
         stdout: '',
         stderr: `Unsupported language ${normLang}`,
         rawError: `Unsupported language: ${normLang}`,
-        durationMs: 0
+        cleanup: () => { try { fs.rmSync(sandboxDir, { recursive: true, force: true }); } catch {} }
       };
     }
+
+    return {
+      compileSuccess: true,
+      run: async (stdinText = '', timeoutMs = 3000) => {
+        return runBinary(targetBinary, targetArgs, sandboxDir, stdinText, timeoutMs);
+      },
+      cleanup: () => {
+        try {
+          fs.rmSync(sandboxDir, { recursive: true, force: true });
+        } catch {}
+      }
+    };
   } catch (err) {
+    return {
+      compileSuccess: false,
+      stdout: '',
+      stderr: err.message,
+      rawError: `Execution engine error: ${err.message}`,
+      cleanup: () => { try { fs.rmSync(sandboxDir, { recursive: true, force: true }); } catch {} }
+    };
+  }
+}
+
+/**
+ * Execute source code for C, C++, or Python in a sandboxed temp directory.
+ */
+export async function executeCode({ code, language, stdin = '', timeoutMs = 3000 }) {
+  const prepared = await prepareExecutable({ code, language });
+  if (!prepared.compileSuccess) {
+    prepared.cleanup();
     return {
       compileSuccess: false,
       runtimeSuccess: false,
       timedOut: false,
       exitCode: 1,
-      stdout: '',
-      stderr: err.message,
-      rawError: `Execution engine error: ${err.message}`,
+      stdout: prepared.stdout || '',
+      stderr: prepared.stderr || '',
+      rawError: prepared.rawError || '',
       durationMs: 0
     };
+  }
+
+  try {
+    const runRes = await prepared.run(stdin, timeoutMs);
+    return {
+      compileSuccess: true,
+      ...runRes
+    };
   } finally {
-    // Cleanup temporary sandbox folder
-    try {
-      fs.rmSync(sandboxDir, { recursive: true, force: true });
-    } catch {}
+    prepared.cleanup();
   }
 }

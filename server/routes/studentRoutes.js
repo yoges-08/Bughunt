@@ -152,12 +152,16 @@ router.post('/submit', async (req, res) => {
     return res.status(400).json({ error: 'problemId, code, and language are required' });
   }
 
-  // 1. Check if student has already submitted this problem for the current assignment (Single Submission Limit)
+  // 1. Verify student has an active assignment matching this problemId
   const assignment = db.getStudentAssignment(studentId);
+  if (!assignment || assignment.problemId !== problemId) {
+    return res.status(400).json({ error: 'This problem is not currently assigned to you.' });
+  }
+
+  // 2. Check if student has already submitted this problem for the current assignment (Single Submission Limit)
   const existingSubmissions = db.getStudentSubmissions(studentId);
   const alreadySubmitted = existingSubmissions.some(s => 
     s.problemId === problemId && 
-    assignment && 
     new Date(s.createdAt) >= new Date(assignment.assignedAt)
   );
 

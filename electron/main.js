@@ -8,11 +8,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 let mainWindow = null;
 
 async function createWindow() {
-  // Start embedded backend LAN server on port 4000
-  try {
-    await startServer(4000);
-  } catch (err) {
-    console.log('Server initialization note:', err.message);
+  const isClientOnly = process.argv.includes('--client') || process.env.BUGHUNT_MODE === 'client';
+
+  // Start embedded backend LAN server on port 4000 (host mode)
+  if (!isClientOnly) {
+    try {
+      await startServer(4000);
+    } catch (err) {
+      console.log('Server initialization note:', err.message);
+    }
   }
 
   // Create native desktop application window
