@@ -71,10 +71,15 @@ class ApiService {
       headers['Authorization'] = `Bearer ${this.token}`;
     }
 
+    const timeoutMs = options.timeoutMs || 8000;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
     try {
       const response = await fetch(url, {
         ...options,
-        headers
+        headers,
+        signal: options.signal || controller.signal
       });
 
       const data = await response.json().catch(() => ({}));
@@ -89,8 +94,13 @@ class ApiService {
 
       return data;
     } catch (err) {
+      if (err.name === 'AbortError') {
+        throw new Error(`Request to ${endpoint} timed out after ${timeoutMs}ms`);
+      }
       console.error(`API Error on [${endpoint}]:`, err.message);
       throw err;
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 

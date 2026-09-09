@@ -10,20 +10,39 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function verifySession() {
       if (api.token) {
         try {
-          const data = await api.getMe();
-          setUser(data.user);
-          socket.connect();
-        } catch {
+          const data = await Promise.race([
+            api.getMe(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Session verification timeout')), 2500))
+          ]);
+          if (isMounted && data?.user) {
+            setUser(data.user);
+            socket.connect();
+          }
+        } catch (err) {
+          console.warn('Session verification failed or timed out:', err.message);
           api.clearSession();
-          setUser(null);
+          if (isMounted) setUser(null);
         }
       }
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
+
     verifySession();
+
+    // Absolute failsafe: loading screen must never block for more than 2.5 seconds
+    const failsafeTimer = setTimeout(() => {
+      if (isMounted) setLoading(false);
+    }, 2500);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(failsafeTimer);
+    };
   }, []);
 
   const handleLoginSuccess = (authenticatedUser) => {

@@ -7,6 +7,38 @@
       "role": "admin",
       "name": "Contest Administrator",
       "createdAt": "2026-08-29T16:54:14.625Z"
+    },
+    {
+      "id": "usr_student_1",
+      "username": "student1",
+      "password": "scrypt$a3da08ad7483078feee79e73a5569abd$b8e159acad68edef22bb2d2923390a181045b64ca536356d7c9be9dfc97c8c47c6df19d246c645b39708b51a927deedcc0b8d9acf137ae3eccfe1e4a51d7e257",
+      "role": "student",
+      "name": "Alice Johnson (Team A)",
+      "createdAt": "2026-09-09T17:00:58.647Z"
+    },
+    {
+      "id": "usr_student_2",
+      "username": "student2",
+      "password": "scrypt$08a92885e270ca181a058693daabcdc8$71a49ff6ce219a1c923a8f5644547be8d9ff3ff7d717eb39f864e2b9b88e321d9060db88363f34c2ae662dc21d003f4ba22c00fd1f34d0c7991d1f5be5ddec08",
+      "role": "student",
+      "name": "Bob Smith (Team B)",
+      "createdAt": "2026-09-09T17:00:58.713Z"
+    },
+    {
+      "id": "usr_student_3",
+      "username": "student3",
+      "password": "scrypt$13dfd550b0b15fc25f50aea45982e78c$cb74e38bb79fb93038e3d29ece38ad0e35e1c2db035574d23967313ac388388d3fcb682775a4f1af563a87fb37af62e2443afb6e20651d836049e2357f47e9a9",
+      "role": "student",
+      "name": "Charlie Davis (Team C)",
+      "createdAt": "2026-09-09T17:00:58.770Z"
+    },
+    {
+      "id": "usr_student_4",
+      "username": "student4",
+      "password": "scrypt$8240f6ace624e06d9315156553bbdeff$d99bf050d3d945cc19e334b9f822c22c7980b9e9837fc46e84e8d236a0ef0bd433e7cd647aafa3b18e88e54babc69f1eae34ceabd3f728182261dec25ec54599",
+      "role": "student",
+      "name": "Dana Lee (Team D)",
+      "createdAt": "2026-09-09T17:00:58.828Z"
     }
   ],
   "problems": [
