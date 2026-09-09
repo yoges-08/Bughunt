@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Editor from '@monaco-editor/react';
 import { 
   Play, Send, CheckCircle2, XCircle, Clock, 
@@ -7,6 +7,22 @@ import {
 import { api } from '../services/api';
 import { socket } from '../services/socket';
 import { formatTimer } from '../utils/time';
+
+const MONACO_EDITOR_OPTIONS = {
+  fontFamily: "'JetBrains Mono', monospace",
+  fontSize: 13,
+  lineNumbers: 'on',
+  minimap: { enabled: false },
+  quickSuggestions: false,
+  parameterHints: { enabled: false },
+  suggestOnTriggerCharacters: false,
+  hover: { enabled: false },
+  contextmenu: false,
+  scrollBeyondLastLine: false,
+  automaticLayout: true,
+  tabSize: 4,
+  wordWrap: 'on'
+};
 
 export default function StudentEditor({ user, onLogout }) {
   const [problem, setProblem] = useState(null);
@@ -60,11 +76,20 @@ export default function StudentEditor({ user, onLogout }) {
 
   // Check Single Submission Limit & Expiration (mirror server assignedAt threshold)
   const currentProblemId = problem?.problemId || problem?.id;
-  const relevantSubmission = submissions.find(s =>
-    s.problemId === currentProblemId &&
-    (!problem?.assignedAt || new Date(s.createdAt) >= new Date(problem.assignedAt))
-  );
+  const relevantSubmission = useMemo(() => {
+    if (!currentProblemId) return null;
+    return submissions.find(s =>
+      s.problemId === currentProblemId &&
+      (!problem?.assignedAt || new Date(s.createdAt) >= new Date(problem.assignedAt))
+    );
+  }, [submissions, currentProblemId, problem?.assignedAt]);
+
   const hasSubmitted = Boolean(problem?.hasSubmitted || relevantSubmission);
+
+  const problemExpiresAt = problem?.expiresAt;
+  const problemAssignedAt = problem?.assignedAt;
+  const problemDurationMinutes = problem?.durationMinutes;
+  const submissionCreatedAt = relevantSubmission?.createdAt;
 
   // Live Timer countdown management - stops when program is submitted
   useEffect(() => {
@@ -74,14 +99,14 @@ export default function StudentEditor({ user, onLogout }) {
     }
 
     const calcTimeLeft = () => {
-      if (!problem.expiresAt && !problem.assignedAt) return null;
-      const expiry = problem.expiresAt 
-        ? new Date(problem.expiresAt).getTime()
-        : new Date(problem.assignedAt).getTime() + (problem.durationMinutes || 15) * 60 * 1000;
+      if (!problemExpiresAt && !problemAssignedAt) return null;
+      const expiry = problemExpiresAt 
+        ? new Date(problemExpiresAt).getTime()
+        : new Date(problemAssignedAt).getTime() + (problemDurationMinutes || 15) * 60 * 1000;
 
       // If program has already been submitted, freeze timer at the exact submission moment
-      if (relevantSubmission) {
-        const submittedTime = new Date(relevantSubmission.createdAt).getTime();
+      if (submissionCreatedAt) {
+        const submittedTime = new Date(submissionCreatedAt).getTime();
         return Math.max(0, Math.floor((expiry - submittedTime) / 1000));
       }
 
@@ -106,7 +131,7 @@ export default function StudentEditor({ user, onLogout }) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [problem, hasSubmitted, relevantSubmission]);
+  }, [problem, problemExpiresAt, problemAssignedAt, problemDurationMinutes, hasSubmitted, submissionCreatedAt]);
 
   const isTimeExpired = !hasSubmitted && timeLeftSeconds !== null && timeLeftSeconds === 0;
 
@@ -450,21 +475,7 @@ export default function StudentEditor({ user, onLogout }) {
                 theme="vs-dark"
                 value={code}
                 onChange={handleEditorChange}
-                options={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: 13,
-                  lineNumbers: 'on',
-                  minimap: { enabled: false },
-                  quickSuggestions: false,
-                  parameterHints: { enabled: false },
-                  suggestOnTriggerCharacters: false,
-                  hover: { enabled: false },
-                  contextmenu: false,
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                  tabSize: 4,
-                  wordWrap: 'on'
-                }}
+                options={MONACO_EDITOR_OPTIONS}
               />
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   Users, User, Send, FileCode, CheckCircle2, XCircle, Clock, Plus, 
   RefreshCw, LogOut, Radio, Eye, Code, Terminal, AlertTriangle, Check,
@@ -134,26 +134,66 @@ export default function AdminDashboard({ user, onLogout }) {
     setCurrentPage(1);
   }, [studentSearch, studentFilter, rowsPerPage]);
 
-  // Compute filtered students list
-  const filteredStudents = students.filter(s => {
-    // Status Filter
-    if (studentFilter === 'online' && !s.isOnline) return false;
-    if (studentFilter === 'offline' && s.isOnline) return false;
-    if (studentFilter === 'solved' && !s.hasPassed) return false;
-    if (studentFilter === 'in_progress' && (!s.assignment || s.hasPassed || s.assignment.status === 'expired')) return false;
-    if (studentFilter === 'expired' && s.assignment?.status !== 'expired') return false;
-    if (studentFilter === 'unassigned' && s.assignment) return false;
+  // Memoize status counts in a single pass over students
+  const statusCounts = useMemo(() => {
+    let online = 0;
+    let offline = 0;
+    let solved = 0;
+    let inProgress = 0;
+    let expired = 0;
+    let unassigned = 0;
 
-    // Search query
-    if (studentSearch.trim()) {
-      const q = studentSearch.toLowerCase();
-      const matchName = (s.name || '').toLowerCase().includes(q);
-      const matchUsername = (s.username || '').toLowerCase().includes(q);
-      const matchProblem = (s.assignment?.title || '').toLowerCase().includes(q);
-      return matchName || matchUsername || matchProblem;
+    for (const s of students) {
+      if (s.isOnline) online++;
+      else offline++;
+
+      if (s.hasPassed) solved++;
+
+      if (s.assignment) {
+        if (!s.hasPassed && s.assignment.status !== 'expired') {
+          inProgress++;
+        }
+        if (s.assignment.status === 'expired') {
+          expired++;
+        }
+      } else {
+        unassigned++;
+      }
     }
-    return true;
-  });
+
+    return {
+      all: students.length,
+      online,
+      offline,
+      solved,
+      inProgress,
+      expired,
+      unassigned
+    };
+  }, [students]);
+
+  // Compute filtered students list
+  const filteredStudents = useMemo(() => {
+    const q = studentSearch.trim().toLowerCase();
+    return students.filter(s => {
+      // Status Filter
+      if (studentFilter === 'online' && !s.isOnline) return false;
+      if (studentFilter === 'offline' && s.isOnline) return false;
+      if (studentFilter === 'solved' && !s.hasPassed) return false;
+      if (studentFilter === 'in_progress' && (!s.assignment || s.hasPassed || s.assignment.status === 'expired')) return false;
+      if (studentFilter === 'expired' && s.assignment?.status !== 'expired') return false;
+      if (studentFilter === 'unassigned' && s.assignment) return false;
+
+      // Search query
+      if (q) {
+        const matchName = (s.name || '').toLowerCase().includes(q);
+        const matchUsername = (s.username || '').toLowerCase().includes(q);
+        const matchProblem = (s.assignment?.title || '').toLowerCase().includes(q);
+        return matchName || matchUsername || matchProblem;
+      }
+      return true;
+    });
+  }, [students, studentFilter, studentSearch]);
 
   // Pagination calculation
   const totalFiltered = filteredStudents.length;
@@ -771,7 +811,7 @@ export default function AdminDashboard({ user, onLogout }) {
                         : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                     }`}
                   >
-                    All ({students.length})
+                    All ({statusCounts.all})
                   </button>
 
                   <button
@@ -783,7 +823,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     }`}
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                    <span>Online ({students.filter(s => s.isOnline).length})</span>
+                    <span>Online ({statusCounts.online})</span>
                   </button>
 
                   <button
@@ -795,7 +835,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     }`}
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
-                    <span>Offline ({students.filter(s => !s.isOnline).length})</span>
+                    <span>Offline ({statusCounts.offline})</span>
                   </button>
 
                   <button
@@ -807,7 +847,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     }`}
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Solved ({students.filter(s => s.hasPassed).length})</span>
+                    <span>Solved ({statusCounts.solved})</span>
                   </button>
 
                   <button
@@ -819,7 +859,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     }`}
                   >
                     <Clock className="w-3.5 h-3.5 text-amber-400" />
-                    <span>In Progress ({students.filter(s => s.assignment && !s.hasPassed && s.assignment.status !== 'expired').length})</span>
+                    <span>In Progress ({statusCounts.inProgress})</span>
                   </button>
 
                   <button
@@ -831,7 +871,7 @@ export default function AdminDashboard({ user, onLogout }) {
                     }`}
                   >
                     <Clock className="w-3.5 h-3.5 text-rose-400" />
-                    <span>Timed Out ({students.filter(s => s.assignment?.status === 'expired').length})</span>
+                    <span>Timed Out ({statusCounts.expired})</span>
                   </button>
 
                   <button
@@ -842,7 +882,7 @@ export default function AdminDashboard({ user, onLogout }) {
                         : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
                     }`}
                   >
-                    <span>Unassigned ({students.filter(s => !s.assignment).length})</span>
+                    <span>Unassigned ({statusCounts.unassigned})</span>
                   </button>
                 </div>
               </div>
