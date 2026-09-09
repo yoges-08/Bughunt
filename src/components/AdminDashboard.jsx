@@ -78,10 +78,7 @@ export default function AdminDashboard({ user, onLogout }) {
     description: '',
     starterCode: '',
     durationMinutes: 15,
-    testCases: [
-      { input: '', expectedOutput: '', isHidden: false },
-      { input: '', expectedOutput: '', isHidden: true }
-    ]
+    expectedOutput: ''
   });
 
   const [selectedSubmission, setSelectedSubmission] = useState(null);
@@ -441,16 +438,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
   // Feature 3: Open Edit Problem Modal
   const handleOpenEditProblem = (p) => {
-    const rawTestCases = (p.testCases && p.testCases.length > 0)
-      ? p.testCases.map(tc => ({
-          input: tc.input || '',
-          expectedOutput: tc.expectedOutput || '',
-          isHidden: Boolean(tc.isHidden)
-        }))
-      : [
-          { input: '', expectedOutput: '', isHidden: false },
-          { input: '', expectedOutput: '', isHidden: true }
-        ];
+    const expOut = p.expectedOutput || (p.testCases && p.testCases[0]?.expectedOutput) || '';
 
     setNewProblemData({
       title: p.title || '',
@@ -459,7 +447,7 @@ export default function AdminDashboard({ user, onLogout }) {
       description: p.description || '',
       starterCode: p.starterCode || '',
       durationMinutes: p.durationMinutes || 15,
-      testCases: rawTestCases
+      expectedOutput: expOut
     });
     setEditingProblemId(p.id);
     setShowAddProblemModal(true);
@@ -469,16 +457,9 @@ export default function AdminDashboard({ user, onLogout }) {
   const handleSaveProblem = async (e) => {
     e.preventDefault();
     try {
-      const validTestCases = (newProblemData.testCases || [])
-        .filter(tc => tc.expectedOutput && tc.expectedOutput.trim().length > 0)
-        .map(tc => ({
-          input: tc.input || '',
-          expectedOutput: tc.expectedOutput,
-          isHidden: Boolean(tc.isHidden)
-        }));
-
-      if (validTestCases.length === 0) {
-        alert('At least one test case with an Expected Output is required.');
+      const expOut = (newProblemData.expectedOutput || '').trim();
+      if (!expOut) {
+        alert('Expected Output is required.');
         return;
       }
 
@@ -489,7 +470,8 @@ export default function AdminDashboard({ user, onLogout }) {
         description: newProblemData.description || '',
         starterCode: newProblemData.starterCode || '',
         durationMinutes: Number(newProblemData.durationMinutes) || 15,
-        testCases: validTestCases
+        expectedOutput: expOut,
+        testCases: [{ input: '', expectedOutput: expOut, isHidden: false }]
       };
 
       if (editingProblemId) {
@@ -512,10 +494,7 @@ export default function AdminDashboard({ user, onLogout }) {
         description: '',
         starterCode: '',
         durationMinutes: 15,
-        testCases: [
-          { input: '', expectedOutput: '', isHidden: false },
-          { input: '', expectedOutput: '', isHidden: true }
-        ]
+        expectedOutput: ''
       });
       loadData();
     } catch (err) {
@@ -1166,10 +1145,7 @@ export default function AdminDashboard({ user, onLogout }) {
                       description: '',
                       starterCode: '',
                       durationMinutes: 15,
-                      testCases: [
-                        { input: '', expectedOutput: '', isHidden: false },
-                        { input: '', expectedOutput: '', isHidden: true }
-                      ]
+                      expectedOutput: ''
                     });
                     setShowAddProblemModal(true);
                   }}
@@ -1198,14 +1174,12 @@ export default function AdminDashboard({ user, onLogout }) {
                       </div>
 
                       <div className="text-[11px] text-slate-400 flex items-center gap-2">
-                        <span>Test cases: {p.testCases?.length || 0}</span>
-                        <span>•</span>
                         <span className="text-emerald-400 font-medium flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           <span>{p.durationMinutes || 15} mins timer</span>
                         </span>
                         <span>•</span>
-                        <span>Sandbox: {p.timeLimitMs}ms</span>
+                        <span>Sandbox: {p.timeLimitMs || 3000}ms</span>
                       </div>
                     </div>
 
@@ -1952,111 +1926,23 @@ export default function AdminDashboard({ user, onLogout }) {
                 />
               </div>
 
-              {/* Dynamic Test Cases List */}
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-slate-300 font-bold uppercase tracking-wider text-xs flex items-center gap-1.5">
-                      <span>Problem Test Cases ({(newProblemData.testCases || []).length})</span>
-                    </label>
-                    <p className="text-[11px] text-slate-500">Visible test cases are shown to students; Hidden test cases are used for final evaluation.</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNewProblemData(prev => ({
-                        ...prev,
-                        testCases: [
-                          ...(prev.testCases || []),
-                          { input: '', expectedOutput: '', isHidden: true }
-                        ]
-                      }));
-                    }}
-                    className="px-3 py-1.5 bg-surface-950 hover:bg-slate-800 text-emerald-400 hover:text-emerald-300 rounded-lg text-xs font-semibold border border-slate-800 transition flex items-center gap-1.5 active:scale-[0.99] shadow"
-                  >
-                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                    <span>Add Test Case</span>
-                  </button>
+              {/* Problem Expected Output Field */}
+              <div className="space-y-2 pt-2">
+                <div>
+                  <label className="text-slate-300 font-bold uppercase tracking-wider text-xs flex items-center gap-1.5">
+                    <span>Expected Output (Stdout) *</span>
+                  </label>
+                  <p className="text-[11px] text-slate-500">The exact console output that the student's fixed program should produce.</p>
                 </div>
 
-                <div className="space-y-3">
-                  {(newProblemData.testCases || []).map((tc, idx) => (
-                    <div key={idx} className="p-3.5 bg-surface-950 rounded-xl border border-slate-800 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-200 text-xs font-mono">
-                            Test Case #{idx + 1}
-                          </span>
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${tc.isHidden ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
-                            {tc.isHidden ? 'Hidden (Evaluator Only)' : 'Visible (Student Sample)'}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <label className="flex items-center gap-1.5 text-xs text-slate-400 cursor-pointer select-none">
-                            <input
-                              type="checkbox"
-                              checked={tc.isHidden}
-                              onChange={(e) => {
-                                const updated = [...(newProblemData.testCases || [])];
-                                updated[idx] = { ...updated[idx], isHidden: e.target.checked };
-                                setNewProblemData({ ...newProblemData, testCases: updated });
-                              }}
-                              className="w-3.5 h-3.5 rounded bg-surface-900 border-slate-800 text-emerald-500 focus:ring-0 cursor-pointer"
-                            />
-                            <span>Hidden Case</span>
-                          </label>
-
-                          {(newProblemData.testCases || []).length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const updated = newProblemData.testCases.filter((_, i) => i !== idx);
-                                setNewProblemData({ ...newProblemData, testCases: updated });
-                              }}
-                              className="p-1 text-slate-500 hover:text-rose-400 transition"
-                              title="Delete test case"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-slate-500 text-[11px] mb-1 font-medium">Input (stdin)</label>
-                          <textarea
-                            rows={2}
-                            value={tc.input}
-                            onChange={(e) => {
-                              const updated = [...(newProblemData.testCases || [])];
-                              updated[idx] = { ...updated[idx], input: e.target.value };
-                              setNewProblemData({ ...newProblemData, testCases: updated });
-                            }}
-                            placeholder="e.g. 5\n1 2 3 4 5"
-                            className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-slate-500 text-[11px] mb-1 font-medium">Expected Output *</label>
-                          <textarea
-                            rows={2}
-                            required
-                            value={tc.expectedOutput}
-                            onChange={(e) => {
-                              const updated = [...(newProblemData.testCases || [])];
-                              updated[idx] = { ...updated[idx], expectedOutput: e.target.value };
-                              setNewProblemData({ ...newProblemData, testCases: updated });
-                            }}
-                            placeholder="e.g. 5"
-                            className="w-full bg-surface-900 border border-slate-800 rounded-lg p-2 font-mono text-slate-200 text-xs focus:outline-none focus:border-emerald-500 resize-none"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <textarea
+                  rows={4}
+                  required
+                  value={newProblemData.expectedOutput}
+                  onChange={(e) => setNewProblemData({ ...newProblemData, expectedOutput: e.target.value })}
+                  placeholder="e.g. YES&#10;YES&#10;NO"
+                  className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3.5 text-emerald-300 font-mono text-xs focus:outline-none focus:border-emerald-500 resize-none shadow-inner"
+                />
               </div>
 
               <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">

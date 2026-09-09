@@ -60,6 +60,7 @@ router.get('/current-problem', (req, res) => {
       description: assignment.description,
       starterCode: assignment.starterCode,
       currentCode: assignment.currentCode,
+      expectedOutput: assignment.expectedOutput || assignment.sampleTestCase?.expectedOutput || '',
       status: assignment.status,
       assignedAt: assignment.assignedAt,
       expiresAt: assignment.expiresAt,
@@ -85,7 +86,7 @@ router.post('/save-code', (req, res) => {
 /**
  * CORE REQUIREMENT 2 & 3:
  * Executes code in private sandbox. Sanitizes output before sending response.
- * Evaluates against authoritative server sample test case to detect failing programs.
+ * Evaluates against authoritative server expected output to detect failing programs.
  * (Priority #6: Prevents client manipulation of expected output)
  */
 router.post('/run', async (req, res) => {
@@ -110,11 +111,10 @@ router.post('/run', async (req, res) => {
     let targetExpectedOutput = null;
     let effectiveStdin = stdin || '';
 
-    // If student runs default test (no custom stdin provided, or stdin matches sample input), use authoritative sample test
-    if (assignment && assignment.sampleTestCase) {
-      if (!stdin || stdin.trim() === (assignment.sampleTestCase.input || '').trim()) {
-        effectiveStdin = assignment.sampleTestCase.input || '';
-        targetExpectedOutput = assignment.sampleTestCase.expectedOutput;
+    if (assignment) {
+      targetExpectedOutput = assignment.expectedOutput || assignment.sampleTestCase?.expectedOutput || null;
+      if (!stdin && assignment.sampleTestCase?.input) {
+        effectiveStdin = assignment.sampleTestCase.input;
       }
     }
 

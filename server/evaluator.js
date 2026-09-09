@@ -41,7 +41,11 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
     throw new Error(`Problem '${problemId}' not found`);
   }
 
-  const testCases = problem.testCases || [];
+  const problemExpectedOutput = problem.expectedOutput || '';
+  const testCases = (problem.testCases && problem.testCases.length > 0)
+    ? problem.testCases
+    : (problemExpectedOutput ? [{ input: '', expectedOutput: problemExpectedOutput, isHidden: false }] : []);
+
   let compileSuccess = true;
   let runtimeSuccess = true;
   let timedOut = false;
@@ -51,16 +55,16 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
   let rawRuntimeError = '';
   const testResults = [];
 
-  // Issue 1: If problem has zero test cases, do NOT auto-pass
+  // If problem has zero test cases and no expected output, do NOT auto-pass
   if (testCases.length === 0) {
     allPassed = false;
     runtimeSuccess = false;
-    rawRuntimeError = 'Problem has no test cases configured';
+    rawRuntimeError = 'Problem has no expected output configured';
     testResults.push({
       testCaseIndex: 0,
       isHidden: false,
       passed: false,
-      error: 'Problem has no test cases configured'
+      error: 'Problem has no expected output configured'
     });
   }
 

@@ -267,7 +267,7 @@ router.get('/problems', (req, res) => {
 
 // Create problem with configurable timer / durationMinutes
 router.post('/problems', (req, res) => {
-  const { title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes } = req.body;
+  const { title, language, filename, description, starterCode, expectedOutput, testCases, timeLimitMs, durationMinutes } = req.body;
 
   if (!title || !language || !filename || !starterCode) {
     return res.status(400).json({ error: 'Title, language, filename, and starterCode are required' });
@@ -280,6 +280,7 @@ router.post('/problems', (req, res) => {
       filename,
       description: description || '',
       starterCode,
+      expectedOutput: expectedOutput || '',
       testCases: testCases || [],
       timeLimitMs: Number(timeLimitMs) || 3000,
       durationMinutes: Math.max(1, Number(durationMinutes) || 15)
@@ -293,11 +294,11 @@ router.post('/problems', (req, res) => {
 // Feature 3: Update existing problem
 router.put('/problems/:id', (req, res) => {
   const { id } = req.params;
-  const { title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes } = req.body;
+  const { title, language, filename, description, starterCode, expectedOutput, testCases, timeLimitMs, durationMinutes } = req.body;
 
   try {
     const updated = db.updateProblem(id, {
-      title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes
+      title, language, filename, description, starterCode, expectedOutput, testCases, timeLimitMs, durationMinutes
     });
     res.json(updated);
   } catch (err) {
@@ -353,6 +354,7 @@ router.post('/assign', (req, res) => {
   const durationMinutes = problem.durationMinutes || 15;
   const now = new Date();
   const expiresAt = new Date(now.getTime() + durationMinutes * 60 * 1000).toISOString();
+  const expectedOut = problem.expectedOutput || (problem.testCases && problem.testCases[0]?.expectedOutput) || '';
 
   const problemPayload = {
     problemId: problem.id,
@@ -361,11 +363,12 @@ router.post('/assign', (req, res) => {
     filename: problem.filename,
     description: problem.description,
     starterCode: problem.starterCode,
+    expectedOutput: expectedOut,
     durationMinutes,
     assignedAt: now.toISOString(),
     expiresAt,
     hasSubmitted: false,
-    sampleTestCase: problem.testCases.find(t => !t.isHidden) || null
+    sampleTestCase: problem.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expectedOut }
   };
 
   if (assignAll) {

@@ -107,9 +107,12 @@ const INITIAL_DB = {
       title: 'Fix Palindrome & Whitespace Bug',
       language: 'python',
       filename: 'palindrome_checker.py',
-      description: 'The given function is supposed to check if a string is a palindrome ignoring case and spaces. Fix the logic and index bounds error.',
+      description: 'The given function is supposed to check if strings are palindromes ignoring case and spaces. Fix the logic and index bounds error to produce the expected output.',
       starterCode: `# Bug Hunt Challenge: Palindrome Checker
-# Fix the bugs so that strings like "Race car" or "madam" return True, and "hello" returns False.
+# Fix the bugs so the output matches the expected output:
+# Race car -> YES
+# madam -> YES
+# hello -> NO
 
 def is_palindrome(s):
     # BUG 1: Case conversion missed
@@ -130,16 +133,13 @@ def is_palindrome(s):
     return True
 
 if __name__ == "__main__":
-    import sys
-    lines = sys.stdin.read().strip().splitlines()
-    for line in lines:
-        if line.strip():
-            print("YES" if is_palindrome(line) else "NO")
+    test_words = ["Race car", "madam", "hello"]
+    for word in test_words:
+        print("YES" if is_palindrome(word) else "NO")
 `,
+      expectedOutput: "YES\nYES\nNO",
       testCases: [
-        { input: "Race car\nmadam\nhello\n", expectedOutput: "YES\nYES\nNO", isHidden: false },
-        { input: "A man a plan a canal Panama\nNo lemon no melon\nWorld\n", expectedOutput: "YES\nYES\nNO", isHidden: true },
-        { input: "12321\n123456\n", expectedOutput: "YES\nNO", isHidden: true }
+        { input: "", expectedOutput: "YES\nYES\nNO", isHidden: false }
       ],
       timeLimitMs: 3000,
       durationMinutes: 15,
@@ -150,7 +150,7 @@ if __name__ == "__main__":
       title: 'Fix Binary Search Off-by-One',
       language: 'cpp',
       filename: 'binary_search.cpp',
-      description: 'A classic binary search implementation with boundary index bugs and integer overflow issue. Fix it to pass all test cases.',
+      description: 'A classic binary search implementation with boundary index bugs and integer overflow issue. Fix it to produce the expected indices.',
       starterCode: `// Bug Hunt Challenge: Binary Search
 // Fix the bugs so the program returns the 0-based index of target, or -1 if not found.
 
@@ -177,21 +177,17 @@ int binarySearch(const std::vector<int>& arr, int target) {
 }
 
 int main() {
-    int n, target;
-    if (!(std::cin >> n >> target)) return 0;
-    std::vector<int> arr(n);
-    for (int i = 0; i < n; ++i) {
-        std::cin >> arr[i];
+    std::vector<int> arr = {1, 3, 5, 7, 9};
+    std::vector<int> targets = {7, 1, 9, 4};
+    for (int t : targets) {
+        std::cout << binarySearch(arr, t) << std::endl;
     }
-    std::cout << binarySearch(arr, target) << std::endl;
     return 0;
 }
 `,
+      expectedOutput: "3\n0\n4\n-1",
       testCases: [
-        { input: "5 7\n1 3 5 7 9\n", expectedOutput: "3", isHidden: false },
-        { input: "5 1\n1 3 5 7 9\n", expectedOutput: "0", isHidden: false },
-        { input: "5 9\n1 3 5 7 9\n", expectedOutput: "4", isHidden: true },
-        { input: "5 4\n1 3 5 7 9\n", expectedOutput: "-1", isHidden: true }
+        { input: "", expectedOutput: "3\n0\n4\n-1", isHidden: false }
       ],
       timeLimitMs: 3000,
       durationMinutes: 20,
@@ -204,8 +200,8 @@ int main() {
       filename: 'array_max.c',
       description: 'Find the maximum element and its count in an integer array. Fix the initialization bug and out-of-bounds loop.',
       starterCode: `/* Bug Hunt Challenge: Array Maximum & Frequency
-   Input: n followed by n integers.
-   Output: "<max_val> <count>"
+   Find the maximum element and its count.
+   Expected Output: "5 2"
 */
 #include <stdio.h>
 
@@ -229,22 +225,17 @@ void find_max_and_count(int arr[], int n, int *out_max, int *out_count) {
 }
 
 int main() {
-    int n;
-    if (scanf("%d", &n) != 1 || n <= 0) return 0;
-    int arr[1000];
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &arr[i]);
-    }
+    int arr[] = {1, 5, 3, 5, 2};
+    int n = sizeof(arr) / sizeof(arr[0]);
     int max_val, count;
     find_max_and_count(arr, n, &max_val, &count);
     printf("%d %d\\n", max_val, count);
     return 0;
 }
 `,
+      expectedOutput: "5 2",
       testCases: [
-        { input: "5\n1 5 3 5 2\n", expectedOutput: "5 2", isHidden: false },
-        { input: "4\n-10 -5 -2 -5\n", expectedOutput: "-2 1", isHidden: true },
-        { input: "3\n7 7 7\n", expectedOutput: "7 3", isHidden: true }
+        { input: "", expectedOutput: "5 2", isHidden: false }
       ],
       timeLimitMs: 3000,
       durationMinutes: 15,
@@ -496,10 +487,11 @@ class ContestDatabase {
     return this.data.problems.find(p => p.id === id);
   }
 
-  createProblem({ title, language, filename, description, starterCode, testCases, timeLimitMs = 3000, durationMinutes = 15 }) {
+  createProblem({ title, language, filename, description, starterCode, expectedOutput, testCases, timeLimitMs = 3000, durationMinutes = 15 }) {
     const cleanTitle = (title || '').trim();
     const cleanLang = (language || '').toLowerCase().trim();
     const cleanFilename = (filename || '').trim();
+    const cleanExpectedOutput = typeof expectedOutput === 'string' ? expectedOutput : '';
 
     // Input Validation
     if (cleanTitle.length < 2 || cleanTitle.length > 100) {
@@ -516,10 +508,15 @@ class ContestDatabase {
       throw new Error('Invalid filename: path traversal and directory separators are not allowed');
     }
 
-    // Issue 1: Require at least one test case
-    if (!Array.isArray(testCases) || testCases.length === 0) {
-      throw new Error('Problem must contain at least one test case');
+    // Ensure expected output exists
+    const effectiveExpectedOutput = cleanExpectedOutput || testCases?.[0]?.expectedOutput || '';
+    if (!effectiveExpectedOutput && (!Array.isArray(testCases) || testCases.length === 0)) {
+      throw new Error('Problem must contain an Expected Output');
     }
+
+    const effectiveTestCases = Array.isArray(testCases) && testCases.length > 0
+      ? testCases
+      : [{ input: '', expectedOutput: effectiveExpectedOutput, isHidden: false }];
 
     const validDuration = Math.min(180, Math.max(1, Number(durationMinutes) || 15));
 
@@ -530,7 +527,8 @@ class ContestDatabase {
       filename: basename,
       description: (description || '').trim(),
       starterCode: starterCode || '',
-      testCases: Array.isArray(testCases) ? testCases : [],
+      expectedOutput: effectiveExpectedOutput,
+      testCases: effectiveTestCases,
       timeLimitMs: Number(timeLimitMs) || 3000,
       durationMinutes: validDuration,
       createdAt: new Date().toISOString()
@@ -542,7 +540,7 @@ class ContestDatabase {
   }
 
   // Feature 3: Update existing problem
-  updateProblem(id, { title, language, filename, description, starterCode, testCases, timeLimitMs, durationMinutes }) {
+  updateProblem(id, { title, language, filename, description, starterCode, expectedOutput, testCases, timeLimitMs, durationMinutes }) {
     const problem = this.getProblemById(id);
     if (!problem) throw new Error(`Problem ${id} not found`);
 
@@ -573,11 +571,20 @@ class ContestDatabase {
     if (description !== undefined) problem.description = description.trim();
     if (starterCode !== undefined) problem.starterCode = starterCode;
 
-    if (testCases !== undefined) {
-      if (!Array.isArray(testCases) || testCases.length === 0) {
-        throw new Error('Problem must contain at least one test case');
+    if (expectedOutput !== undefined) {
+      problem.expectedOutput = typeof expectedOutput === 'string' ? expectedOutput : '';
+      if (!testCases) {
+        problem.testCases = [{ input: '', expectedOutput: problem.expectedOutput, isHidden: false }];
       }
-      problem.testCases = testCases;
+    }
+
+    if (testCases !== undefined) {
+      if (Array.isArray(testCases) && testCases.length > 0) {
+        problem.testCases = testCases;
+        if (!problem.expectedOutput && testCases[0]?.expectedOutput) {
+          problem.expectedOutput = testCases[0].expectedOutput;
+        }
+      }
     }
 
     if (timeLimitMs !== undefined) problem.timeLimitMs = Number(timeLimitMs) || problem.timeLimitMs;
@@ -665,6 +672,8 @@ class ContestDatabase {
       ? assignment.status
       : (isExpired ? 'expired' : 'assigned');
 
+    const expectedOut = problem.expectedOutput || (problem.testCases && problem.testCases[0]?.expectedOutput) || '';
+
     return {
       assignmentId: assignment.id,
       problemId: problem.id,
@@ -674,12 +683,13 @@ class ContestDatabase {
       description: problem.description,
       starterCode: problem.starterCode,
       currentCode: assignment.currentCode,
+      expectedOutput: expectedOut,
       status: effectiveStatus,
       assignedAt: assignment.assignedAt,
       expiresAt,
       durationMinutes: problem.durationMinutes || assignment.durationMinutes || 15,
       hasSubmitted,
-      sampleTestCase: problem.testCases.find(t => !t.isHidden) || null
+      sampleTestCase: problem.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expectedOut }
     };
   }
 

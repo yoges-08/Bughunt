@@ -167,13 +167,10 @@ export default function StudentEditor({ user, onLogout }) {
     setLastResult(null);
 
     try {
-      // Use sample test case stdin and expected output if available
-      const stdin = problem.sampleTestCase?.input || '';
-      const expectedOutput = problem.sampleTestCase?.expectedOutput;
+      const expectedOutput = problem.expectedOutput || problem.sampleTestCase?.expectedOutput || '';
       const result = await api.runStudentCode({
         code,
         language: problem.language,
-        stdin,
         expectedOutput,
         problemId: currentProblemId
       });
@@ -374,25 +371,15 @@ export default function StudentEditor({ user, onLogout }) {
                   </div>
                 </div>
 
-                {problem.sampleTestCase && (
-                  <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                    <div className="text-slate-400 font-semibold uppercase text-[10px]">Sample Test Case</div>
-                    {problem.sampleTestCase.input && (
-                      <div>
-                        <div className="text-slate-500 text-[10px] font-mono mb-1">Sample Input:</div>
-                        <pre className="font-mono text-slate-200 bg-surface-900 p-2 rounded text-[11px] overflow-x-auto whitespace-pre">
-                          {problem.sampleTestCase.input}
-                        </pre>
-                      </div>
-                    )}
-                    {problem.sampleTestCase.expectedOutput && (
-                      <div>
-                        <div className="text-slate-500 text-[10px] font-mono mb-1">Expected Output:</div>
-                        <pre className="font-mono text-emerald-300 bg-surface-900 p-2 rounded text-[11px] overflow-x-auto whitespace-pre">
-                          {problem.sampleTestCase.expectedOutput}
-                        </pre>
-                      </div>
-                    )}
+                {(problem.expectedOutput || problem.sampleTestCase?.expectedOutput) && (
+                  <div className="bg-surface-950 p-3 rounded-xl border border-slate-800 space-y-1.5 shadow-inner">
+                    <div className="text-emerald-400 font-semibold uppercase text-[10px] flex items-center justify-between">
+                      <span>Target Expected Output</span>
+                      <span className="text-[10px] text-slate-500 font-mono font-normal">stdout</span>
+                    </div>
+                    <pre className="font-mono text-emerald-300 bg-surface-900 p-2.5 rounded-lg text-[11px] overflow-x-auto whitespace-pre border border-slate-800/80">
+                      {problem.expectedOutput || problem.sampleTestCase?.expectedOutput}
+                    </pre>
                   </div>
                 )}
 
@@ -402,7 +389,7 @@ export default function StudentEditor({ user, onLogout }) {
                   </div>
                   <ul className="list-disc list-inside space-y-1 text-blue-200/80 text-[11px]">
                     <li>Find and fix the bugs directly in the code editor.</li>
-                    <li>Click <strong>RUN</strong> to test against sample input as many times as you like.</li>
+                    <li>Click <strong>RUN</strong> to test your code output as many times as you like.</li>
                     <li><strong>ONE SUBMISSION ONLY:</strong> Once you click <strong>SUBMIT</strong>, your solution is final and recorded.</li>
                     <li>Keep an eye on the <strong>⏱ Timer</strong> at the top bar.</li>
                   </ul>
