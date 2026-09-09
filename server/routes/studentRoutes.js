@@ -23,6 +23,21 @@ const router = express.Router();
 router.use(authenticateToken);
 router.use(requireRole('student'));
 
+// In-flight submission mutex to prevent concurrent duplicate submission race conditions (Priority #2)
+const inFlightSubmissions = new Set();
+
+/**
+ * Standardize language aliases to canonical forms ('python', 'c', 'cpp')
+ */
+function normalizeLanguage(lang) {
+  if (!lang || typeof lang !== 'string') return '';
+  const clean = lang.toLowerCase().trim();
+  if (clean === 'py' || clean === 'python') return 'python';
+  if (clean === 'c') return 'c';
+  if (clean === 'cpp' || clean === 'c++') return 'cpp';
+  return clean;
+}
+
 // --- Get Assigned Problem & Restore State on Reconnect ---
 router.get('/current-problem', (req, res) => {
   const studentId = req.user.id;
@@ -70,11 +85,12 @@ router.post('/save-code', (req, res) => {
 /**
  * CORE REQUIREMENT 2 & 3:
  * Executes code in private sandbox. Sanitizes output before sending response.
- * Evaluates against sample test case expected output to correctly detect failing programs.
+ * Evaluates against authoritative server sample test case to detect failing programs.
+ * (Priority #6: Prevents client manipulation of expected output)
  */
 router.post('/run', async (req, res) => {
   const studentId = req.user.id;
-  const { code, language, stdin, expectedOutput } = req.body;
+  const { code, language, stdin } = req.body;
 
   if (!code || !language) {
     return res.status(400).json({ error: 'Code and language are required' });
@@ -90,11 +106,14 @@ router.post('/run', async (req, res) => {
   }
 
   try {
-    // Find expected output from problem if not directly provided in request
-    let targetExpectedOutput = expectedOutput;
-    if (targetExpectedOutput === undefined || targetExpectedOutput === null) {
-      const assignment = db.getStudentAssignment(studentId);
-      if (assignment && assignment.sampleTestCase) {
+    const assignment = db.getStudentAssignment(studentId);
+    let targetExpectedOutput = null;
+    let effectiveStdin = stdin || '';
+
+    // If student runs default test (no custom stdin provided, or stdin matches sample input), use authoritative sample test
+    if (assignment && assignment.sampleTestCase) {
+      if (!stdin || stdin.trim() === (assignment.sampleTestCase.input || '').trim()) {
+        effectiveStdin = assignment.sampleTestCase.input || '';
         targetExpectedOutput = assignment.sampleTestCase.expectedOutput;
       }
     }
@@ -103,12 +122,12 @@ router.post('/run', async (req, res) => {
     const rawResult = await executeCode({
       code,
       language,
-      stdin: stdin || '',
+      stdin: effectiveStdin,
       timeoutMs: 3000
     });
 
-    // If expected output is present, verify that the program's output matches
-    if (targetExpectedOutput !== undefined && targetExpectedOutput !== null && rawResult.compileSuccess !== false && !rawResult.timedOut && rawResult.runtimeSuccess !== false && (rawResult.exitCode === 0 || rawResult.exitCode === undefined)) {
+    // If authoritative expected output is present, verify that the program's output matches
+    if (targetExpectedOutput !== null && rawResult.compileSuccess !== false && !rawResult.timedOut && rawResult.runtimeSuccess !== false && (rawResult.exitCode === 0 || rawResult.exitCode === undefined)) {
       const normalize = (str) => {
         if (typeof str !== 'string') return '';
         return str
@@ -142,7 +161,7 @@ router.post('/run', async (req, res) => {
 /**
  * CORE REQUIREMENT 2 & 3:
  * Server independently re-compiles, executes all test cases, and scores the submission.
- * Enforces single submission limit and time limit.
+ * Enforces single submission limit, language matching, and time limit.
  */
 router.post('/submit', async (req, res) => {
   const studentId = req.user.id;
@@ -158,7 +177,25 @@ router.post('/submit', async (req, res) => {
     return res.status(400).json({ error: 'This problem is not currently assigned to you.' });
   }
 
-  // 2. Check if student has already submitted this problem for the current assignment (Single Submission Limit)
+  // 2. Enforce language matching (Priority #1)
+  const normSubmittedLang = normalizeLanguage(language);
+  const normAssignedLang = normalizeLanguage(assignment.language);
+  if (normSubmittedLang !== normAssignedLang) {
+    return res.status(400).json({
+      error: `Language mismatch: This problem must be submitted in ${assignment.language.toUpperCase()}.`
+    });
+  }
+
+  // 3. Single-submission race condition lock (Priority #2)
+  const lockKey = `${studentId}:${problemId}`;
+  if (inFlightSubmissions.has(lockKey)) {
+    return res.status(400).json({
+      error: 'A submission for this problem is already currently in evaluation. Please wait.',
+      alreadySubmitted: true
+    });
+  }
+
+  // 4. Check if student has already submitted this problem for the current assignment
   const existingSubmissions = db.getStudentSubmissions(studentId);
   const alreadySubmitted = existingSubmissions.some(s => 
     s.problemId === problemId && 
@@ -172,7 +209,7 @@ router.post('/submit', async (req, res) => {
     });
   }
 
-  // 2. Check if problem time limit has expired
+  // 5. Check if problem time limit has expired
   if (assignment && assignment.expiresAt) {
     const now = Date.now();
     const expiry = new Date(assignment.expiresAt).getTime();
@@ -185,13 +222,16 @@ router.post('/submit', async (req, res) => {
     }
   }
 
+  // Acquire submission lock
+  inFlightSubmissions.add(lockKey);
+
   try {
-    // Re-verify submission on the server
+    // Re-verify submission on the server using authoritative language
     const { studentResult, adminResult, submission } = await evaluateSubmission({
       studentId,
       problemId,
       code,
-      language
+      language: normAssignedLang
     });
 
     // Notify connected Admins in real-time about the new submission
@@ -218,6 +258,9 @@ router.post('/submit', async (req, res) => {
       status: 'EXECUTION_FAILED',
       message: '❌ Program Execution Failed'
     });
+  } finally {
+    // Release submission lock
+    inFlightSubmissions.delete(lockKey);
   }
 });
 

@@ -264,6 +264,7 @@ class ContestDatabase {
     this.data = null;
     this._saveTimer = null;
     this._isSaving = false;
+    this._hasPendingSave = false;
     this.init();
   }
 
@@ -349,10 +350,14 @@ class ContestDatabase {
   }
 
   /**
-   * Immediate atomic disk write for critical state mutations
+   * Immediate atomic disk write for critical state mutations.
+   * (Priority #4: Guaranteed persistence re-trigger if save is requested during an active write)
    */
   async saveImmediately() {
-    if (this._isSaving) return;
+    if (this._isSaving) {
+      this._hasPendingSave = true;
+      return;
+    }
     this._isSaving = true;
     try {
       const tempPath = `${DB_FILE}.tmp_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
@@ -363,6 +368,10 @@ class ContestDatabase {
       console.error('Error saving database file:', err.message);
     } finally {
       this._isSaving = false;
+      if (this._hasPendingSave) {
+        this._hasPendingSave = false;
+        setImmediate(() => this.saveImmediately());
+      }
     }
   }
 
@@ -380,14 +389,23 @@ class ContestDatabase {
   }
 
   // --- Users ---
+  /**
+   * Look up user by username (Priority #10: Exact username match takes precedence over name/teamName)
+   */
   findUserByUsername(username) {
     if (!username || typeof username !== 'string') return null;
     const clean = username.trim().toLowerCase();
-    return this.data.users.find(u => 
-      u.username.toLowerCase() === clean || 
-      (u.name && u.name.toLowerCase() === clean) ||
-      (u.teamName && u.teamName.toLowerCase() === clean)
-    );
+
+    // 1. Exact username match (highest priority)
+    const exactUser = this.data.users.find(u => u.username && u.username.toLowerCase() === clean);
+    if (exactUser) return exactUser;
+
+    // 2. Team name match (for team accounts)
+    const teamUser = this.data.users.find(u => u.isTeam && u.teamName && u.teamName.trim().toLowerCase() === clean);
+    if (teamUser) return teamUser;
+
+    // 3. Display name fallback
+    return this.data.users.find(u => u.name && u.name.trim().toLowerCase() === clean) || null;
   }
 
   findUserById(id) {
@@ -709,7 +727,8 @@ class ContestDatabase {
       assignment.lastUpdated = new Date().toISOString();
     }
 
-    this.save();
+    // Persist submission immediately to disk (Priority #5)
+    this.saveImmediately();
     return submission;
   }
 

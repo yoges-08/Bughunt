@@ -9,129 +9,18 @@
       "createdAt": "2026-08-29T16:54:14.625Z"
     },
     {
-      "id": "usr_student_1",
-      "username": "student1",
-      "password": "scrypt$71aa8163a9945bad249ee8ec2fbbc4cb$eb320e82ab0f21db2d2fbbb762e86e1f150d596f19ec6dca016f84a0b80019dc107e5001c1de0f9c95229720e49602cf53d28131630fb92f1e1b5180c7de3499",
+      "id": "usr_cb7bad42",
+      "username": "yoges",
+      "password": "scrypt$dc270cbce4b4ebdac9b464ce32379595$2b68a8991010f81a79972b9d84753cfb223b544ddb00a478b76d0f06aabcf4fad107876766d96547264cc1b401a51941eba3725e1609fcabc241390451a385a6",
       "role": "student",
-      "name": "Alice Johnson (Team A)",
-      "createdAt": "2026-08-29T16:54:14.625Z"
-    },
-    {
-      "id": "usr_student_2",
-      "username": "student2",
-      "password": "scrypt$82bb8163a9945bad249ee8ec2fbbc4cc$fb320e82ab0f21db2d2fbbb762e86e1f150d596f19ec6dca016f84a0b80019dc107e5001c1de0f9c95229720e49602cf53d28131630fb92f1e1b5180c7de34aa",
-      "role": "student",
-      "name": "Bob Smith (Team B)",
-      "createdAt": "2026-08-29T16:54:14.625Z"
-    },
-    {
-      "id": "usr_student_3",
-      "username": "student3",
-      "password": "scrypt$93cc8163a9945bad249ee8ec2fbbc4cd$ab320e82ab0f21db2d2fbbb762e86e1f150d596f19ec6dca016f84a0b80019dc107e5001c1de0f9c95229720e49602cf53d28131630fb92f1e1b5180c7de34bb",
-      "role": "student",
-      "name": "Charlie Davis (Team C)",
-      "createdAt": "2026-08-29T16:54:14.625Z"
-    },
-    {
-      "id": "usr_student_4",
-      "username": "student4",
-      "password": "scrypt$a4dd8163a9945bad249ee8ec2fbbc4ce$bb320e82ab0f21db2d2fbbb762e86e1f150d596f19ec6dca016f84a0b80019dc107e5001c1de0f9c95229720e49602cf53d28131630fb92f1e1b5180c7de34cc",
-      "role": "student",
-      "name": "Dana Lee (Team D)",
-      "createdAt": "2026-08-29T16:54:14.625Z"
+      "name": "yoges",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-08T15:17:56.454Z"
     }
   ],
-  "problems": [
-    {
-      "id": "prob_py_palindrome",
-      "title": "Fix Palindrome & Whitespace Bug",
-      "language": "python",
-      "filename": "palindrome_checker.py",
-      "description": "The given function is supposed to check if a string is a palindrome ignoring case and spaces. Fix the logic and index bounds error.",
-      "starterCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so that strings like \"Race car\" or \"madam\" return True, and \"hello\" returns False.\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "testCases": [
-        {
-          "input": "Race car\nmadam\nhello\n",
-          "expectedOutput": "YES\nYES\nNO",
-          "isHidden": false
-        },
-        {
-          "input": "A man a plan a canal Panama\nNo lemon no melon\nWorld\n",
-          "expectedOutput": "YES\nYES\nNO",
-          "isHidden": true
-        },
-        {
-          "input": "12321\n123456\n",
-          "expectedOutput": "YES\nNO",
-          "isHidden": true
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-08-29T16:54:14.625Z"
-    },
-    {
-      "id": "prob_cpp_binary_search",
-      "title": "Fix Binary Search Off-by-One",
-      "language": "cpp",
-      "filename": "binary_search.cpp",
-      "description": "A classic binary search implementation with boundary index bugs and integer overflow issue. Fix it to pass all test cases.",
-      "starterCode": "// Bug Hunt Challenge: Binary Search\n// Fix the bugs so the program returns the 0-based index of target, or -1 if not found.\n\n#include <iostream>\n#include <vector>\n\nint binarySearch(const std::vector<int>& arr, int target) {\n    int left = 0;\n    // BUG 1: Should be arr.size() - 1\n    int right = arr.size(); \n\n    // BUG 2: Condition should be left <= right\n    while (left < right) {\n        int mid = (left + right) / 2;\n        if (arr[mid] == target) {\n            return mid;\n        } else if (arr[mid] < target) {\n            left = mid; // BUG 3: Should be mid + 1\n        } else {\n            right = mid; // BUG 4: Should be mid - 1\n        }\n    }\n    return -1;\n}\n\nint main() {\n    int n, target;\n    if (!(std::cin >> n >> target)) return 0;\n    std::vector<int> arr(n);\n    for (int i = 0; i < n; ++i) {\n        std::cin >> arr[i];\n    }\n    std::cout << binarySearch(arr, target) << std::endl;\n    return 0;\n}\n",
-      "testCases": [
-        {
-          "input": "5 7\n1 3 5 7 9\n",
-          "expectedOutput": "3",
-          "isHidden": false
-        },
-        {
-          "input": "5 1\n1 3 5 7 9\n",
-          "expectedOutput": "0",
-          "isHidden": false
-        },
-        {
-          "input": "5 9\n1 3 5 7 9\n",
-          "expectedOutput": "4",
-          "isHidden": true
-        },
-        {
-          "input": "5 4\n1 3 5 7 9\n",
-          "expectedOutput": "-1",
-          "isHidden": true
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 20,
-      "createdAt": "2026-08-29T16:54:14.625Z"
-    },
-    {
-      "id": "prob_c_array_max",
-      "title": "Fix Array Maximum and Memory Bounds",
-      "language": "c",
-      "filename": "array_max.c",
-      "description": "Find the maximum element and its count in an integer array. Fix the initialization bug and out-of-bounds loop.",
-      "starterCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Input: n followed by n integers.\n   Output: \"<max_val> <count>\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1 || n <= 0) return 0;\n    int arr[1000];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
-      "testCases": [
-        {
-          "input": "5\n1 5 3 5 2\n",
-          "expectedOutput": "5 2",
-          "isHidden": false
-        },
-        {
-          "input": "4\n-10 -5 -2 -5\n",
-          "expectedOutput": "-2 1",
-          "isHidden": true
-        },
-        {
-          "input": "3\n7 7 7\n",
-          "expectedOutput": "7 3",
-          "isHidden": true
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-08-29T16:54:14.625Z"
-    }
-  ],
+  "problems": [],
   "assignments": [],
   "submissions": [],
   "contestSettings": {
