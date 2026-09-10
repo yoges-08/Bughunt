@@ -41,6 +41,7 @@ pip-log.txt
 # Database local runtime
 data/contest_db.json.tmp
 data/*.tmp
+data/test_*.json
 data/.jwt_secret
 
 # Local compilers binary cache

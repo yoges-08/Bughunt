@@ -10,6 +10,8 @@ import { api } from '../services/api';
 import { socket } from '../services/socket';
 import { formatDuration } from '../utils/time';
 import HostBanner from './HostBanner';
+import ConfirmDialog from './ConfirmDialog';
+import { useDialog } from '../hooks/useDialog';
 
 // Exact match with server username sanitization (server/routes/adminRoutes.js)
 function formatUsernamePreview(rawName, isTeam = false) {
@@ -28,6 +30,7 @@ function formatUsernamePreview(rawName, isTeam = false) {
 }
 
 export default function AdminDashboard({ user, onLogout }) {
+  const { confirm, notify, dialogProps } = useDialog();
   const [activeTab, setActiveTab] = useState('students'); // 'students', 'problems', 'submissions'
   const [overview, setOverview] = useState(null);
   const [students, setStudents] = useState([]);
@@ -276,7 +279,7 @@ export default function AdminDashboard({ user, onLogout }) {
       const details = await api.getStudentDetails(studentId);
       setSelectedStudentDetails(details);
     } catch (err) {
-      alert('Failed to load student details: ' + err.message);
+      await notify('Failed to load student details: ' + err.message, 'Inspection Error');
     } finally {
       setLoadingStudentDetails(false);
     }
@@ -286,7 +289,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const handlePushProblem = async (overrideStudentId = null) => {
     const targetId = overrideStudentId || selectedStudentId;
     if (!selectedProblemId) {
-      alert('Please select a problem first');
+      await notify('Please select a problem first', 'Select Problem');
       return;
     }
 
@@ -304,8 +307,9 @@ export default function AdminDashboard({ user, onLogout }) {
         const actionDesc = keepStudentCode 
           ? "preserve their current code progress." 
           : "RESET their code to the fresh starter template.";
-        const proceed = window.confirm(
-          `Student "${targetStudent.name}" is already working on "${targetStudent.assignment.title}".\n\nRe-pushing will refresh their timer and ${actionDesc}\n\nDo you want to continue?`
+        const proceed = await confirm(
+          `Student "${targetStudent.name}" is already working on "${targetStudent.assignment.title}".\n\nRe-pushing will refresh their timer and ${actionDesc}\n\nDo you want to continue?`,
+          'Re-assign Problem?'
         );
         if (!proceed) {
           setPushLoading(false);
@@ -331,7 +335,7 @@ export default function AdminDashboard({ user, onLogout }) {
       loadData();
       setTimeout(() => setPushSuccessMsg(''), 4000);
     } catch (err) {
-      alert('Failed to send problem: ' + err.message);
+      await notify('Failed to send problem: ' + err.message, 'Send Error');
     } finally {
       setPushLoading(false);
     }
@@ -340,7 +344,7 @@ export default function AdminDashboard({ user, onLogout }) {
   // Launch Multi-Language Contest Simultaneously (Core Kickoff)
   const handleLaunchMultiLanguageContest = async () => {
     if (!multiLangProblems.python && !multiLangProblems.c && !multiLangProblems.cpp) {
-      alert('Please select at least one problem to assign.');
+      await notify('Please select at least one problem to assign.', 'Problem Selection Required');
       return;
     }
 
@@ -351,7 +355,7 @@ export default function AdminDashboard({ user, onLogout }) {
       `• C++ Problem to ${languageStats.cpp} C++ students/teams\n\n` +
       `All ${students.length} student screens will simultaneously load their problem with synchronized start and expiry timers. Continue?`;
 
-    if (!window.confirm(confirmText)) return;
+    if (!await confirm(confirmText, 'Launch Multi-Language Contest?')) return;
 
     setMultiLangLoading(true);
     setMultiLangResultMsg('');
@@ -374,7 +378,7 @@ export default function AdminDashboard({ user, onLogout }) {
         setMultiLangResultMsg('');
       }, 4500);
     } catch (err) {
-      alert('Failed to launch multi-language contest:\n' + err.message);
+      await notify('Failed to launch multi-language contest:\n' + err.message, 'Kickoff Error');
     } finally {
       setMultiLangLoading(false);
     }
@@ -384,7 +388,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const handleCreateSoloStudent = async (e) => {
     e.preventDefault();
     if (!soloStudentData.name.trim() || !soloStudentData.password.trim()) {
-      alert('Please enter both student name and password.');
+      await notify('Please enter both student name and password.', 'Validation Error');
       return;
     }
     try {
@@ -397,10 +401,13 @@ export default function AdminDashboard({ user, onLogout }) {
       });
       setShowAddStudentModal(false);
       setSoloStudentData({ name: '', password: '', preferredLanguage: 'python' });
-      alert(`🎉 Successfully created Solo Student account "${res.name}" (${(res.preferredLanguage || 'python').toUpperCase()})!\n\nUsername: ${res.username}\n(Student can log in using either their name or username)`);
+      await notify(
+        `Successfully created Solo Student account "${res.name}" (${(res.preferredLanguage || 'python').toUpperCase()})!\n\nUsername: ${res.username}\n(Student can log in using either their name or username)`,
+        'Solo Student Created'
+      );
       loadData();
     } catch (err) {
-      alert('Failed to create student: ' + err.message);
+      await notify('Failed to create student: ' + err.message, 'Creation Error');
     } finally {
       setCreationLoading(false);
     }
@@ -410,7 +417,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const handleCreateTeam = async (e) => {
     e.preventDefault();
     if (!teamStudentData.teamName.trim() || !teamStudentData.teammates.trim() || !teamStudentData.password.trim()) {
-      alert('Please enter team name, teammates names, and password.');
+      await notify('Please enter team name, teammates names, and password.', 'Validation Error');
       return;
     }
     try {
@@ -425,10 +432,13 @@ export default function AdminDashboard({ user, onLogout }) {
       });
       setShowAddStudentModal(false);
       setTeamStudentData({ teamName: '', teammates: '', password: '', preferredLanguage: 'python' });
-      alert(`🎉 Successfully created Team account "${res.name}" (${(res.preferredLanguage || 'python').toUpperCase()})!\n\nTeam Members: ${res.teammates}\nUsername: ${res.username}\n(Team can log in using either team name or username)`);
+      await notify(
+        `Successfully created Team account "${res.name}" (${(res.preferredLanguage || 'python').toUpperCase()})!\n\nTeam Members: ${res.teammates}\nUsername: ${res.username}\n(Team can log in using either team name or username)`,
+        'Team Account Created'
+      );
       loadData();
     } catch (err) {
-      alert('Failed to create team: ' + err.message);
+      await notify('Failed to create team: ' + err.message, 'Creation Error');
     } finally {
       setCreationLoading(false);
     }
@@ -458,7 +468,7 @@ export default function AdminDashboard({ user, onLogout }) {
           }
         }
         if (studentList.length === 0) {
-          alert('No valid student entries found in CSV text. Expected: username, password, Name, language(optional)');
+          await notify('No valid student entries found in CSV text. Expected: username, password, Name, language(optional)', 'CSV Parse Error');
           setBulkLoading(false);
           return;
         }
@@ -468,10 +478,13 @@ export default function AdminDashboard({ user, onLogout }) {
       const res = await api.createBulkStudents(payload);
       setShowBulkStudentModal(false);
       setBulkCsvText('');
-      alert(`🎉 Successfully created ${res.createdCount} student accounts!${res.errorsCount > 0 ? ` (${res.errorsCount} skipped/duplicates)` : ''}`);
+      await notify(
+        `Successfully created ${res.createdCount} student accounts!${res.errorsCount > 0 ? ` (${res.errorsCount} skipped/duplicates)` : ''}`,
+        'Bulk Accounts Created'
+      );
       loadData();
     } catch (err) {
-      alert('Bulk creation failed: ' + err.message);
+      await notify('Bulk creation failed: ' + err.message, 'Bulk Creation Error');
     } finally {
       setBulkLoading(false);
     }
@@ -479,9 +492,12 @@ export default function AdminDashboard({ user, onLogout }) {
 
   // Remove Student Account
   const handleRemoveStudent = async (studentId, studentName, studentUsername) => {
-    if (!window.confirm(`Are you sure you want to remove student "${studentName}" (${studentUsername})?\n\nThis will permanently delete their account and associated submissions.`)) {
-      return;
-    }
+    const ok = await confirm(
+      `Are you sure you want to remove student "${studentName}" (${studentUsername})?\n\nThis will permanently delete their account and associated submissions.`,
+      'Remove Student Account?'
+    );
+    if (!ok) return;
+
     try {
       await api.deleteStudent(studentId);
       setStudents(prev => prev.filter(s => s.id !== studentId));
@@ -490,13 +506,15 @@ export default function AdminDashboard({ user, onLogout }) {
       }
       loadData();
     } catch (err) {
-      alert('Failed to remove student: ' + err.message);
+      await notify('Failed to remove student: ' + err.message, 'Remove Error');
     }
   };
 
   // Feature 2: Delete Problem with confirmation and reference error handling
   const handleDeleteProblem = async (problemId, title) => {
-    if (!window.confirm(`Delete problem "${title}"? This cannot be undone.`)) return;
+    const ok = await confirm(`Delete problem "${title}"? This cannot be undone.`, 'Delete Problem?');
+    if (!ok) return;
+
     try {
       await api.deleteProblem(problemId);
       setProblems(prev => prev.filter(p => p.id !== problemId));
@@ -506,8 +524,9 @@ export default function AdminDashboard({ user, onLogout }) {
       }
     } catch (err) {
       if (err.message.includes('referenced by')) {
-        const forceDelete = window.confirm(
-          `${err.message}\n\nDelete anyway? Existing submissions will be kept for records, but future re-pushes of this problem will fail.`
+        const forceDelete = await confirm(
+          `${err.message}\n\nDelete anyway? Existing submissions will be kept for records, but future re-pushes of this problem will fail.`,
+          'Force Delete Problem?'
         );
         if (forceDelete) {
           try {
@@ -518,11 +537,11 @@ export default function AdminDashboard({ user, onLogout }) {
               setSelectedProblemId(remaining.length > 0 ? remaining[0].id : '');
             }
           } catch (forceErr) {
-            alert('Failed to force-delete problem: ' + forceErr.message);
+            await notify('Failed to force-delete problem: ' + forceErr.message, 'Force Delete Error');
           }
         }
       } else {
-        alert('Failed to delete problem: ' + err.message);
+        await notify('Failed to delete problem: ' + err.message, 'Delete Error');
       }
     }
   };
@@ -550,7 +569,7 @@ export default function AdminDashboard({ user, onLogout }) {
     try {
       const expOut = (newProblemData.expectedOutput || '').trim();
       if (!expOut) {
-        alert('Expected Output is required.');
+        await notify('Expected Output is required.', 'Validation Error');
         return;
       }
 
@@ -589,7 +608,7 @@ export default function AdminDashboard({ user, onLogout }) {
       });
       loadData();
     } catch (err) {
-      alert(`Failed to ${editingProblemId ? 'update' : 'create'} problem: ` + err.message);
+      await notify(`Failed to ${editingProblemId ? 'update' : 'create'} problem: ` + err.message, 'Problem Error');
     }
   };
 
@@ -2507,6 +2526,8 @@ export default function AdminDashboard({ user, onLogout }) {
           </div>
         );
       })()}
+
+      <ConfirmDialog {...dialogProps} />
     </div>
   );
 }
