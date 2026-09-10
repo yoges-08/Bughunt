@@ -19,6 +19,18 @@ const DB_FILE = isTestEnv
   : path.resolve(__dirname, '..', 'data', 'contest_db.json');
 
 /**
+ * Standardize language aliases to canonical forms ('python', 'c', 'cpp')
+ */
+export function normalizeLanguage(lang) {
+  if (!lang || typeof lang !== 'string') return '';
+  const clean = lang.toLowerCase().trim();
+  if (clean === 'py' || clean === 'python') return 'python';
+  if (clean === 'c') return 'c';
+  if (clean === 'cpp' || clean === 'c++') return 'cpp';
+  return clean;
+}
+
+/**
  * Hash a plain text password using cryptographic scrypt with a unique random salt
  */
 export function hashPassword(plainPassword) {
@@ -634,24 +646,28 @@ class ContestDatabase {
   }
 
   // --- Assignments ---
-  assignProblemToStudent(studentId, problemId, resetCode = true) {
+  assignProblemToStudent(studentId, problemId, resetCode = true, contestMeta = null) {
     const problem = this.getProblemById(problemId);
     if (!problem) throw new Error(`Problem ${problemId} not found`);
 
-    const now = new Date();
+    const startTimestamp = contestMeta?.contestStartAt || Date.now();
+    const assignedAtIso = contestMeta?.assignedAt || new Date(startTimestamp).toISOString();
     const durationMinutes = Math.max(1, problem.durationMinutes || 15);
-    const expiresAt = new Date(now.getTime() + durationMinutes * 60 * 1000).toISOString();
+    const expiresAt = contestMeta?.expiresAt || new Date(startTimestamp + durationMinutes * 60 * 1000).toISOString();
+    const contestId = contestMeta?.contestId || null;
 
     let assignment = this.data.assignments.find(a => a.studentId === studentId);
     if (assignment) {
       const isSameProblem = assignment.problemId === problemId;
 
       assignment.problemId = problemId;
-      assignment.assignedAt = now.toISOString();
+      assignment.contestId = contestId || assignment.contestId || null;
+      assignment.contestStartAt = startTimestamp;
+      assignment.assignedAt = assignedAtIso;
       assignment.expiresAt = expiresAt;
       assignment.durationMinutes = durationMinutes;
       assignment.status = 'assigned';
-      assignment.lastUpdated = now.toISOString();
+      assignment.lastUpdated = assignedAtIso;
 
       // Issue 3: Reset code when switching to a different problem OR when resetCode is true
       if (!isSameProblem || resetCode) {
@@ -662,17 +678,103 @@ class ContestDatabase {
         id: `asg_${uuidv4().substring(0, 8)}`,
         studentId,
         problemId,
-        assignedAt: now.toISOString(),
+        contestId,
+        contestStartAt: startTimestamp,
+        assignedAt: assignedAtIso,
         expiresAt,
         durationMinutes,
         status: 'assigned',
         currentCode: problem.starterCode,
-        lastUpdated: now.toISOString()
+        lastUpdated: assignedAtIso
       };
       this.data.assignments.push(assignment);
     }
     this.saveImmediately();
     return assignment;
+  }
+
+  // Authoritative Atomic Multi-Student Simultaneous Contest Assignment (BUG-ML-01 & BUG-ML-03)
+  assignContestBatch({ contestId, contestStartAt, assignments: rawAssignments, resetCode = true }) {
+    if (!Array.isArray(rawAssignments) || rawAssignments.length === 0) {
+      return { contestId: null, contestStartAt: null, assignedAt: null, assignments: [] };
+    }
+
+    const startTimestamp = typeof contestStartAt === 'number' ? contestStartAt : Date.now();
+    const assignedAtIso = new Date(startTimestamp).toISOString();
+    const resolvedContestId = contestId || `contest_${startTimestamp}_${uuidv4().substring(0, 6)}`;
+
+    const problemCache = new Map();
+    const committedAssignments = [];
+    const errors = [];
+
+    // Phase 1: Validation pass across all assigned problems
+    for (const item of rawAssignments) {
+      const { studentId, problemId } = item;
+      if (!problemCache.has(problemId)) {
+        const prob = this.getProblemById(problemId);
+        if (!prob) {
+          errors.push({ studentId, problemId, error: `Problem ${problemId} not found` });
+          continue;
+        }
+        problemCache.set(problemId, prob);
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new Error(`Batch assignment validation failed: ${errors.map(e => e.error).join(', ')}`);
+    }
+
+    // Phase 2: Prepare and commit all assignments in memory with identical start/expiry timestamps
+    for (const item of rawAssignments) {
+      const { studentId, problemId } = item;
+      const problem = problemCache.get(problemId);
+      const durationMinutes = Math.max(1, problem.durationMinutes || 15);
+      const expiresAt = new Date(startTimestamp + durationMinutes * 60 * 1000).toISOString();
+
+      let existing = this.data.assignments.find(a => a.studentId === studentId);
+      if (existing) {
+        const isSameProblem = existing.problemId === problemId;
+        existing.problemId = problemId;
+        existing.contestId = resolvedContestId;
+        existing.contestStartAt = startTimestamp;
+        existing.assignedAt = assignedAtIso;
+        existing.expiresAt = expiresAt;
+        existing.durationMinutes = durationMinutes;
+        existing.status = 'assigned';
+        existing.lastUpdated = assignedAtIso;
+
+        if (!isSameProblem || resetCode) {
+          existing.currentCode = problem.starterCode;
+        }
+        committedAssignments.push({ ...existing, problem });
+      } else {
+        const newAssignment = {
+          id: `asg_${uuidv4().substring(0, 8)}`,
+          studentId,
+          problemId,
+          contestId: resolvedContestId,
+          contestStartAt: startTimestamp,
+          assignedAt: assignedAtIso,
+          expiresAt,
+          durationMinutes,
+          status: 'assigned',
+          currentCode: problem.starterCode,
+          lastUpdated: assignedAtIso
+        };
+        this.data.assignments.push(newAssignment);
+        committedAssignments.push({ ...newAssignment, problem });
+      }
+    }
+
+    // Phase 3: Single atomic disk write for all students
+    this.saveImmediately();
+
+    return {
+      contestId: resolvedContestId,
+      contestStartAt: startTimestamp,
+      assignedAt: assignedAtIso,
+      assignments: committedAssignments
+    };
   }
 
   getStudentAssignment(studentId) {
@@ -701,6 +803,8 @@ class ContestDatabase {
 
     return {
       assignmentId: assignment.id,
+      contestId: assignment.contestId || null,
+      contestStartAt: assignment.contestStartAt || (assignment.assignedAt ? new Date(assignment.assignedAt).getTime() : null),
       problemId: problem.id,
       title: problem.title,
       language: problem.language,
@@ -714,7 +818,8 @@ class ContestDatabase {
       expiresAt,
       durationMinutes: problem.durationMinutes || assignment.durationMinutes || 15,
       hasSubmitted,
-      sampleTestCase: problem.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expectedOut }
+      sampleTestCase: problem.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expectedOut },
+      serverTime: Date.now()
     };
   }
 

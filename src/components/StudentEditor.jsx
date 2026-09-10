@@ -37,12 +37,17 @@ export default function StudentEditor({ user, onLogout }) {
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(null);
   
   const saveTimeoutRef = useRef(null);
+  // Track clock offset between server and client to eliminate client clock skew (BUG-ML-06)
+  const serverOffsetRef = useRef(0);
 
   // Load current assignment on mount or reconnect (Core Requirement 1)
   const loadState = async () => {
     try {
       const data = await api.getStudentCurrentProblem();
       if (data.assigned && data.problem) {
+        if (data.problem.serverTime) {
+          serverOffsetRef.current = Number(data.problem.serverTime) - Date.now();
+        }
         setProblem(data.problem);
         setCode(data.problem.currentCode || data.problem.starterCode || '');
       } else {
@@ -62,10 +67,13 @@ export default function StudentEditor({ user, onLogout }) {
 
     // Listen for real-time problem push over LAN (Core Requirement 1)
     const unsubProblemPush = socket.on('PROBLEM_ASSIGNED', (payload) => {
+      if (payload.serverTime) {
+        serverOffsetRef.current = Number(payload.serverTime) - Date.now();
+      }
       setProblem(payload);
       setCode(payload.currentCode || payload.starterCode || payload.code || '');
       setLastResult(null);
-      setIncomingAlert(`⚡ New Problem Assigned by Admin: "${payload.title}" (${payload.filename}) • ⏱️ ${payload.durationMinutes || 15} Mins`);
+      setIncomingAlert(`⚡ New Contest Problem Assigned: "${payload.title}" (${payload.filename}) • ⏱️ ${payload.durationMinutes || 15} Mins`);
       setTimeout(() => setIncomingAlert(null), 6000);
     });
 
@@ -110,7 +118,8 @@ export default function StudentEditor({ user, onLogout }) {
         return Math.max(0, Math.floor((expiry - submittedTime) / 1000));
       }
 
-      const diff = Math.max(0, Math.floor((expiry - Date.now()) / 1000));
+      const currentServerTime = Date.now() + serverOffsetRef.current;
+      const diff = Math.max(0, Math.floor((expiry - currentServerTime) / 1000));
       return diff;
     };
 

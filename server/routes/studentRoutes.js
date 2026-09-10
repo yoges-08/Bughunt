@@ -53,6 +53,8 @@ router.get('/current-problem', (req, res) => {
   res.json({
     assigned: true,
     problem: {
+      contestId: assignment.contestId || null,
+      contestStartAt: assignment.contestStartAt || (assignment.assignedAt ? new Date(assignment.assignedAt).getTime() : null),
       problemId: assignment.problemId,
       title: assignment.title,
       language: assignment.language,
@@ -66,7 +68,8 @@ router.get('/current-problem', (req, res) => {
       expiresAt: assignment.expiresAt,
       durationMinutes: assignment.durationMinutes || 15,
       hasSubmitted: Boolean(assignment.hasSubmitted),
-      sampleTestCase: assignment.sampleTestCase
+      sampleTestCase: assignment.sampleTestCase,
+      serverTime: Date.now()
     }
   });
 });

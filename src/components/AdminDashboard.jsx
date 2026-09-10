@@ -349,7 +349,7 @@ export default function AdminDashboard({ user, onLogout }) {
       `• Python Problem to ${languageStats.python} Python students/teams\n` +
       `• C Problem to ${languageStats.c} C students/teams\n` +
       `• C++ Problem to ${languageStats.cpp} C++ students/teams\n\n` +
-      `All ${students.length} student screens will simultaneously load their problem and start their timers. Continue?`;
+      `All ${students.length} student screens will simultaneously load their problem with synchronized start and expiry timers. Continue?`;
 
     if (!window.confirm(confirmText)) return;
 
@@ -366,14 +366,15 @@ export default function AdminDashboard({ user, onLogout }) {
         resetCode: !keepStudentCode
       });
 
-      setMultiLangResultMsg(res.message || '🚀 Multi-language contest launched successfully!');
+      const detailMsg = res.message || `🚀 Contest Started! Assigned ${res.assignedCount} students (${res.liveDelivered} Live on LAN, ${res.offlineCount} Offline Recovery).`;
+      setMultiLangResultMsg(detailMsg);
       loadData();
       setTimeout(() => {
         setShowMultiLangModal(false);
         setMultiLangResultMsg('');
-      }, 3500);
+      }, 4500);
     } catch (err) {
-      alert('Failed to launch multi-language contest: ' + err.message);
+      alert('Failed to launch multi-language contest:\n' + err.message);
     } finally {
       setMultiLangLoading(false);
     }

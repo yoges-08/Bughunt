@@ -7,12 +7,16 @@
  */
 
 import express from 'express';
-import { db } from '../db.js';
+import { db, normalizeLanguage } from '../db.js';
 import { authenticateToken, requireRole } from '../auth.js';
 import { socketManager } from '../socket.js';
 import { checkAllCompilers } from '../compiler.js';
 
 const router = express.Router();
+
+// Kickoff mutex / debounce lock (BUG-ML-08)
+let isKickoffInProgress = false;
+let lastKickoffTimestamp = 0;
 
 // Apply auth + admin role check to ALL routes in this file
 router.use(authenticateToken);
@@ -450,105 +454,227 @@ router.post('/assign', (req, res) => {
   });
 });
 
-// --- Multi-Language Simultaneous Contest Kickoff ---
+// --- Multi-Language Simultaneous Contest Kickoff (BUG-ML-01 to BUG-ML-09) ---
 router.post('/assign-multi-language', (req, res) => {
-  const { problemMap, resetCode } = req.body;
-  // problemMap: { python: 'prob_id1', c: 'prob_id2', cpp: 'prob_id3' }
+  const { problemMap, resetCode, force } = req.body;
   const shouldResetCode = resetCode !== false;
 
+  // 1. Kickoff Mutex & Debounce Protection (BUG-ML-08)
+  const nowMs = Date.now();
+  if (isKickoffInProgress) {
+    return res.status(429).json({
+      success: false,
+      error: 'KICKOFF_IN_PROGRESS',
+      message: 'A contest kickoff is currently in progress. Please wait for it to complete.'
+    });
+  }
+
+  if (!force && (nowMs - lastKickoffTimestamp < 1500)) {
+    return res.status(429).json({
+      success: false,
+      error: 'KICKOFF_DEBOUNCED',
+      message: 'Duplicate kickoff prevented. A contest was launched moments ago.'
+    });
+  }
+
   if (!problemMap || typeof problemMap !== 'object' || Object.keys(problemMap).length === 0) {
-    return res.status(400).json({ error: 'problemMap is required (e.g. { python: "id1", c: "id2", cpp: "id3" })' });
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_PROBLEM_MAP',
+      message: 'problemMap is required (e.g. { python: "id1", c: "id2", cpp: "id3" })'
+    });
   }
 
-  const loadedProblems = {};
-  for (const [langKey, pId] of Object.entries(problemMap)) {
-    if (pId) {
-      const prob = db.getProblemById(pId);
-      if (prob) {
-        const dur = prob.durationMinutes || 15;
-        const now = new Date();
-        const exp = new Date(now.getTime() + dur * 60 * 1000).toISOString();
-        const expOut = prob.expectedOutput || (prob.testCases && prob.testCases[0]?.expectedOutput) || '';
-        const normKey = langKey.toLowerCase() === 'c++' ? 'cpp' : (langKey.toLowerCase() === 'py' ? 'python' : langKey.toLowerCase());
-        loadedProblems[normKey] = {
-          prob,
-          payload: {
-            problemId: prob.id,
-            title: prob.title,
-            language: prob.language,
-            filename: prob.filename,
-            description: prob.description,
-            starterCode: prob.starterCode,
-            expectedOutput: expOut,
-            durationMinutes: dur,
-            assignedAt: now.toISOString(),
-            expiresAt: exp,
-            hasSubmitted: false,
-            sampleTestCase: prob.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expOut }
-          }
-        };
+  isKickoffInProgress = true;
+
+  try {
+    // ==========================================
+    // PHASE 1: VALIDATE (BUG-ML-02 & BUG-ML-03)
+    // ==========================================
+    const loadedProblems = {};
+    const validationErrors = [];
+
+    for (const [rawLangKey, pId] of Object.entries(problemMap)) {
+      if (!pId) continue;
+
+      const normLangKey = normalizeLanguage(rawLangKey);
+      if (!['python', 'c', 'cpp'].includes(normLangKey)) {
+        validationErrors.push(`Unsupported target language key '${rawLangKey}'`);
+        continue;
       }
+
+      const prob = db.getProblemById(pId);
+      if (!prob) {
+        validationErrors.push(`Problem ID '${pId}' specified for ${normLangKey.toUpperCase()} was not found.`);
+        continue;
+      }
+
+      // BUG-ML-02: Canonical server-side language validation
+      const normProbLang = normalizeLanguage(prob.language);
+      if (normProbLang !== normLangKey) {
+        validationErrors.push(
+          `Language mismatch: Problem '${prob.title}' is a ${normProbLang.toUpperCase()} problem, but was assigned to the ${normLangKey.toUpperCase()} group.`
+        );
+        continue;
+      }
+
+      loadedProblems[normLangKey] = prob;
     }
-  }
 
-  if (Object.keys(loadedProblems).length === 0) {
-    return res.status(400).json({ error: 'None of the specified problem IDs could be found.' });
-  }
-
-  const students = db.getAllStudents();
-  const results = [];
-  const errors = [];
-  const unassigned = [];
-  const languageCounts = { python: 0, c: 0, cpp: 0 };
-
-  students.forEach(s => {
-    let studentLang = (s.preferredLanguage || 'python').toLowerCase().trim();
-    if (studentLang === 'py') studentLang = 'python';
-    if (studentLang === 'c++') studentLang = 'cpp';
-
-    const match = loadedProblems[studentLang];
-    if (!match) {
-      unassigned.push({
-        studentId: s.id,
-        username: s.username,
-        preferredLanguage: studentLang,
-        reason: `No problem selected for language '${studentLang}'`
+    if (validationErrors.length > 0) {
+      isKickoffInProgress = false;
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_PROBLEM_LANGUAGE',
+        message: validationErrors.join(' | '),
+        details: validationErrors
       });
-      return;
     }
 
-    try {
-      const assignment = db.assignProblemToStudent(s.id, match.prob.id, shouldResetCode);
-      const studentPayload = {
-        ...match.payload,
-        currentCode: assignment.currentCode || match.prob.starterCode
-      };
-      const online = socketManager.pushProblemToStudent(s.id, studentPayload);
+    if (Object.keys(loadedProblems).length === 0) {
+      isKickoffInProgress = false;
+      return res.status(400).json({
+        success: false,
+        error: 'NO_PROBLEMS_SPECIFIED',
+        message: 'No valid problems were selected for assignment.'
+      });
+    }
+
+    // ==========================================
+    // PHASE 2: PREPARE (BUG-ML-01 & BUG-ML-09)
+    // ==========================================
+    const students = db.getAllStudents();
+    const contestStartAtMs = Date.now();
+    const contestId = `contest_${contestStartAtMs}_${Math.random().toString(36).substring(2, 7)}`;
+    const assignedAtIso = new Date(contestStartAtMs).toISOString();
+
+    const batchAssignments = [];
+    const unassignedList = [];
+    const languageCounts = { python: 0, c: 0, cpp: 0 };
+
+    for (const s of students) {
+      const studentLang = normalizeLanguage(s.preferredLanguage || 'python');
+      const matchedProb = loadedProblems[studentLang];
+
+      if (!matchedProb) {
+        unassignedList.push({
+          studentId: s.id,
+          username: s.username,
+          name: s.name,
+          preferredLanguage: studentLang,
+          reason: `No problem was mapped for language '${studentLang}'`
+        });
+        continue;
+      }
+
+      batchAssignments.push({
+        studentId: s.id,
+        problemId: matchedProb.id,
+        student: s,
+        problem: matchedProb,
+        studentLang
+      });
+
       if (languageCounts[studentLang] !== undefined) {
         languageCounts[studentLang]++;
       }
-      results.push({
-        studentId: s.id,
-        username: s.username,
-        language: studentLang,
-        problemTitle: match.prob.title,
-        online
-      });
-    } catch (err) {
-      errors.push({ studentId: s.id, username: s.username, error: err.message });
     }
-  });
 
-  socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
+    // ==========================================
+    // PHASE 3: COMMIT (BUG-ML-03: Atomic Batch)
+    // ==========================================
+    const batchResult = db.assignContestBatch({
+      contestId,
+      contestStartAt: contestStartAtMs,
+      assignments: batchAssignments.map(b => ({ studentId: b.studentId, problemId: b.problemId })),
+      resetCode: shouldResetCode
+    });
 
-  res.json({
-    message: `🚀 Multi-language contest launched! Successfully pushed problems to ${results.length}/${students.length} students simultaneously.`,
-    assignedCount: results.length,
-    languageCounts,
-    results,
-    unassigned,
-    errors
-  });
+    // ==========================================
+    // PHASE 4: NOTIFY (BUG-ML-04: Fast WebSocket Delivery)
+    // ==========================================
+    let liveDeliveredCount = 0;
+    let offlineCount = 0;
+    const results = [];
+
+    for (const b of batchAssignments) {
+      const { student, problem, studentLang } = b;
+      const durationMinutes = Math.max(1, problem.durationMinutes || 15);
+      const expiresAt = new Date(contestStartAtMs + durationMinutes * 60 * 1000).toISOString();
+      const expectedOut = problem.expectedOutput || (problem.testCases && problem.testCases[0]?.expectedOutput) || '';
+
+      const studentAssignment = batchResult.assignments.find(a => a.studentId === student.id);
+
+      const studentPayload = {
+        contestId,
+        problemId: problem.id,
+        title: problem.title,
+        language: problem.language,
+        filename: problem.filename,
+        description: problem.description,
+        starterCode: problem.starterCode,
+        currentCode: studentAssignment?.currentCode || problem.starterCode,
+        expectedOutput: expectedOut,
+        durationMinutes,
+        assignedAt: assignedAtIso,
+        contestStartAt: contestStartAtMs,
+        expiresAt,
+        hasSubmitted: false,
+        sampleTestCase: problem.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expectedOut },
+        serverTime: Date.now()
+      };
+
+      const online = socketManager.pushProblemToStudent(student.id, studentPayload);
+      if (online) {
+        liveDeliveredCount++;
+      } else {
+        offlineCount++;
+      }
+
+      results.push({
+        studentId: student.id,
+        username: student.username,
+        name: student.name,
+        language: studentLang,
+        problemTitle: problem.title,
+        online,
+        deliveredLive: online
+      });
+    }
+
+    // Broadcast update to all connected admins
+    socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
+    lastKickoffTimestamp = Date.now();
+
+    // ==========================================
+    // PHASE 5: REPORT (BUG-ML-05: Accurate Structured Report)
+    // ==========================================
+    res.json({
+      success: true,
+      contestId,
+      contestStartAt: contestStartAtMs,
+      assignedAt: assignedAtIso,
+      totalStudents: students.length,
+      assignedCount: batchAssignments.length,
+      liveDelivered: liveDeliveredCount,
+      offlineCount,
+      failedCount: 0,
+      languageCounts,
+      unassigned: unassignedList,
+      results,
+      message: `🚀 Multi-language contest launched! Assigned ${batchAssignments.length}/${students.length} students (${liveDeliveredCount} live on LAN, ${offlineCount} offline recovery).`
+    });
+
+  } catch (err) {
+    console.error('Multi-language kickoff error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'KICKOFF_FAILED',
+      message: 'Kickoff failed: ' + err.message
+    });
+  } finally {
+    isKickoffInProgress = false;
+  }
 });
 
 // --- Submissions View (with Full Raw Compiler Diagnostics) ---

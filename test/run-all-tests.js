@@ -15,6 +15,7 @@ const testFiles = [
   'evaluator.test.js',
   'assignment.test.js',
   'problem-crud.test.js',
+  'multi-language-kickoff.test.js',
   'e2e-lan-contest.test.js'
 ];
 
