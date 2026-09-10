@@ -53,6 +53,7 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
   let totalDurationMs = 0;
   let rawCompileError = '';
   let rawRuntimeError = '';
+  let isEnvironmentError = false;
   const testResults = [];
 
   // If problem has zero test cases and no expected output, do NOT auto-pass
@@ -70,6 +71,9 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
 
   // Compile once for all test cases (CQ-01)
   const prepared = await prepareExecutable({ code, language });
+  if (prepared.isEnvironmentError) {
+    isEnvironmentError = true;
+  }
 
   try {
     if (!prepared.compileSuccess) {
@@ -91,6 +95,10 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
         const execResult = await prepared.run(tc.input || '', problem.timeLimitMs || 3000);
 
         totalDurationMs += execResult.durationMs || 0;
+
+        if (execResult.isEnvironmentError) {
+          isEnvironmentError = true;
+        }
 
         // Check if runtime failed or timed out
         if (execResult.timedOut) {
@@ -150,7 +158,7 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
   const rawSummary = {
     compileSuccess,
     runtimeSuccess,
-    isEnvironmentError: Boolean(prepared.isEnvironmentError),
+    isEnvironmentError: Boolean(isEnvironmentError),
     timedOut,
     testPassed: allPassed,
     exitCode: (!compileSuccess || !runtimeSuccess) ? 1 : 0,

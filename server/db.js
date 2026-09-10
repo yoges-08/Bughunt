@@ -456,7 +456,7 @@ class ContestDatabase {
     };
 
     this.data.users.push(student);
-    this.save();
+    this.saveImmediately();
     return { 
       id: student.id, 
       username: student.username, 
@@ -477,7 +477,7 @@ class ContestDatabase {
     this.data.assignments = this.data.assignments.filter(a => a.studentId !== id);
     // Clean up past submissions
     this.data.submissions = this.data.submissions.filter(s => s.studentId !== id);
-    this.save();
+    this.saveImmediately();
     return { id: removed.id, username: removed.username, name: removed.name };
   }
 
@@ -522,6 +522,7 @@ class ContestDatabase {
       : [{ input: '', expectedOutput: effectiveExpectedOutput, isHidden: false }];
 
     const validDuration = Math.min(180, Math.max(1, Number(durationMinutes) || 15));
+    const validTimeLimit = Math.min(30000, Math.max(100, Number(timeLimitMs) || 3000));
 
     const problem = {
       id: `prob_${uuidv4().substring(0, 8)}`,
@@ -532,13 +533,13 @@ class ContestDatabase {
       starterCode: starterCode || '',
       expectedOutput: effectiveExpectedOutput,
       testCases: effectiveTestCases,
-      timeLimitMs: Number(timeLimitMs) || 3000,
+      timeLimitMs: validTimeLimit,
       durationMinutes: validDuration,
       createdAt: new Date().toISOString()
     };
 
     this.data.problems.push(problem);
-    this.save();
+    this.saveImmediately();
     return problem;
   }
 
@@ -575,7 +576,11 @@ class ContestDatabase {
     if (starterCode !== undefined) problem.starterCode = starterCode;
 
     if (expectedOutput !== undefined) {
-      problem.expectedOutput = typeof expectedOutput === 'string' ? expectedOutput : '';
+      const cleanExpected = typeof expectedOutput === 'string' ? expectedOutput : '';
+      if (!cleanExpected && (!testCases || (Array.isArray(testCases) && testCases.length === 0))) {
+        throw new Error('Problem must contain an Expected Output or at least one test case');
+      }
+      problem.expectedOutput = cleanExpected;
       if (!testCases) {
         problem.testCases = [{ input: '', expectedOutput: problem.expectedOutput, isHidden: false }];
       }
@@ -596,13 +601,15 @@ class ContestDatabase {
       }
     }
 
-    if (timeLimitMs !== undefined) problem.timeLimitMs = Number(timeLimitMs) || problem.timeLimitMs;
+    if (timeLimitMs !== undefined) {
+      problem.timeLimitMs = Math.min(30000, Math.max(100, Number(timeLimitMs) || problem.timeLimitMs));
+    }
     if (durationMinutes !== undefined) {
       problem.durationMinutes = Math.min(180, Math.max(1, Number(durationMinutes) || problem.durationMinutes));
     }
 
     problem.updatedAt = new Date().toISOString();
-    this.save();
+    this.saveImmediately();
     return problem;
   }
 
@@ -613,7 +620,9 @@ class ContestDatabase {
       throw new Error(`Problem ${id} not found`);
     }
     const [removed] = this.data.problems.splice(index, 1);
-    this.save();
+    // Clean up active assignments referencing the deleted problem to avoid orphaned records (BUG-02)
+    this.data.assignments = this.data.assignments.filter(a => a.problemId !== id);
+    this.saveImmediately();
     return removed;
   }
 
@@ -655,7 +664,7 @@ class ContestDatabase {
       };
       this.data.assignments.push(assignment);
     }
-    this.save();
+    this.saveImmediately();
     return assignment;
   }
 

@@ -112,6 +112,33 @@ router.post('/run', async (req, res) => {
     let effectiveStdin = stdin || '';
 
     if (assignment) {
+      // Check if student has already submitted for the current assignment
+      const existingSubmissions = db.getStudentSubmissions(studentId);
+      const alreadySubmitted = existingSubmissions.some(s => 
+        s.problemId === assignment.problemId && 
+        new Date(s.createdAt) >= new Date(assignment.assignedAt)
+      );
+
+      if (alreadySubmitted) {
+        return res.status(400).json({
+          error: 'Only one submission is allowed per problem. You have already submitted your solution.',
+          alreadySubmitted: true
+        });
+      }
+
+      // Check if problem time limit has expired
+      if (assignment.expiresAt) {
+        const now = Date.now();
+        const expiry = new Date(assignment.expiresAt).getTime();
+        const LAN_GRACE_PERIOD_MS = 3000;
+        if (now > expiry + LAN_GRACE_PERIOD_MS) {
+          return res.status(400).json({
+            error: 'Contest time has expired for this problem. Execution is disabled.',
+            timeExpired: true
+          });
+        }
+      }
+
       targetExpectedOutput = assignment.expectedOutput || assignment.sampleTestCase?.expectedOutput || null;
       if (!stdin && assignment.sampleTestCase?.input) {
         effectiveStdin = assignment.sampleTestCase.input;

@@ -91,6 +91,27 @@ async function runTests() {
     }, /Problem must contain at least one test case/);
   });
 
+  it('updateProblem rejects setting expectedOutput to empty without testCases', () => {
+    assert.throws(() => {
+      db.updateProblem(initialProb.id, { expectedOutput: '', testCases: [] });
+    }, /Problem must contain an Expected Output or at least one test case/);
+  });
+
+  it('createProblem and updateProblem clamp timeLimitMs between 100ms and 30000ms', () => {
+    const clampedProb = db.createProblem({
+      title: 'Clamped Problem',
+      language: 'python',
+      filename: 'clamp.py',
+      starterCode: 'pass',
+      expectedOutput: '1',
+      timeLimitMs: -500
+    });
+    assert.strictEqual(clampedProb.timeLimitMs, 100, 'Negative time limit clamped to minimum 100ms');
+
+    const updatedClamp = db.updateProblem(clampedProb.id, { timeLimitMs: 999999 });
+    assert.strictEqual(updatedClamp.timeLimitMs, 30000, 'Excessive time limit clamped to maximum 30000ms');
+  });
+
   it('updateProblem throws for non-existent problem id', () => {
     assert.throws(() => {
       db.updateProblem('non_existent_id_12345', { title: 'Test' });
@@ -140,14 +161,14 @@ async function runTests() {
     const isBlocked = (assignedCount > 0) && force !== 'true';
     assert.strictEqual(isBlocked, true, 'Guardrail blocks deletion when referenced without force');
 
-    // With force = true, delete proceeds and historical records remain
+    // With force = true, delete proceeds and referencing assignments are cleaned up (BUG-02)
     const deleted = db.deleteProblem(dummyProblem.id);
     assert.strictEqual(deleted.id, dummyProblem.id);
     assert.strictEqual(db.getProblemById(dummyProblem.id), undefined);
 
-    // Assignment remains intact for auditing
+    // Assignment referencing deleted problem is cleaned up to prevent orphaned state
     const remainingAsg = db.data.assignments.find(a => a.problemId === dummyProblem.id);
-    assert(remainingAsg, 'Historical assignment record preserved after forced deletion');
+    assert.strictEqual(remainingAsg, undefined, 'Referencing assignment is cleaned up on forced problem deletion');
   });
 
   it('deleteProblem successfully deletes unreferenced problem', () => {
