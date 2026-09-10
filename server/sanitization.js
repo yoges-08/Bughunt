@@ -20,7 +20,8 @@ export const GENERIC_MESSAGES = {
   SUCCESS: '✅ Program Executed Successfully',
   PROGRAM_ERROR: '❌ Program Error',
   EXECUTION_FAILED: '❌ Program Execution Failed',
-  TIMEOUT: '⏱ Program Execution Timed Out'
+  TIMEOUT: '⏱ Program Execution Timed Out',
+  ENVIRONMENT_ERROR: '⚠️ Compiler Environment Error (Contact Administrator)'
 };
 
 /**
@@ -30,13 +31,19 @@ export const GENERIC_MESSAGES = {
  * @param {boolean} rawResult.compileSuccess
  * @param {boolean} rawResult.runtimeSuccess
  * @param {boolean} rawResult.timedOut
+ * @param {boolean} [rawResult.isEnvironmentError]
  * @param {number} rawResult.exitCode
  * @param {boolean} [rawResult.testPassed] - For evaluations against test cases
- * @returns {string} One of: 'SUCCESS', 'PROGRAM_ERROR', 'EXECUTION_FAILED', 'TIMEOUT'
+ * @returns {string} One of: 'SUCCESS', 'PROGRAM_ERROR', 'EXECUTION_FAILED', 'TIMEOUT', 'ENVIRONMENT_ERROR'
  */
 export function classifyExecutionResult(rawResult) {
   if (!rawResult) {
     return 'PROGRAM_ERROR';
+  }
+
+  // Check for environment / missing compiler process spawn failure
+  if (rawResult.isEnvironmentError) {
+    return 'ENVIRONMENT_ERROR';
   }
 
   // Check for execution timeout first
@@ -95,6 +102,7 @@ export function formatForAdmin(rawResult) {
     success: status === 'SUCCESS',
     status,
     genericMessage: GENERIC_MESSAGES[status],
+    isEnvironmentError: Boolean(rawResult.isEnvironmentError),
     timedOut: Boolean(rawResult.timedOut),
     compileSuccess: Boolean(rawResult.compileSuccess),
     runtimeSuccess: Boolean(rawResult.runtimeSuccess),

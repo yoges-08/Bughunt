@@ -44,13 +44,16 @@ async function createWindow() {
     mainWindow.webContents.closeDevTools();
   });
 
-  // Block shortcut keys for DevTools and inspect (F12, Ctrl+Shift+I, Ctrl+U)
+  // Block shortcut keys for DevTools and inspect (F12, Ctrl+Shift+I, Ctrl+U) safely without swallowing regular typing
   mainWindow.webContents.on('before-input-event', (event, input) => {
-    if (
-      input.key === 'F12' ||
-      (input.control && input.shift && input.key.toLowerCase() === 'i') ||
-      (input.control && input.key.toLowerCase() === 'u')
-    ) {
+    if (input.type !== 'keyDown') return;
+
+    const key = (input.key || '').toLowerCase();
+    const isF12 = input.key === 'F12';
+    const isDevToolsCombo = (input.control || input.meta) && input.shift && key === 'i';
+    const isViewSourceCombo = (input.control || input.meta) && !input.shift && !input.alt && key === 'u';
+
+    if (isF12 || isDevToolsCombo || isViewSourceCombo) {
       event.preventDefault();
     }
   });

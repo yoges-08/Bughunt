@@ -150,6 +150,7 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
   const rawSummary = {
     compileSuccess,
     runtimeSuccess,
+    isEnvironmentError: Boolean(prepared.isEnvironmentError),
     timedOut,
     testPassed: allPassed,
     exitCode: (!compileSuccess || !runtimeSuccess) ? 1 : 0,

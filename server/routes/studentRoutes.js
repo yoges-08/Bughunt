@@ -145,15 +145,20 @@ router.post('/run', async (req, res) => {
     // Strip all stderr, stdout, line numbers, compiler warnings
     const sanitized = sanitizeForStudent(rawResult);
 
+    if (rawResult.isEnvironmentError) {
+      console.error(`⚠️ [Compiler Environment Error on /run] Language: ${language}, Student: ${req.user.username} - ${rawResult.rawError}`);
+    }
+
     // Return ONLY the sanitized generic pass/fail message
     res.json(sanitized);
   } catch (err) {
-    // If an unexpected error occurs, still return generic sanitized message
-    res.json({
-      success: false,
-      status: 'PROGRAM_ERROR',
-      message: '❌ Program Error'
+    const isEnv = err.code === 'ENOENT';
+    const sanitized = sanitizeForStudent({
+      compileSuccess: false,
+      isEnvironmentError: isEnv,
+      rawError: err.message
     });
+    res.json(sanitized);
   }
 });
 

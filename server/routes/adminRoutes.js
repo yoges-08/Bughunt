@@ -10,6 +10,7 @@ import express from 'express';
 import { db } from '../db.js';
 import { authenticateToken, requireRole } from '../auth.js';
 import { socketManager } from '../socket.js';
+import { checkAllCompilers } from '../compiler.js';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.use(authenticateToken);
 router.use(requireRole('admin'));
 
 // --- Overview / Contest Stats ---
-router.get('/overview', (req, res) => {
+router.get('/overview', async (req, res) => {
   const students = db.getAllStudents();
   const problems = db.getAllProblems();
   const submissions = db.getSubmissionsForAdmin();
@@ -26,13 +27,19 @@ router.get('/overview', (req, res) => {
   const onlineCount = students.filter(s => socketManager.isStudentOnline(s.id)).length;
   const passedSubmissions = submissions.filter(s => s.pass).length;
 
+  let compilers = null;
+  try {
+    compilers = await checkAllCompilers();
+  } catch {}
+
   res.json({
     totalStudents: students.length,
     onlineStudents: onlineCount,
     totalProblems: problems.length,
     totalSubmissions: submissions.length,
     passedSubmissions,
-    failedSubmissions: submissions.length - passedSubmissions
+    failedSubmissions: submissions.length - passedSubmissions,
+    compilers
   });
 });
 

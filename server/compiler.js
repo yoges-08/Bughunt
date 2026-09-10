@@ -104,16 +104,38 @@ export function getCompilerPath(lang) {
   if (lang === 'c') {
     if (fs.existsSync(BUNDLED_COMPILERS.c.gcc)) return BUNDLED_COMPILERS.c.gcc;
     if (fs.existsSync(BUNDLED_COMPILERS.c.tcc)) return BUNDLED_COMPILERS.c.tcc;
-    return findExecutableOnSystem(`gcc${ext}`) || `gcc${ext}`;
+    return findExecutableOnSystem(`gcc${ext}`) || findExecutableOnSystem(`tcc${ext}`) || `gcc${ext}`;
   }
   
-  if (lang === 'cpp') {
+  if (lang === 'cpp' || lang === 'c++') {
     if (fs.existsSync(BUNDLED_COMPILERS.cpp.gpp)) return BUNDLED_COMPILERS.cpp.gpp;
     return findExecutableOnSystem(`g++${ext}`) || `g++${ext}`;
   }
 
   if (lang === 'python' || lang === 'py') {
     if (fs.existsSync(BUNDLED_COMPILERS.python.python)) return BUNDLED_COMPILERS.python.python;
+    
+    // Check known Windows install paths before falling back to store alias
+    if (isWindows) {
+      const candidates = [
+        path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Python', 'Python313', 'python.exe'),
+        path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Python', 'Python312', 'python.exe'),
+        path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Python', 'Python311', 'python.exe'),
+        path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Python', 'Python310', 'python.exe'),
+        'C:\\Python313\\python.exe',
+        'C:\\Python312\\python.exe',
+        'C:\\Python311\\python.exe',
+        'C:\\Python310\\python.exe',
+        'C:\\Program Files\\Python313\\python.exe',
+        'C:\\Program Files\\Python312\\python.exe',
+        'C:\\Program Files\\Python311\\python.exe',
+        'C:\\Program Files\\Python310\\python.exe'
+      ];
+      for (const cand of candidates) {
+        if (cand && fs.existsSync(cand)) return cand;
+      }
+    }
+
     const target = isWindows ? 'python' : 'python3';
     return findExecutableOnSystem(target) || target;
   }
@@ -180,9 +202,10 @@ async function compileSource(compilerCmd, args, cwd, timeoutMs = 5000) {
       clearTimeout(timer);
       resolve({
         success: false,
+        isEnvironmentError: true,
         stdout,
         stderr: stderr || err.message,
-        rawError: `Compiler process error: ${err.message}`
+        rawError: `Compiler process error: ${err.message} (${compilerCmd})`
       });
     });
 
@@ -191,6 +214,7 @@ async function compileSource(compilerCmd, args, cwd, timeoutMs = 5000) {
       if (timedOut) {
         resolve({
           success: false,
+          isEnvironmentError: false,
           stdout,
           stderr: 'Compilation timed out (5s limit exceeded)',
           rawError: 'Compilation exceeded time limit of 5000ms'
@@ -199,6 +223,7 @@ async function compileSource(compilerCmd, args, cwd, timeoutMs = 5000) {
       }
       resolve({
         success: code === 0,
+        isEnvironmentError: false,
         stdout,
         stderr,
         rawError: code !== 0 ? `Compilation failed with code ${code}.\n${stderr}` : ''
@@ -259,11 +284,12 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
       const durationMs = Date.now() - startTime;
       resolve({
         runtimeSuccess: false,
+        isEnvironmentError: true,
         timedOut,
         exitCode: -1,
         stdout,
         stderr: stderr || err.message,
-        rawError: err.message,
+        rawError: `Process spawn error: ${err.message} (${binaryPath})`,
         durationMs
       });
     });
@@ -338,10 +364,17 @@ export async function prepareExecutable({ code, language }) {
       const exeFilePath = path.join(sandboxDir, executableName);
       fs.writeFileSync(sourceFilePath, code, 'utf-8');
 
-      const compileRes = await compileSource(compilerPath, [sourceFileName, '-O2', '-o', executableName], sandboxDir);
+      // Check if using TCC or GCC
+      const isTcc = path.basename(compilerPath).toLowerCase().startsWith('tcc');
+      const compileArgs = isTcc
+        ? [sourceFileName, '-o', executableName]
+        : [sourceFileName, '-O2', '-o', executableName];
+
+      const compileRes = await compileSource(compilerPath, compileArgs, sandboxDir);
       if (!compileRes.success) {
         return {
           compileSuccess: false,
+          isEnvironmentError: Boolean(compileRes.isEnvironmentError),
           stdout: compileRes.stdout,
           stderr: compileRes.stderr,
           rawError: compileRes.rawError,
@@ -361,6 +394,7 @@ export async function prepareExecutable({ code, language }) {
       if (!compileRes.success) {
         return {
           compileSuccess: false,
+          isEnvironmentError: Boolean(compileRes.isEnvironmentError),
           stdout: compileRes.stdout,
           stderr: compileRes.stderr,
           rawError: compileRes.rawError,
@@ -383,7 +417,7 @@ export async function prepareExecutable({ code, language }) {
           env: getSanitizedEnv(sandboxDir, path.dirname(compilerPath))
         }, (err, stdout, stderr) => {
           if (err) {
-            resolve({ success: false, stderr: stderr || err.message });
+            resolve({ success: false, isEnvironmentError: err.code === 'ENOENT', stderr: stderr || err.message });
           } else {
             resolve({ success: true, stderr: '' });
           }
@@ -393,9 +427,10 @@ export async function prepareExecutable({ code, language }) {
       if (!syntaxCheck.success) {
         return {
           compileSuccess: false,
+          isEnvironmentError: Boolean(syntaxCheck.isEnvironmentError),
           stdout: '',
           stderr: syntaxCheck.stderr,
-          rawError: `Python SyntaxError:\n${syntaxCheck.stderr}`,
+          rawError: syntaxCheck.isEnvironmentError ? `Python executable error:\n${syntaxCheck.stderr}` : `Python SyntaxError:\n${syntaxCheck.stderr}`,
           cleanup: () => { try { fs.rmSync(sandboxDir, { recursive: true, force: true }); } catch {} }
         };
       }
@@ -404,6 +439,7 @@ export async function prepareExecutable({ code, language }) {
     } else {
       return {
         compileSuccess: false,
+        isEnvironmentError: false,
         stdout: '',
         stderr: `Unsupported language ${normLang}`,
         rawError: `Unsupported language: ${normLang}`,
@@ -413,6 +449,7 @@ export async function prepareExecutable({ code, language }) {
 
     return {
       compileSuccess: true,
+      isEnvironmentError: false,
       run: async (stdinText = '', timeoutMs = 3000) => {
         return runBinary(targetBinary, targetArgs, sandboxDir, stdinText, timeoutMs);
       },
@@ -425,6 +462,7 @@ export async function prepareExecutable({ code, language }) {
   } catch (err) {
     return {
       compileSuccess: false,
+      isEnvironmentError: true,
       stdout: '',
       stderr: err.message,
       rawError: `Execution engine error: ${err.message}`,
@@ -442,6 +480,7 @@ export async function executeCode({ code, language, stdin = '', timeoutMs = 3000
     prepared.cleanup();
     return {
       compileSuccess: false,
+      isEnvironmentError: Boolean(prepared.isEnvironmentError),
       runtimeSuccess: false,
       timedOut: false,
       exitCode: 1,
@@ -461,4 +500,80 @@ export async function executeCode({ code, language, stdin = '', timeoutMs = 3000
   } finally {
     prepared.cleanup();
   }
+}
+
+/**
+ * Diagnostic health check for all supported compilers.
+ * Returns status, path, and version for C, C++, and Python.
+ */
+export async function checkAllCompilers() {
+  const results = {
+    c: { available: false, path: null, version: null, error: null },
+    cpp: { available: false, path: null, version: null, error: null },
+    python: { available: false, path: null, version: null, error: null }
+  };
+
+  // Check C
+  try {
+    const cPath = getCompilerPath('c');
+    results.c.path = cPath;
+    const isTcc = path.basename(cPath).toLowerCase().startsWith('tcc');
+    const versionArg = isTcc ? '-v' : '--version';
+    const cVer = await new Promise((res) => {
+      execFile(cPath, [versionArg], { timeout: 3000 }, (err, stdout, stderr) => {
+        if (err) res({ ok: false, error: err.message });
+        else res({ ok: true, version: (stdout || stderr || '').split('\n')[0].trim() });
+      });
+    });
+    if (cVer.ok) {
+      results.c.available = true;
+      results.c.version = cVer.version;
+    } else {
+      results.c.error = cVer.error;
+    }
+  } catch (e) {
+    results.c.error = e.message;
+  }
+
+  // Check C++
+  try {
+    const cppPath = getCompilerPath('cpp');
+    results.cpp.path = cppPath;
+    const cppVer = await new Promise((res) => {
+      execFile(cppPath, ['--version'], { timeout: 3000 }, (err, stdout, stderr) => {
+        if (err) res({ ok: false, error: err.message });
+        else res({ ok: true, version: (stdout || stderr || '').split('\n')[0].trim() });
+      });
+    });
+    if (cppVer.ok) {
+      results.cpp.available = true;
+      results.cpp.version = cppVer.version;
+    } else {
+      results.cpp.error = cppVer.error;
+    }
+  } catch (e) {
+    results.cpp.error = e.message;
+  }
+
+  // Check Python
+  try {
+    const pyPath = getCompilerPath('python');
+    results.python.path = pyPath;
+    const pyVer = await new Promise((res) => {
+      execFile(pyPath, ['--version'], { timeout: 3000 }, (err, stdout, stderr) => {
+        if (err) res({ ok: false, error: err.message });
+        else res({ ok: true, version: (stdout || stderr || '').split('\n')[0].trim() });
+      });
+    });
+    if (pyVer.ok) {
+      results.python.available = true;
+      results.python.version = pyVer.version;
+    } else {
+      results.python.error = pyVer.error;
+    }
+  } catch (e) {
+    results.python.error = e.message;
+  }
+
+  return results;
 }

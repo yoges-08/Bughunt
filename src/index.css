@@ -12,9 +12,15 @@
   input, textarea, select, [contenteditable="true"] {
     user-select: text !important;
     -webkit-user-select: text !important;
+    pointer-events: auto !important;
+    caret-color: #34d399 !important;
   }
   input[type="text"], input[type="password"], input[type="number"], textarea {
     cursor: text !important;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #10b981 !important;
   }
 }
 

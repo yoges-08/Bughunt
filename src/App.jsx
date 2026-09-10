@@ -51,6 +51,11 @@ export default function App() {
   };
 
   const handleLogout = () => {
+    try {
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+    } catch {}
     api.clearSession();
     socket.disconnect();
     setUser(null);

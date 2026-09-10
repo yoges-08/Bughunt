@@ -9,99 +9,135 @@
       "createdAt": "2026-08-29T16:54:14.625Z"
     },
     {
+      "id": "usr_251d40df",
+      "username": "yoges",
+      "password": "scrypt$fa5cb4ce217d623813acc68c61832961$ac8cae49b2ff665376600d8707776d555ff6e9822a3f0304a559d52bd88ba49a3a3da46a293bbb9bcc823ed21be23dd9bf148e518c178aa721b83e07441f5c65",
+      "role": "student",
+      "name": "yoges",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "createdAt": "2026-09-09T17:15:28.337Z"
+    },
+    {
       "id": "usr_student_1",
       "username": "student1",
-      "password": "scrypt$a3da08ad7483078feee79e73a5569abd$b8e159acad68edef22bb2d2923390a181045b64ca536356d7c9be9dfc97c8c47c6df19d246c645b39708b51a927deedcc0b8d9acf137ae3eccfe1e4a51d7e257",
+      "password": "scrypt$f385592db88f8867037faeac5414b274$c0d360518f361f5cfa30196c50467218c570fa39ca0a04b5e4d73714dabafd447e771b3b6a457571d0c26ee82a2850d77cc0c28793c240cc7fde0a60e2c6cb67",
       "role": "student",
       "name": "Alice Johnson (Team A)",
-      "createdAt": "2026-09-09T17:00:58.647Z"
+      "createdAt": "2026-09-10T06:19:20.327Z"
     },
     {
       "id": "usr_student_2",
       "username": "student2",
-      "password": "scrypt$08a92885e270ca181a058693daabcdc8$71a49ff6ce219a1c923a8f5644547be8d9ff3ff7d717eb39f864e2b9b88e321d9060db88363f34c2ae662dc21d003f4ba22c00fd1f34d0c7991d1f5be5ddec08",
+      "password": "scrypt$24af1509aa3a1e3803431fccf6a590d8$b627b0d023433b85c6e0016370e39ecf5c566eeec4038b79bd67bb45ce38dfee4376418b90f91a7bef80e35439e42757be97e36ac67229dd8a2fdb920db5cc36",
       "role": "student",
       "name": "Bob Smith (Team B)",
-      "createdAt": "2026-09-09T17:00:58.713Z"
+      "createdAt": "2026-09-10T06:19:20.380Z"
     },
     {
       "id": "usr_student_3",
       "username": "student3",
-      "password": "scrypt$13dfd550b0b15fc25f50aea45982e78c$cb74e38bb79fb93038e3d29ece38ad0e35e1c2db035574d23967313ac388388d3fcb682775a4f1af563a87fb37af62e2443afb6e20651d836049e2357f47e9a9",
+      "password": "scrypt$d118d97e68bfa602eda4ee46315fcbd8$f127e218c854e772aae6f7c7dca4556f6b319a631881d8eaf700c95adb0dc196f0c21ed388c2a4fb673ce0369df50ca614e9d9ffdcbe1d767f06ea6baac48a63",
       "role": "student",
       "name": "Charlie Davis (Team C)",
-      "createdAt": "2026-09-09T17:00:58.770Z"
+      "createdAt": "2026-09-10T06:19:20.433Z"
     },
     {
       "id": "usr_student_4",
       "username": "student4",
-      "password": "scrypt$8240f6ace624e06d9315156553bbdeff$d99bf050d3d945cc19e334b9f822c22c7980b9e9837fc46e84e8d236a0ef0bd433e7cd647aafa3b18e88e54babc69f1eae34ceabd3f728182261dec25ec54599",
+      "password": "scrypt$b7fea8fe5aeb31df74e13ea3646bf244$b1b488804ee411156c652b38007b3c4f93548631bfe49014b7afb13f2d65e93727835d9d3ba1873226d7d3d0b4af23c11dd52e5294a7e130b3dc7cedf63e5b64",
       "role": "student",
       "name": "Dana Lee (Team D)",
-      "createdAt": "2026-09-09T17:00:58.828Z"
+      "createdAt": "2026-09-10T06:19:20.486Z"
     }
   ],
-  "problems": [
+  "problems": [],
+  "assignments": [
     {
-      "id": "prob_py_palindrome",
-      "title": "Fix Palindrome & Whitespace Bug",
+      "id": "asg_d5244aa6",
+      "studentId": "usr_251d40df",
+      "problemId": "prob_c_array_max",
+      "assignedAt": "2026-09-10T06:19:49.178Z",
+      "expiresAt": "2026-09-10T06:34:49.178Z",
+      "durationMinutes": 15,
+      "status": "failed",
+      "currentCode": "#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // FIX 1: Initialize to first element, not 0\n    int max_val = arr[0];\n    int count = 1;\n\n    // FIX 2: i < n, not i <= n\n    for (int i = 1; i < n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n  \n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count); // Expected: 5 2\n    return 0;\n}",
+      "lastUpdated": "2026-09-10T06:22:03.200Z"
+    },
+    {
+      "id": "asg_b4a945a7",
+      "studentId": "usr_student_1",
+      "problemId": "prob_c_array_max",
+      "assignedAt": "2026-09-10T06:19:49.178Z",
+      "expiresAt": "2026-09-10T06:34:49.178Z",
+      "durationMinutes": 15,
+      "status": "assigned",
+      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
+      "lastUpdated": "2026-09-10T06:19:49.178Z"
+    },
+    {
+      "id": "asg_023ef4d9",
+      "studentId": "usr_student_2",
+      "problemId": "prob_c_array_max",
+      "assignedAt": "2026-09-10T06:19:49.179Z",
+      "expiresAt": "2026-09-10T06:34:49.179Z",
+      "durationMinutes": 15,
+      "status": "assigned",
+      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
+      "lastUpdated": "2026-09-10T06:19:49.179Z"
+    },
+    {
+      "id": "asg_b9d62917",
+      "studentId": "usr_student_3",
+      "problemId": "prob_c_array_max",
+      "assignedAt": "2026-09-10T06:19:49.179Z",
+      "expiresAt": "2026-09-10T06:34:49.179Z",
+      "durationMinutes": 15,
+      "status": "assigned",
+      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
+      "lastUpdated": "2026-09-10T06:19:49.179Z"
+    },
+    {
+      "id": "asg_cf0a9a86",
+      "studentId": "usr_student_4",
+      "problemId": "prob_c_array_max",
+      "assignedAt": "2026-09-10T06:19:49.179Z",
+      "expiresAt": "2026-09-10T06:34:49.179Z",
+      "durationMinutes": 15,
+      "status": "assigned",
+      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
+      "lastUpdated": "2026-09-10T06:19:49.179Z"
+    }
+  ],
+  "submissions": [
+    {
+      "id": "sub_f96e1297",
+      "studentId": "usr_admin",
+      "problemId": "prob_py_palindrome",
+      "code": "def is_palindrome(s):\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n    return cleaned == cleaned[::-1]\n\nif __name__ == \"__main__\":\n    test_words = [\"Race car\", \"madam\", \"hello\"]\n    for word in test_words:\n        print(\"YES\" if is_palindrome(word) else \"NO\")\n",
       "language": "python",
-      "filename": "palindrome_checker.py",
-      "description": "The given function is supposed to check if strings are palindromes ignoring case and spaces. Fix the logic and index bounds error to produce the expected output.",
-      "starterCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so the output matches the expected output:\n# Race car -> YES\n# madam -> YES\n# hello -> NO\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    test_words = [\"Race car\", \"madam\", \"hello\"]\n    for word in test_words:\n        print(\"YES\" if is_palindrome(word) else \"NO\")\n",
-      "expectedOutput": "YES\nYES\nNO",
-      "testCases": [
-        {
-          "input": "",
-          "expectedOutput": "YES\nYES\nNO",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-09-09T16:38:44.778Z"
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":42,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":42}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 42,
+      "createdAt": "2026-09-09T17:21:55.493Z"
     },
     {
-      "id": "prob_cpp_binary_search",
-      "title": "Fix Binary Search Off-by-One",
-      "language": "cpp",
-      "filename": "binary_search.cpp",
-      "description": "A classic binary search implementation with boundary index bugs and integer overflow issue. Fix it to produce the expected indices.",
-      "starterCode": "// Bug Hunt Challenge: Binary Search\n// Fix the bugs so the program returns the 0-based index of target, or -1 if not found.\n\n#include <iostream>\n#include <vector>\n\nint binarySearch(const std::vector<int>& arr, int target) {\n    int left = 0;\n    // BUG 1: Should be arr.size() - 1\n    int right = arr.size(); \n\n    // BUG 2: Condition should be left <= right\n    while (left < right) {\n        int mid = (left + right) / 2;\n        if (arr[mid] == target) {\n            return mid;\n        } else if (arr[mid] < target) {\n            left = mid; // BUG 3: Should be mid + 1\n        } else {\n            right = mid; // BUG 4: Should be mid - 1\n        }\n    }\n    return -1;\n}\n\nint main() {\n    std::vector<int> arr = {1, 3, 5, 7, 9};\n    std::vector<int> targets = {7, 1, 9, 4};\n    for (int t : targets) {\n        std::cout << binarySearch(arr, t) << std::endl;\n    }\n    return 0;\n}\n",
-      "expectedOutput": "3\n0\n4\n-1",
-      "testCases": [
-        {
-          "input": "",
-          "expectedOutput": "3\n0\n4\n-1",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 20,
-      "createdAt": "2026-09-09T16:38:44.778Z"
-    },
-    {
-      "id": "prob_c_array_max",
-      "title": "Fix Array Maximum and Memory Bounds",
+      "id": "sub_7dee1caa",
+      "studentId": "usr_251d40df",
+      "problemId": "prob_c_array_max",
+      "code": "#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // FIX 1: Initialize to first element, not 0\n    int max_val = arr[0];\n    int count = 1;\n\n    // FIX 2: i < n, not i <= n\n    for (int i = 1; i < n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n  \n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count); // Expected: 5 2\n    return 0;\n}",
       "language": "c",
-      "filename": "array_max.c",
-      "description": "Find the maximum element and its count in an integer array. Fix the initialization bug and out-of-bounds loop.",
-      "starterCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
-      "expectedOutput": "5 2",
-      "testCases": [
-        {
-          "input": "",
-          "expectedOutput": "5 2",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-09-09T16:38:44.778Z"
+      "status": "EXECUTION_FAILED",
+      "pass": false,
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":82,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"actualOutput\":\"5 0\\r\\n\",\"expectedOutput\":\"5 2\",\"durationMs\":82}]}",
+      "genericMessage": "❌ Program Execution Failed",
+      "executionTimeMs": 82,
+      "createdAt": "2026-09-10T06:22:03.200Z"
     }
   ],
-  "assignments": [],
-  "submissions": [],
   "contestSettings": {
     "contestName": "Bug Hunt 2026 - LAN Championship",
     "status": "active"

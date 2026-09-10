@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Bug, ArrowRight, CheckCircle2, AlertCircle, Server, Lock, User } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -9,6 +9,8 @@ export default function LoginView({ onLoginSuccess }) {
   const [loading, setLoading] = useState(false);
   const [serverOnline, setServerOnline] = useState(null);
   const [error, setError] = useState('');
+
+  const usernameInputRef = useRef(null);
 
   // Check server connection
   const checkConnection = async (targetUrl) => {
@@ -28,6 +30,15 @@ export default function LoginView({ onLoginSuccess }) {
 
   useEffect(() => {
     checkConnection();
+
+    // Programmatically focus the username input on mount/remount
+    const focusTimer = setTimeout(() => {
+      if (usernameInputRef.current) {
+        usernameInputRef.current.focus();
+      }
+    }, 50);
+
+    return () => clearTimeout(focusTimer);
   }, []);
 
   const handleHostIpChange = (e) => {
@@ -118,6 +129,7 @@ export default function LoginView({ onLoginSuccess }) {
               <span>Username / Student Name / Team Name</span>
             </label>
             <input
+              ref={usernameInputRef}
               type="text"
               required
               autoFocus

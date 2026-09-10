@@ -10,6 +10,7 @@
     "dev": "concurrently -k \"npm run dev:server\" \"npm run dev:client\"",
     "start": "electron .",
     "build": "vite build",
+    "setup:compilers": "node bin/setup-compilers.js",
     "test": "node test/run-all-tests.js"
   },
   "dependencies": {

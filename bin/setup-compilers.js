@@ -1,79 +1,89 @@
-/**
- * Compiler Packaging and Setup Script for Bug Hunt
- * 
- * CORE REQUIREMENT 2:
- * Ensures bundled compilers for C, C++, and Python are configured in the private
- * directory <app_root>/bin/compilers/ without polluting system PATH.
- */
-
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import http from 'http';
+import https from 'https';
 import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import { checkAllCompilers } from '../server/compiler.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const APP_ROOT = path.resolve(__dirname, '..');
 const COMPILERS_DIR = path.join(APP_ROOT, 'bin', 'compilers');
-
 const C_CPP_DIR = path.join(COMPILERS_DIR, 'c_cpp');
-const PYTHON_DIR = path.join(COMPILERS_DIR, 'python');
 
 console.log('====================================================');
 console.log('🛠️  BUG HUNT: PRIVATE COMPILER SETUP & VERIFICATION');
 console.log('====================================================');
 
-// Ensure compiler target directories exist
-fs.mkdirSync(path.join(C_CPP_DIR, 'bin'), { recursive: true });
-fs.mkdirSync(PYTHON_DIR, { recursive: true });
+let status = await checkAllCompilers();
 
-console.log(`📁 Bundled Compilers Directory: ${COMPILERS_DIR}`);
+// If C/C++ compiler is missing, auto-download and setup
+if (!status.c.available || !status.cpp.available) {
+  console.log('\n📥 C/C++ toolchain is missing. Setting up bundled compilers...');
+  fs.mkdirSync(C_CPP_DIR, { recursive: true });
 
-// Check for C/C++ compiler
-let cCompilerFound = false;
-const isWin = process.platform === 'win32';
-const whichCmd = isWin ? 'where' : 'which';
-const gccExe = isWin ? 'gcc.exe' : 'gcc';
-const gppExe = isWin ? 'g++.exe' : 'g++';
-const pythonExe = isWin ? 'python.exe' : 'python3';
+  const tccZip = path.join(COMPILERS_DIR, 'tcc.zip');
+  const tccUrl = 'http://download.savannah.gnu.org/releases/tinycc/tcc-0.9.27-win64-bin.zip';
 
-const bundledGcc = path.join(C_CPP_DIR, 'bin', gccExe);
-const bundledGpp = path.join(C_CPP_DIR, 'bin', gppExe);
-
-if (fs.existsSync(bundledGcc) && fs.existsSync(bundledGpp)) {
-  console.log(`✅ Bundled GCC/G++ present in private directory: ${path.dirname(bundledGcc)}`);
-  cCompilerFound = true;
-} else {
-  // Check if system has gcc to create a private portable alias or note status
   try {
-    const sysGcc = execSync(`${whichCmd} gcc`, { encoding: 'utf-8' }).split('\n')[0].trim();
-    if (sysGcc && fs.existsSync(sysGcc)) {
-      console.log(`ℹ️  System GCC detected at: ${sysGcc}`);
-      console.log(`   (App will use private bundled fallback or isolated invocation)`);
-      cCompilerFound = true;
+    console.log('Downloading Tiny C Compiler from:', tccUrl);
+    await new Promise((resolve, reject) => {
+      const file = fs.createWriteStream(tccZip);
+      http.get(tccUrl, (res) => {
+        if (res.statusCode !== 200) {
+          reject(new Error(`Failed to download: status ${res.statusCode}`));
+          return;
+        }
+        res.pipe(file);
+        file.on('finish', () => file.close(resolve));
+      }).on('error', reject);
+    });
+
+    console.log('Extracting TCC...');
+    execSync(`powershell -Command "Expand-Archive -Path '${tccZip}' -DestinationPath '${C_CPP_DIR}' -Force"`, { stdio: 'inherit' });
+    
+    // Move from subfolder if present
+    const sub = path.join(C_CPP_DIR, 'tcc');
+    if (fs.existsSync(sub)) {
+      const items = fs.readdirSync(sub);
+      for (const item of items) {
+        const src = path.join(sub, item);
+        const dst = path.join(C_CPP_DIR, item);
+        if (fs.existsSync(dst)) fs.rmSync(dst, { recursive: true, force: true });
+        fs.renameSync(src, dst);
+      }
+      fs.rmdirSync(sub);
     }
-  } catch {
-    console.log(`ℹ️  No system GCC found. Standalone C/C++ runner will use embedded/portable engine.`);
+    if (fs.existsSync(tccZip)) fs.unlinkSync(tccZip);
+    console.log('✅ TCC extraction complete.');
+  } catch (err) {
+    console.warn('⚠️  Could not auto-download TCC:', err.message);
   }
+
+  // Re-check after setup attempt
+  status = await checkAllCompilers();
 }
 
-// Check for Python interpreter
-let pythonFound = false;
-const bundledPython = path.join(PYTHON_DIR, pythonExe);
+console.log('\nResults:');
+console.log(`[C Compiler]`);
+console.log(`  - Status:  ${status.c.available ? '✅ Available' : '❌ Missing'}`);
+console.log(`  - Path:    ${status.c.path || 'Not found'}`);
+console.log(`  - Version: ${status.c.version || status.c.error || 'N/A'}\n`);
 
-if (fs.existsSync(bundledPython)) {
-  console.log(`✅ Bundled Python present in private directory: ${bundledPython}`);
-  pythonFound = true;
+console.log(`[C++ Compiler]`);
+console.log(`  - Status:  ${status.cpp.available ? '✅ Available' : '❌ Missing'}`);
+console.log(`  - Path:    ${status.cpp.path || 'Not found'}`);
+console.log(`  - Version: ${status.cpp.version || status.cpp.error || 'N/A'}\n`);
+
+console.log(`[Python Interpreter]`);
+console.log(`  - Status:  ${status.python.available ? '✅ Available' : '❌ Missing'}`);
+console.log(`  - Path:    ${status.python.path || 'Not found'}`);
+console.log(`  - Version: ${status.python.version || status.python.error || 'N/A'}\n`);
+
+const allOk = status.c.available && status.cpp.available && status.python.available;
+if (allOk) {
+  console.log('🎉 ALL COMPILERS (C, C++, Python) CONFIGURED & VERIFIED!');
 } else {
-  try {
-    const sysPy = execSync(`${whichCmd} python3 || ${whichCmd} python`, { encoding: 'utf-8', shell: true }).split('\n')[0].trim();
-    if (sysPy && fs.existsSync(sysPy)) {
-      console.log(`ℹ️  System Python detected at: ${sysPy}`);
-      console.log(`   (App will use private bundled fallback or isolated invocation)`);
-      pythonFound = true;
-    }
-  } catch {
-    console.log(`ℹ️  No system Python found. Standalone Python runner will use embedded engine.`);
-  }
+  console.log('⚠️  Some compilers are missing or need system installation.');
 }
-
 console.log('====================================================\n');

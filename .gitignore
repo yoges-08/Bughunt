@@ -42,3 +42,7 @@ pip-log.txt
 data/contest_db.json.tmp
 data/*.tmp
 data/.jwt_secret
+
+# Local compilers binary cache
+bin/compilers/
+

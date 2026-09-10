@@ -20,6 +20,7 @@ import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import studentRoutes from './routes/studentRoutes.js';
 import { socketManager } from './socket.js';
+import { checkAllCompilers } from './compiler.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 4000;
@@ -54,12 +55,20 @@ export function getLocalIpAddresses() {
   return addresses;
 }
 
-// System info endpoint (to display host LAN IP to clients)
-app.get('/api/system/info', (req, res) => {
+let compilerStatusCache = null;
+
+// System info endpoint (to display host LAN IP and compiler status to clients)
+app.get('/api/system/info', async (req, res) => {
+  if (!compilerStatusCache) {
+    try {
+      compilerStatusCache = await checkAllCompilers();
+    } catch {}
+  }
   res.json({
     status: 'online',
     appName: 'Bug Hunt LAN Contest Server',
     lanAddresses: getLocalIpAddresses(),
+    compilers: compilerStatusCache,
     port: PORT,
     timestamp: new Date().toISOString()
   });
@@ -96,7 +105,7 @@ export function startServer(port = PORT) {
       }
     });
 
-    server.listen(port, '0.0.0.0', () => {
+    server.listen(port, '0.0.0.0', async () => {
       const ips = getLocalIpAddresses();
       console.log('====================================================');
       console.log('🚀 BUG HUNT: LAN CODING CONTEST SERVER RUNNING');
@@ -108,6 +117,19 @@ export function startServer(port = PORT) {
       } else {
         console.log(`   👉 http://localhost:${port}`);
       }
+
+      // Startup compiler availability check
+      try {
+        const compStatus = await checkAllCompilers();
+        compilerStatusCache = compStatus;
+        console.log('\n🛠️  Compiler Toolchain Status:');
+        console.log(`   • C (GCC/TCC): ${compStatus.c.available ? `✅ Available (${compStatus.c.version || compStatus.c.path})` : `❌ Missing (${compStatus.c.error || 'not found'})`}`);
+        console.log(`   • C++ (G++):   ${compStatus.cpp.available ? `✅ Available (${compStatus.cpp.version || compStatus.cpp.path})` : `❌ Missing (${compStatus.cpp.error || 'not found'})`}`);
+        console.log(`   • Python:      ${compStatus.python.available ? `✅ Available (${compStatus.python.version || compStatus.python.path})` : `❌ Missing (${compStatus.python.error || 'not found'})`}`);
+      } catch (e) {
+        console.warn('   ⚠️ Compiler status check failed:', e.message);
+      }
+
       console.log('====================================================\n');
       resolve({ server, port, ips, alreadyRunning: false });
     });
