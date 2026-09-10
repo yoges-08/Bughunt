@@ -88,7 +88,7 @@ router.get('/students', (req, res) => {
 
 // Create new student or team
 router.post('/students', (req, res) => {
-  const { username, password, name, isTeam, teamName, teammates } = req.body;
+  const { username, password, name, isTeam, teamName, teammates, preferredLanguage } = req.body;
 
   if (!password) {
     return res.status(400).json({ error: 'Password is required' });
@@ -124,7 +124,8 @@ router.post('/students', (req, res) => {
     const newStudent = db.createStudent(finalUsername, password, effectiveName, {
       isTeam: Boolean(isTeam),
       teamName: teamName || (isTeam ? effectiveName : null),
-      teammates: teammates || null
+      teammates: teammates || null,
+      preferredLanguage: preferredLanguage || 'python'
     });
     // Broadcast updated student list
     socketManager.broadcastToAdmins({
@@ -175,13 +176,15 @@ router.post('/students/bulk', (req, res) => {
     const prefix = (generate.prefix || 'student').trim();
     const startNum = Number(generate.startNumber) || 1;
     const pwdPrefix = generate.passwordPrefix || 'pass';
+    const defaultLang = (generate.preferredLanguage || 'python').trim();
 
     for (let i = 0; i < count; i++) {
       const num = startNum + i;
       studentList.push({
         username: `${prefix}${num}`,
         password: `${pwdPrefix}${num}`,
-        name: `Student ${num} (Team ${num})`
+        name: `Student ${num} (Team ${num})`,
+        preferredLanguage: defaultLang
       });
     }
   } else {
@@ -193,7 +196,12 @@ router.post('/students/bulk', (req, res) => {
 
   for (const s of studentList) {
     try {
-      const newS = db.createStudent(s.username, s.password, s.name);
+      const newS = db.createStudent(s.username, s.password, s.name, {
+        isTeam: Boolean(s.isTeam),
+        teamName: s.teamName,
+        teammates: s.teammates,
+        preferredLanguage: s.preferredLanguage || 'python'
+      });
       created.push(newS);
     } catch (err) {
       errors.push({ username: s.username, error: err.message });
@@ -346,7 +354,7 @@ router.delete('/problems/:id', (req, res) => {
  * Admin sends problem file to student or group of students over LAN with live timer.
  */
 router.post('/assign', (req, res) => {
-  const { problemId, studentId, assignAll, resetCode } = req.body;
+  const { problemId, studentId, assignAll, targetLanguage, resetCode } = req.body;
   const shouldResetCode = resetCode !== false; // Issue 3: default to resetting code to starterCode unless explicitly false
 
   if (!problemId) {
@@ -379,8 +387,18 @@ router.post('/assign', (req, res) => {
   };
 
   if (assignAll) {
-    // Assign and push to all students with error capture
-    const students = db.getAllStudents();
+    // Assign and push to all students (or filtered by targetLanguage)
+    let students = db.getAllStudents();
+    if (targetLanguage && targetLanguage !== 'ALL') {
+      const normTarget = targetLanguage.toLowerCase() === 'c++' ? 'cpp' : (targetLanguage.toLowerCase() === 'py' ? 'python' : targetLanguage.toLowerCase());
+      students = students.filter(s => {
+        let sLang = (s.preferredLanguage || 'python').toLowerCase();
+        if (sLang === 'py') sLang = 'python';
+        if (sLang === 'c++') sLang = 'cpp';
+        return sLang === normTarget;
+      });
+    }
+
     const errors = [];
     const results = [];
 
@@ -429,6 +447,107 @@ router.post('/assign', (req, res) => {
     message: `Assigned problem '${problem.title}' (⏱️ ${durationMinutes} mins) to student`,
     studentId,
     deliveredImmediately: isOnline
+  });
+});
+
+// --- Multi-Language Simultaneous Contest Kickoff ---
+router.post('/assign-multi-language', (req, res) => {
+  const { problemMap, resetCode } = req.body;
+  // problemMap: { python: 'prob_id1', c: 'prob_id2', cpp: 'prob_id3' }
+  const shouldResetCode = resetCode !== false;
+
+  if (!problemMap || typeof problemMap !== 'object' || Object.keys(problemMap).length === 0) {
+    return res.status(400).json({ error: 'problemMap is required (e.g. { python: "id1", c: "id2", cpp: "id3" })' });
+  }
+
+  const loadedProblems = {};
+  for (const [langKey, pId] of Object.entries(problemMap)) {
+    if (pId) {
+      const prob = db.getProblemById(pId);
+      if (prob) {
+        const dur = prob.durationMinutes || 15;
+        const now = new Date();
+        const exp = new Date(now.getTime() + dur * 60 * 1000).toISOString();
+        const expOut = prob.expectedOutput || (prob.testCases && prob.testCases[0]?.expectedOutput) || '';
+        const normKey = langKey.toLowerCase() === 'c++' ? 'cpp' : (langKey.toLowerCase() === 'py' ? 'python' : langKey.toLowerCase());
+        loadedProblems[normKey] = {
+          prob,
+          payload: {
+            problemId: prob.id,
+            title: prob.title,
+            language: prob.language,
+            filename: prob.filename,
+            description: prob.description,
+            starterCode: prob.starterCode,
+            expectedOutput: expOut,
+            durationMinutes: dur,
+            assignedAt: now.toISOString(),
+            expiresAt: exp,
+            hasSubmitted: false,
+            sampleTestCase: prob.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expOut }
+          }
+        };
+      }
+    }
+  }
+
+  if (Object.keys(loadedProblems).length === 0) {
+    return res.status(400).json({ error: 'None of the specified problem IDs could be found.' });
+  }
+
+  const students = db.getAllStudents();
+  const results = [];
+  const errors = [];
+  const unassigned = [];
+  const languageCounts = { python: 0, c: 0, cpp: 0 };
+
+  students.forEach(s => {
+    let studentLang = (s.preferredLanguage || 'python').toLowerCase().trim();
+    if (studentLang === 'py') studentLang = 'python';
+    if (studentLang === 'c++') studentLang = 'cpp';
+
+    const match = loadedProblems[studentLang];
+    if (!match) {
+      unassigned.push({
+        studentId: s.id,
+        username: s.username,
+        preferredLanguage: studentLang,
+        reason: `No problem selected for language '${studentLang}'`
+      });
+      return;
+    }
+
+    try {
+      const assignment = db.assignProblemToStudent(s.id, match.prob.id, shouldResetCode);
+      const studentPayload = {
+        ...match.payload,
+        currentCode: assignment.currentCode || match.prob.starterCode
+      };
+      const online = socketManager.pushProblemToStudent(s.id, studentPayload);
+      if (languageCounts[studentLang] !== undefined) {
+        languageCounts[studentLang]++;
+      }
+      results.push({
+        studentId: s.id,
+        username: s.username,
+        language: studentLang,
+        problemTitle: match.prob.title,
+        online
+      });
+    } catch (err) {
+      errors.push({ studentId: s.id, username: s.username, error: err.message });
+    }
+  });
+
+  socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
+
+  res.json({
+    message: `🚀 Multi-language contest launched! Successfully pushed problems to ${results.length}/${students.length} students simultaneously.`,
+    assignedCount: results.length,
+    languageCounts,
+    results,
+    unassigned,
+    errors
   });
 });
 

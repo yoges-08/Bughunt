@@ -186,10 +186,17 @@ class ApiService {
     });
   }
 
-  async assignProblem({ problemId, studentId, assignAll, resetCode }) {
+  async assignProblem({ problemId, studentId, assignAll, targetLanguage, resetCode }) {
     return this.request('/api/admin/assign', {
       method: 'POST',
-      body: JSON.stringify({ problemId, studentId, assignAll, resetCode })
+      body: JSON.stringify({ problemId, studentId, assignAll, targetLanguage, resetCode })
+    });
+  }
+
+  async assignMultiLanguageContest({ problemMap, resetCode }) {
+    return this.request('/api/admin/assign-multi-language', {
+      method: 'POST',
+      body: JSON.stringify({ problemMap, resetCode })
     });
   }
 

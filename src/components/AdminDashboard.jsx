@@ -41,9 +41,16 @@ export default function AdminDashboard({ user, onLogout }) {
   const [pushSuccessMsg, setPushSuccessMsg] = useState('');
   const [keepStudentCode, setKeepStudentCode] = useState(false); // Issue 3: keep draft code on re-assign (unchecked by default)
 
+  // Multi-Language Contest Kickoff State
+  const [showMultiLangModal, setShowMultiLangModal] = useState(false);
+  const [multiLangProblems, setMultiLangProblems] = useState({ python: '', c: '', cpp: '' });
+  const [multiLangLoading, setMultiLangLoading] = useState(false);
+  const [multiLangResultMsg, setMultiLangResultMsg] = useState('');
+
   // Student Search & Filtering
   const [studentSearch, setStudentSearch] = useState('');
   const [studentFilter, setStudentFilter] = useState('all'); // 'all', 'online', 'offline', 'solved', 'in_progress', 'unassigned'
+  const [selectedLanguageFilter, setSelectedLanguageFilter] = useState('all'); // 'all', 'python', 'c', 'cpp'
 
   // Pagination & Scroll State
   const [rowsPerPage, setRowsPerPage] = useState('all'); // 10, 25, 50, 'all'
@@ -53,14 +60,14 @@ export default function AdminDashboard({ user, onLogout }) {
   // Add Students Modal (Solo vs Team)
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [studentCreationType, setStudentCreationType] = useState('solo'); // 'solo' or 'team'
-  const [soloStudentData, setSoloStudentData] = useState({ name: '', password: '' });
-  const [teamStudentData, setTeamStudentData] = useState({ teamName: '', teammates: '', password: '' });
+  const [soloStudentData, setSoloStudentData] = useState({ name: '', password: '', preferredLanguage: 'python' });
+  const [teamStudentData, setTeamStudentData] = useState({ teamName: '', teammates: '', password: '', preferredLanguage: 'python' });
   const [creationLoading, setCreationLoading] = useState(false);
   
   // Bulk Student Modal
   const [showBulkStudentModal, setShowBulkStudentModal] = useState(false);
   const [bulkAddMode, setBulkAddMode] = useState('generate'); // 'generate' or 'csv'
-  const [bulkGenData, setBulkGenData] = useState({ prefix: 'student', count: 10, startNumber: 1, passwordPrefix: 'pass' });
+  const [bulkGenData, setBulkGenData] = useState({ prefix: 'student', count: 10, startNumber: 1, passwordPrefix: 'pass', preferredLanguage: 'python' });
   const [bulkCsvText, setBulkCsvText] = useState('');
   const [bulkLoading, setBulkLoading] = useState(false);
 
@@ -169,6 +176,25 @@ export default function AdminDashboard({ user, onLogout }) {
     };
   }, [students]);
 
+  // Compute language distribution statistics
+  const languageStats = useMemo(() => {
+    let python = 0;
+    let c = 0;
+    let cpp = 0;
+
+    for (const s of students) {
+      let lang = (s.preferredLanguage || 'python').toLowerCase();
+      if (lang === 'py') lang = 'python';
+      if (lang === 'c++') lang = 'cpp';
+
+      if (lang === 'c') c++;
+      else if (lang === 'cpp') cpp++;
+      else python++;
+    }
+
+    return { python, c, cpp, total: students.length };
+  }, [students]);
+
   // Compute filtered students list
   const filteredStudents = useMemo(() => {
     const q = studentSearch.trim().toLowerCase();
@@ -181,16 +207,30 @@ export default function AdminDashboard({ user, onLogout }) {
       if (studentFilter === 'expired' && s.assignment?.status !== 'expired') return false;
       if (studentFilter === 'unassigned' && s.assignment) return false;
 
+      // Language Filter
+      if (selectedLanguageFilter !== 'all') {
+        let sLang = (s.preferredLanguage || 'python').toLowerCase();
+        if (sLang === 'py') sLang = 'python';
+        if (sLang === 'c++') sLang = 'cpp';
+        if (sLang !== selectedLanguageFilter) return false;
+      }
+
       // Search query
       if (q) {
         const matchName = (s.name || '').toLowerCase().includes(q);
         const matchUsername = (s.username || '').toLowerCase().includes(q);
         const matchProblem = (s.assignment?.title || '').toLowerCase().includes(q);
-        return matchName || matchUsername || matchProblem;
+        const matchTeammates = (s.teammates || '').toLowerCase().includes(q);
+        return matchName || matchUsername || matchProblem || matchTeammates;
       }
       return true;
     });
-  }, [students, studentFilter, studentSearch]);
+  }, [students, studentFilter, selectedLanguageFilter, studentSearch]);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [studentSearch, studentFilter, selectedLanguageFilter, rowsPerPage]);
 
   // Pagination calculation
   const totalFiltered = filteredStudents.length;
@@ -254,8 +294,10 @@ export default function AdminDashboard({ user, onLogout }) {
     setPushSuccessMsg('');
 
     try {
-      const isAll = targetId === 'ALL';
-      const targetStudent = students.find(s => s.id === targetId);
+      const isGroup = targetId.startsWith('GROUP_');
+      const isAll = targetId === 'ALL' || isGroup;
+      const targetLanguage = isGroup ? targetId.replace('GROUP_', '').toLowerCase() : undefined;
+      const targetStudent = (!isAll && !isGroup) ? students.find(s => s.id === targetId) : null;
 
       // Issue 3 UX: Confirm if re-pushing same problem to a student already working on it
       if (!isAll && targetStudent?.assignment && targetStudent.assignment.problemId === selectedProblemId) {
@@ -275,10 +317,13 @@ export default function AdminDashboard({ user, onLogout }) {
         problemId: selectedProblemId,
         studentId: isAll ? undefined : targetId,
         assignAll: isAll,
+        targetLanguage,
         resetCode: !keepStudentCode
       });
 
-      if (isAll) {
+      if (isGroup) {
+        setPushSuccessMsg(`✅ Problem successfully pushed to all ${targetLanguage.toUpperCase()} students (${res.results?.length || 0} students)!`);
+      } else if (isAll) {
         setPushSuccessMsg(`✅ Problem successfully pushed to ALL ${students.length} students over LAN!`);
       } else {
         setPushSuccessMsg(`✅ Problem sent to ${targetStudent?.name || 'student'} (${res.deliveredImmediately ? 'Delivered Live' : 'Queued for Connect'})`);
@@ -289,6 +334,48 @@ export default function AdminDashboard({ user, onLogout }) {
       alert('Failed to send problem: ' + err.message);
     } finally {
       setPushLoading(false);
+    }
+  };
+
+  // Launch Multi-Language Contest Simultaneously (Core Kickoff)
+  const handleLaunchMultiLanguageContest = async () => {
+    if (!multiLangProblems.python && !multiLangProblems.c && !multiLangProblems.cpp) {
+      alert('Please select at least one problem to assign.');
+      return;
+    }
+
+    const confirmText = `🚀 Ready to launch the Multi-Language Contest?\n\n` +
+      `This will immediately push:\n` +
+      `• Python Problem to ${languageStats.python} Python students/teams\n` +
+      `• C Problem to ${languageStats.c} C students/teams\n` +
+      `• C++ Problem to ${languageStats.cpp} C++ students/teams\n\n` +
+      `All ${students.length} student screens will simultaneously load their problem and start their timers. Continue?`;
+
+    if (!window.confirm(confirmText)) return;
+
+    setMultiLangLoading(true);
+    setMultiLangResultMsg('');
+
+    try {
+      const res = await api.assignMultiLanguageContest({
+        problemMap: {
+          python: multiLangProblems.python || undefined,
+          c: multiLangProblems.c || undefined,
+          cpp: multiLangProblems.cpp || undefined
+        },
+        resetCode: !keepStudentCode
+      });
+
+      setMultiLangResultMsg(res.message || '🚀 Multi-language contest launched successfully!');
+      loadData();
+      setTimeout(() => {
+        setShowMultiLangModal(false);
+        setMultiLangResultMsg('');
+      }, 3500);
+    } catch (err) {
+      alert('Failed to launch multi-language contest: ' + err.message);
+    } finally {
+      setMultiLangLoading(false);
     }
   };
 
@@ -304,11 +391,12 @@ export default function AdminDashboard({ user, onLogout }) {
       const res = await api.createStudent({
         name: soloStudentData.name.trim(),
         password: soloStudentData.password.trim(),
+        preferredLanguage: soloStudentData.preferredLanguage || 'python',
         isTeam: false
       });
       setShowAddStudentModal(false);
-      setSoloStudentData({ name: '', password: '' });
-      alert(`🎉 Successfully created Solo Student account "${res.name}"!\n\nUsername: ${res.username}\n(Student can log in using either their name or username)`);
+      setSoloStudentData({ name: '', password: '', preferredLanguage: 'python' });
+      alert(`🎉 Successfully created Solo Student account "${res.name}" (${(res.preferredLanguage || 'python').toUpperCase()})!\n\nUsername: ${res.username}\n(Student can log in using either their name or username)`);
       loadData();
     } catch (err) {
       alert('Failed to create student: ' + err.message);
@@ -331,11 +419,12 @@ export default function AdminDashboard({ user, onLogout }) {
         teamName: teamStudentData.teamName.trim(),
         teammates: teamStudentData.teammates.trim(),
         password: teamStudentData.password.trim(),
+        preferredLanguage: teamStudentData.preferredLanguage || 'python',
         isTeam: true
       });
       setShowAddStudentModal(false);
-      setTeamStudentData({ teamName: '', teammates: '', password: '' });
-      alert(`🎉 Successfully created Team account "${res.name}"!\n\nTeam Members: ${res.teammates}\nUsername: ${res.username}\n(Team can log in using either team name or username)`);
+      setTeamStudentData({ teamName: '', teammates: '', password: '', preferredLanguage: 'python' });
+      alert(`🎉 Successfully created Team account "${res.name}" (${(res.preferredLanguage || 'python').toUpperCase()})!\n\nTeam Members: ${res.teammates}\nUsername: ${res.username}\n(Team can log in using either team name or username)`);
       loadData();
     } catch (err) {
       alert('Failed to create team: ' + err.message);
@@ -353,7 +442,7 @@ export default function AdminDashboard({ user, onLogout }) {
       if (bulkAddMode === 'generate') {
         payload = { generate: bulkGenData };
       } else {
-        // Parse CSV format: username, password, name
+        // Parse CSV format: username, password, name, language (optional)
         const lines = bulkCsvText.trim().split('\n');
         const studentList = [];
         for (const line of lines) {
@@ -362,12 +451,13 @@ export default function AdminDashboard({ user, onLogout }) {
             studentList.push({
               username: parts[0],
               password: parts[1],
-              name: parts[2] || parts[0]
+              name: parts[2] || parts[0],
+              preferredLanguage: (parts[3] || 'python').toLowerCase().trim()
             });
           }
         }
         if (studentList.length === 0) {
-          alert('No valid student entries found in CSV text. Expected: username, password, Name');
+          alert('No valid student entries found in CSV text. Expected: username, password, Name, language(optional)');
           setBulkLoading(false);
           return;
         }
@@ -612,15 +702,38 @@ export default function AdminDashboard({ user, onLogout }) {
                 LAN Problem Dispatch (Direct File Push)
               </h2>
             </div>
-            <label className="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-300 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={keepStudentCode}
-                onChange={(e) => setKeepStudentCode(e.target.checked)}
-                className="w-3.5 h-3.5 rounded border-slate-700 bg-surface-950 text-emerald-500 focus:ring-emerald-500/20 accent-emerald-500"
-              />
-              <span>Keep student's current code on re-assignment</span>
-            </label>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  // Pre-populate multiLangProblems if empty
+                  const pyProb = problems.find(p => p.language === 'python');
+                  const cProb = problems.find(p => p.language === 'c');
+                  const cppProb = problems.find(p => p.language === 'cpp');
+                  setMultiLangProblems({
+                    python: multiLangProblems.python || (pyProb ? pyProb.id : ''),
+                    c: multiLangProblems.c || (cProb ? cProb.id : ''),
+                    cpp: multiLangProblems.cpp || (cppProb ? cppProb.id : '')
+                  });
+                  setShowMultiLangModal(true);
+                }}
+                className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition active:scale-[0.98]"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                <span>🚀 Launch Multi-Language Contest ({students.length} Systems)</span>
+              </button>
+
+              <label className="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-300 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={keepStudentCode}
+                  onChange={(e) => setKeepStudentCode(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-slate-700 bg-surface-950 text-emerald-500 focus:ring-emerald-500/20 accent-emerald-500"
+                />
+                <span>Keep draft code on re-assign</span>
+              </label>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
@@ -646,12 +759,19 @@ export default function AdminDashboard({ user, onLogout }) {
                 onChange={(e) => setSelectedStudentId(e.target.value)}
                 className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono font-medium shadow-inner"
               >
-                <option value="ALL">📢 All Students ({students.length} Total)</option>
-                {students.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.isOnline ? '🟢' : '⚪'} {s.name} ({s.username}) {s.assignment ? `[${s.assignment.title.slice(0, 15)}...]` : ''}
-                  </option>
-                ))}
+                <optgroup label="📢 Bulk Groups">
+                  <option value="ALL">📢 All Students ({students.length} Total)</option>
+                  <option value="GROUP_PYTHON">🐍 All Python Students ({languageStats.python} Total)</option>
+                  <option value="GROUP_C">⚙️ All C Students ({languageStats.c} Total)</option>
+                  <option value="GROUP_CPP">⚡ All C++ Students ({languageStats.cpp} Total)</option>
+                </optgroup>
+                <optgroup label="👤 Individual Students / Teams">
+                  {students.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.isOnline ? '🟢' : '⚪'} [{(s.preferredLanguage || 'py').toUpperCase()}] {s.name} ({s.username}) {s.assignment ? `[${s.assignment.title.slice(0, 15)}...]` : ''}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
             </div>
 
@@ -780,89 +900,139 @@ export default function AdminDashboard({ user, onLogout }) {
                 {/* Visual Divider */}
                 <div className="hidden lg:block w-px h-7 bg-slate-800 self-center" />
 
-                {/* Status Filter Pills */}
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <button
-                    onClick={() => setStudentFilter('all')}
-                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                      studentFilter === 'all'
-                        ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
-                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    All ({statusCounts.all})
-                  </button>
+                {/* Status & Language Filter Pills */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      onClick={() => setStudentFilter('all')}
+                      className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                        studentFilter === 'all'
+                          ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      All ({statusCounts.all})
+                    </button>
 
-                  <button
-                    onClick={() => setStudentFilter('online')}
-                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                      studentFilter === 'online'
-                        ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
-                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                    <span>Online ({statusCounts.online})</span>
-                  </button>
+                    <button
+                      onClick={() => setStudentFilter('online')}
+                      className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                        studentFilter === 'online'
+                          ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                      <span>Online ({statusCounts.online})</span>
+                    </button>
 
-                  <button
-                    onClick={() => setStudentFilter('offline')}
-                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                      studentFilter === 'offline'
-                        ? 'bg-slate-800 text-slate-200 border-slate-700 shadow-sm'
-                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
-                    <span>Offline ({statusCounts.offline})</span>
-                  </button>
+                    <button
+                      onClick={() => setStudentFilter('offline')}
+                      className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                        studentFilter === 'offline'
+                          ? 'bg-slate-800 text-slate-200 border-slate-700 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
+                      <span>Offline ({statusCounts.offline})</span>
+                    </button>
 
-                  <button
-                    onClick={() => setStudentFilter('solved')}
-                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                      studentFilter === 'solved'
-                        ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
-                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Solved ({statusCounts.solved})</span>
-                  </button>
+                    <button
+                      onClick={() => setStudentFilter('solved')}
+                      className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                        studentFilter === 'solved'
+                          ? 'bg-slate-800 text-emerald-300 border-emerald-500/40 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Solved ({statusCounts.solved})</span>
+                    </button>
 
-                  <button
-                    onClick={() => setStudentFilter('in_progress')}
-                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                      studentFilter === 'in_progress'
-                        ? 'bg-slate-800 text-amber-300 border-amber-500/40 shadow-sm'
-                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <Clock className="w-3.5 h-3.5 text-amber-400" />
-                    <span>In Progress ({statusCounts.inProgress})</span>
-                  </button>
+                    <button
+                      onClick={() => setStudentFilter('in_progress')}
+                      className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                        studentFilter === 'in_progress'
+                          ? 'bg-slate-800 text-amber-300 border-amber-500/40 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      <Clock className="w-3.5 h-3.5 text-amber-400" />
+                      <span>In Progress ({statusCounts.inProgress})</span>
+                    </button>
 
-                  <button
-                    onClick={() => setStudentFilter('expired')}
-                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                      studentFilter === 'expired'
-                        ? 'bg-slate-800 text-rose-300 border-rose-500/40 shadow-sm'
-                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <Clock className="w-3.5 h-3.5 text-rose-400" />
-                    <span>Timed Out ({statusCounts.expired})</span>
-                  </button>
+                    <button
+                      onClick={() => setStudentFilter('expired')}
+                      className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                        studentFilter === 'expired'
+                          ? 'bg-slate-800 text-rose-300 border-rose-500/40 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      <Clock className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Timed Out ({statusCounts.expired})</span>
+                    </button>
 
-                  <button
-                    onClick={() => setStudentFilter('unassigned')}
-                    className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
-                      studentFilter === 'unassigned'
-                        ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
-                        : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <span>Unassigned ({statusCounts.unassigned})</span>
-                  </button>
+                    <button
+                      onClick={() => setStudentFilter('unassigned')}
+                      className={`h-8 px-3 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+                        studentFilter === 'unassigned'
+                          ? 'bg-slate-800 text-white border-slate-700 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      <span>Unassigned ({statusCounts.unassigned})</span>
+                    </button>
+                  </div>
+
+                  {/* Language Pills Bar */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-slate-800">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1">Language:</span>
+                    <button
+                      onClick={() => setSelectedLanguageFilter('all')}
+                      className={`h-6 px-2.5 rounded text-[11px] font-semibold transition border ${
+                        selectedLanguageFilter === 'all'
+                          ? 'bg-slate-800 text-white border-slate-600 shadow-sm'
+                          : 'bg-surface-950 text-slate-400 hover:text-slate-200 border-slate-800'
+                      }`}
+                    >
+                      All ({languageStats.total})
+                    </button>
+                    <button
+                      onClick={() => setSelectedLanguageFilter('python')}
+                      className={`h-6 px-2.5 rounded text-[11px] font-semibold transition border flex items-center gap-1 ${
+                        selectedLanguageFilter === 'python'
+                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm font-bold'
+                          : 'bg-surface-950 text-slate-400 hover:text-emerald-300 border-slate-800'
+                      }`}
+                    >
+                      <span>🐍 Python</span>
+                      <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300">{languageStats.python}</span>
+                    </button>
+                    <button
+                      onClick={() => setSelectedLanguageFilter('c')}
+                      className={`h-6 px-2.5 rounded text-[11px] font-semibold transition border flex items-center gap-1 ${
+                        selectedLanguageFilter === 'c'
+                          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm font-bold'
+                          : 'bg-surface-950 text-slate-400 hover:text-cyan-300 border-slate-800'
+                      }`}
+                    >
+                      <span>⚙️ C</span>
+                      <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300">{languageStats.c}</span>
+                    </button>
+                    <button
+                      onClick={() => setSelectedLanguageFilter('cpp')}
+                      className={`h-6 px-2.5 rounded text-[11px] font-semibold transition border flex items-center gap-1 ${
+                        selectedLanguageFilter === 'cpp'
+                          ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-sm font-bold'
+                          : 'bg-surface-950 text-slate-400 hover:text-blue-300 border-slate-800'
+                      }`}
+                    >
+                      <span>⚡ C++</span>
+                      <span className="text-[10px] px-1 py-0.2 rounded bg-blue-500/20 text-blue-300">{languageStats.cpp}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -963,7 +1133,7 @@ export default function AdminDashboard({ user, onLogout }) {
                       <tr>
                         <th className="py-3.5 px-4 bg-surface-950">Status</th>
                         <th className="py-3.5 px-4 bg-surface-950">Student / Team Name</th>
-                        <th className="py-3.5 px-4 bg-surface-950">Username</th>
+                        <th className="py-3.5 px-4 bg-surface-950">Username & Language</th>
                         <th className="py-3.5 px-4 bg-surface-950">Currently Assigned Problem</th>
                         <th className="py-3.5 px-4 bg-surface-950">Progress</th>
                         <th className="py-3.5 px-4 bg-surface-950">Submissions</th>
@@ -1009,7 +1179,18 @@ export default function AdminDashboard({ user, onLogout }) {
                               )}
                             </div>
                           </td>
-                          <td className="py-4 px-4 font-mono text-slate-400">{s.username}</td>
+                          <td className="py-4 px-4 font-mono text-slate-400">
+                            <div className="flex items-center gap-2">
+                              <span>{s.username}</span>
+                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                                (s.preferredLanguage === 'c') ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20' :
+                                (s.preferredLanguage === 'cpp' || s.preferredLanguage === 'c++') ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' :
+                                'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
+                              }`}>
+                                {s.preferredLanguage === 'cpp' ? 'C++' : (s.preferredLanguage?.toUpperCase() || 'PYTHON')}
+                              </span>
+                            </div>
+                          </td>
 
                           {/* Assigned Problem: consistent badge + title spacing */}
                           <td className="py-4 px-4">
@@ -1588,6 +1769,19 @@ export default function AdminDashboard({ user, onLogout }) {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Preferred Programming Language</label>
+                  <select
+                    value={soloStudentData.preferredLanguage}
+                    onChange={(e) => setSoloStudentData({ ...soloStudentData, preferredLanguage: e.target.value })}
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-medium"
+                  >
+                    <option value="python">🐍 Python (Default)</option>
+                    <option value="c">⚙️ C Language</option>
+                    <option value="cpp">⚡ C++</option>
+                  </select>
+                </div>
+
                 {soloStudentData.name.trim() && (
                   <div className="p-2.5 rounded-xl bg-surface-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
                     <span className="text-slate-500">Login username: </span>
@@ -1656,6 +1850,19 @@ export default function AdminDashboard({ user, onLogout }) {
                     placeholder="e.g. team123"
                     className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 font-mono focus:outline-none focus:border-blue-500"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1.5">Team Contest Language</label>
+                  <select
+                    value={teamStudentData.preferredLanguage}
+                    onChange={(e) => setTeamStudentData({ ...teamStudentData, preferredLanguage: e.target.value })}
+                    className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-blue-500 font-medium"
+                  >
+                    <option value="python">🐍 Python (Default)</option>
+                    <option value="c">⚙️ C Language</option>
+                    <option value="cpp">⚡ C++</option>
+                  </select>
                 </div>
 
                 {teamStudentData.teamName.trim() && (
@@ -1780,21 +1987,34 @@ export default function AdminDashboard({ user, onLogout }) {
                     </div>
                   </div>
 
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1.5">Target Language Preference</label>
+                    <select
+                      value={bulkGenData.preferredLanguage}
+                      onChange={(e) => setBulkGenData({ ...bulkGenData, preferredLanguage: e.target.value })}
+                      className="w-full h-10 bg-surface-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-medium"
+                    >
+                      <option value="python">🐍 Python (Default)</option>
+                      <option value="c">⚙️ C Language</option>
+                      <option value="cpp">⚡ C++</option>
+                    </select>
+                  </div>
+
                   <div className="p-3 bg-surface-950 rounded-xl border border-slate-800 text-[11px] text-slate-400">
-                    Will create accounts: <strong className="text-emerald-400">{bulkGenData.prefix}{bulkGenData.startNumber}</strong> to <strong className="text-emerald-400">{bulkGenData.prefix}{Number(bulkGenData.startNumber) + Number(bulkGenData.count) - 1}</strong> with passwords <strong className="text-amber-400">{bulkGenData.passwordPrefix}1</strong>, <strong className="text-amber-400">{bulkGenData.passwordPrefix}2</strong>...
+                    Will create <strong className="text-emerald-400">{bulkGenData.preferredLanguage.toUpperCase()}</strong> accounts: <strong className="text-emerald-400">{bulkGenData.prefix}{bulkGenData.startNumber}</strong> to <strong className="text-emerald-400">{bulkGenData.prefix}{Number(bulkGenData.startNumber) + Number(bulkGenData.count) - 1}</strong> with passwords <strong className="text-amber-400">{bulkGenData.passwordPrefix}1</strong>, <strong className="text-amber-400">{bulkGenData.passwordPrefix}2</strong>...
                   </div>
                 </div>
               ) : (
                 <div className="space-y-2">
                   <label className="block text-slate-400 font-semibold">
-                    Paste Student Rows (Format: <code className="text-emerald-400 font-mono">username, password, Full Name / Team</code>)
+                    Paste Student Rows (Format: <code className="text-emerald-400 font-mono">username, password, Full Name / Team, language</code>)
                   </label>
                   <textarea
                     rows={6}
                     required
                     value={bulkCsvText}
                     onChange={(e) => setBulkCsvText(e.target.value)}
-                    placeholder="student10, pass10, Alice (Team 10)&#10;student11, pass11, Bob (Team 11)&#10;student12, pass12, Charlie (Team 12)"
+                    placeholder="student10, pass10, Alice (Team 10), python&#10;student11, pass11, Bob (Team 11), c&#10;student12, pass12, Charlie (Team 12), cpp"
                     className="w-full bg-surface-950 border border-slate-800 rounded-xl p-3.5 text-slate-200 font-mono focus:outline-none focus:border-emerald-500 text-xs"
                   />
                 </div>
@@ -1818,6 +2038,201 @@ export default function AdminDashboard({ user, onLogout }) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Multi-Language Contest Kickoff Modal */}
+      {showMultiLangModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+          <div className="bg-surface-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col p-6 shadow-2xl">
+            <div className="flex justify-between items-start border-b border-slate-800 pb-4 mb-4">
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-emerald-400" />
+                  <span>Launch Multi-Language Contest Simultaneously</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Assign language-specific buggy programs to Python, C, and C++ students/teams at the exact same instant with synchronized timers.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMultiLangModal(false);
+                  setMultiLangResultMsg('');
+                }}
+                className="w-8 h-8 rounded-lg bg-surface-950 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-800 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 overflow-y-auto flex-1 pr-2 text-xs">
+              {/* Participant Summary Cards */}
+              <div className="grid grid-cols-4 gap-2.5">
+                <div className="bg-surface-950 p-3 rounded-xl border border-slate-800">
+                  <div className="text-[10px] uppercase font-bold text-slate-400">Total Systems</div>
+                  <div className="text-xl font-mono font-bold text-white mt-1">{languageStats.total}</div>
+                  <div className="text-[10px] text-slate-500">Across 45 LAN stations</div>
+                </div>
+                <div className="bg-emerald-950/20 p-3 rounded-xl border border-emerald-500/30">
+                  <div className="text-[10px] uppercase font-bold text-emerald-400">🐍 Python Students</div>
+                  <div className="text-xl font-mono font-bold text-emerald-300 mt-1">{languageStats.python}</div>
+                  <div className="text-[10px] text-emerald-500/80">Will get Python bug</div>
+                </div>
+                <div className="bg-cyan-950/20 p-3 rounded-xl border border-cyan-500/30">
+                  <div className="text-[10px] uppercase font-bold text-cyan-400">⚙️ C Students</div>
+                  <div className="text-xl font-mono font-bold text-cyan-300 mt-1">{languageStats.c}</div>
+                  <div className="text-[10px] text-cyan-500/80">Will get C bug</div>
+                </div>
+                <div className="bg-blue-950/20 p-3 rounded-xl border border-blue-500/30">
+                  <div className="text-[10px] uppercase font-bold text-blue-400">⚡ C++ Students</div>
+                  <div className="text-xl font-mono font-bold text-blue-300 mt-1">{languageStats.cpp}</div>
+                  <div className="text-[10px] text-blue-500/80">Will get C++ bug</div>
+                </div>
+              </div>
+
+              {/* Language Problem Selectors */}
+              <div className="space-y-3 pt-2">
+                {/* 1. Python Problem Selection */}
+                <div className="p-3.5 bg-surface-950 rounded-xl border border-emerald-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>🐍 Python Problem</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">
+                        Targeting {languageStats.python} student{languageStats.python !== 1 ? 's' : ''}
+                      </span>
+                    </label>
+                  </div>
+                  <select
+                    value={multiLangProblems.python}
+                    onChange={(e) => setMultiLangProblems({ ...multiLangProblems, python: e.target.value })}
+                    className="w-full h-10 bg-surface-900 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 text-xs font-medium"
+                  >
+                    <option value="">-- Do not assign to Python students --</option>
+                    <optgroup label="🐍 Python Repository Problems">
+                      {problems.filter(p => p.language === 'python').map(p => (
+                        <option key={p.id} value={p.id}>{p.title} ({p.durationMinutes || 15}m timer)</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="All Problems">
+                      {problems.filter(p => p.language !== 'python').map(p => (
+                        <option key={p.id} value={p.id}>{p.title} ({p.language.toUpperCase()})</option>
+                      ))}
+                    </optgroup>
+                  </select>
+                </div>
+
+                {/* 2. C Problem Selection */}
+                <div className="p-3.5 bg-surface-950 rounded-xl border border-cyan-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
+                      <span>⚙️ C Problem</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                        Targeting {languageStats.c} student{languageStats.c !== 1 ? 's' : ''}
+                      </span>
+                    </label>
+                  </div>
+                  <select
+                    value={multiLangProblems.c}
+                    onChange={(e) => setMultiLangProblems({ ...multiLangProblems, c: e.target.value })}
+                    className="w-full h-10 bg-surface-900 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500 text-xs font-medium"
+                  >
+                    <option value="">-- Do not assign to C students --</option>
+                    <optgroup label="⚙️ C Repository Problems">
+                      {problems.filter(p => p.language === 'c').map(p => (
+                        <option key={p.id} value={p.id}>{p.title} ({p.durationMinutes || 15}m timer)</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="All Problems">
+                      {problems.filter(p => p.language !== 'c').map(p => (
+                        <option key={p.id} value={p.id}>{p.title} ({p.language.toUpperCase()})</option>
+                      ))}
+                    </optgroup>
+                  </select>
+                </div>
+
+                {/* 3. C++ Problem Selection */}
+                <div className="p-3.5 bg-surface-950 rounded-xl border border-blue-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-blue-400 flex items-center gap-1.5">
+                      <span>⚡ C++ Problem</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono">
+                        Targeting {languageStats.cpp} student{languageStats.cpp !== 1 ? 's' : ''}
+                      </span>
+                    </label>
+                  </div>
+                  <select
+                    value={multiLangProblems.cpp}
+                    onChange={(e) => setMultiLangProblems({ ...multiLangProblems, cpp: e.target.value })}
+                    className="w-full h-10 bg-surface-900 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-blue-500 text-xs font-medium"
+                  >
+                    <option value="">-- Do not assign to C++ students --</option>
+                    <optgroup label="⚡ C++ Repository Problems">
+                      {problems.filter(p => p.language === 'cpp').map(p => (
+                        <option key={p.id} value={p.id}>{p.title} ({p.durationMinutes || 15}m timer)</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="All Problems">
+                      {problems.filter(p => p.language !== 'cpp').map(p => (
+                        <option key={p.id} value={p.id}>{p.title} ({p.language.toUpperCase()})</option>
+                      ))}
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+
+              {/* Code Reset option checkbox */}
+              <div className="p-3 rounded-xl bg-surface-950 border border-slate-800 flex items-center justify-between">
+                <div>
+                  <div className="text-slate-200 font-semibold">Starter Code Handling</div>
+                  <div className="text-[11px] text-slate-400">
+                    {keepStudentCode ? 'Preserve any existing drafts if students are re-assigned' : 'Provide a clean, fresh starter code template to all students'}
+                  </div>
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer text-slate-300">
+                  <input
+                    type="checkbox"
+                    checked={keepStudentCode}
+                    onChange={(e) => setKeepStudentCode(e.target.checked)}
+                    className="w-4 h-4 rounded border-slate-700 bg-surface-900 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  <span>Keep existing drafts</span>
+                </label>
+              </div>
+
+              {/* Success Result Message Banner */}
+              {multiLangResultMsg && (
+                <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>{multiLangResultMsg}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between items-center pt-4 border-t border-slate-800 mt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMultiLangModal(false);
+                  setMultiLangResultMsg('');
+                }}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium border border-slate-700 transition text-xs"
+              >
+                Close
+              </button>
+
+              <button
+                type="button"
+                onClick={handleLaunchMultiLanguageContest}
+                disabled={multiLangLoading || (!multiLangProblems.python && !multiLangProblems.c && !multiLangProblems.cpp)}
+                className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 hover:opacity-95 text-slate-950 rounded-xl font-extrabold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.99] disabled:opacity-50 text-xs"
+              >
+                <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                <span>{multiLangLoading ? 'Launching to all 45 systems...' : '🚀 Launch Contest Across All Systems'}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

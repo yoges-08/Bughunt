@@ -417,6 +417,7 @@ class ContestDatabase {
         isTeam: Boolean(u.isTeam),
         teamName: u.teamName || null,
         teammates: u.teammates || null,
+        preferredLanguage: u.preferredLanguage || 'python',
         createdAt: u.createdAt 
       }));
   }
@@ -442,6 +443,10 @@ class ContestDatabase {
     const isTeam = Boolean(extra.isTeam);
     const teamName = extra.teamName ? extra.teamName.trim() : (isTeam ? cleanName : null);
     const teammates = extra.teammates ? extra.teammates.trim() : null;
+    const rawLang = (extra.preferredLanguage || 'python').toLowerCase().trim();
+    const preferredLanguage = ['python', 'py', 'c', 'cpp', 'c++'].includes(rawLang)
+      ? (rawLang === 'py' ? 'python' : rawLang === 'c++' ? 'cpp' : rawLang)
+      : 'python';
 
     const student = {
       id: `usr_${uuidv4().substring(0, 8)}`,
@@ -452,6 +457,7 @@ class ContestDatabase {
       isTeam,
       teamName,
       teammates,
+      preferredLanguage,
       createdAt: new Date().toISOString()
     };
 
@@ -463,7 +469,8 @@ class ContestDatabase {
       name: student.name,
       isTeam: student.isTeam,
       teamName: student.teamName,
-      teammates: student.teammates
+      teammates: student.teammates,
+      preferredLanguage: student.preferredLanguage
     };
   }
 

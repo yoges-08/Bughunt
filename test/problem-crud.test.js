@@ -276,6 +276,29 @@ async function runTests() {
     assert.strictEqual(match.teammates, 'Alice, Bob, Charlie');
   });
 
+  // --- Preferred Language Tests for Multi-Language Broadcast ---
+  it('createStudent stores and normalizes preferredLanguage (python, c, cpp)', () => {
+    const timestamp = Date.now();
+    const pyStudent = db.createStudent(`py_${timestamp}`, 'pass', 'Py Dev', { preferredLanguage: 'py' });
+    const cStudent = db.createStudent(`c_${timestamp}`, 'pass', 'C Dev', { preferredLanguage: 'c' });
+    const cppStudent = db.createStudent(`cpp_${timestamp}`, 'pass', 'Cpp Dev', { preferredLanguage: 'c++' });
+    const defaultStudent = db.createStudent(`def_${timestamp}`, 'pass', 'Def Dev');
+
+    assert.strictEqual(pyStudent.preferredLanguage, 'python', 'py normalized to python');
+    assert.strictEqual(cStudent.preferredLanguage, 'c', 'c preserved');
+    assert.strictEqual(cppStudent.preferredLanguage, 'cpp', 'c++ normalized to cpp');
+    assert.strictEqual(defaultStudent.preferredLanguage, 'python', 'default language is python');
+
+    const all = db.getAllStudents();
+    const matchPy = all.find(s => s.id === pyStudent.id);
+    const matchC = all.find(s => s.id === cStudent.id);
+    const matchCpp = all.find(s => s.id === cppStudent.id);
+
+    assert.strictEqual(matchPy.preferredLanguage, 'python');
+    assert.strictEqual(matchC.preferredLanguage, 'c');
+    assert.strictEqual(matchCpp.preferredLanguage, 'cpp');
+  });
+
   console.log(`\nProblem Bank CRUD Tests Result: ${passed} passed, ${failed} failed.\n`);
   if (failed > 0) process.exit(1);
 }

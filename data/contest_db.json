@@ -9,106 +9,76 @@
       "createdAt": "2026-08-29T16:54:14.625Z"
     },
     {
-      "id": "usr_251d40df",
-      "username": "yoges",
-      "password": "scrypt$fa5cb4ce217d623813acc68c61832961$ac8cae49b2ff665376600d8707776d555ff6e9822a3f0304a559d52bd88ba49a3a3da46a293bbb9bcc823ed21be23dd9bf148e518c178aa721b83e07441f5c65",
-      "role": "student",
-      "name": "yoges",
-      "isTeam": false,
-      "teamName": null,
-      "teammates": null,
-      "createdAt": "2026-09-09T17:15:28.337Z"
-    },
-    {
       "id": "usr_student_1",
       "username": "student1",
-      "password": "scrypt$f385592db88f8867037faeac5414b274$c0d360518f361f5cfa30196c50467218c570fa39ca0a04b5e4d73714dabafd447e771b3b6a457571d0c26ee82a2850d77cc0c28793c240cc7fde0a60e2c6cb67",
+      "password": "scrypt$0ff15488ca472173e988cdda70d46cff$518c942b497ab6a0b01bdceefe948f574fa721f19aa0063955846d7b96e016c90cca758918588172214556fc486e9e810ecb6646f51846b53439953c3d69dcc8",
       "role": "student",
       "name": "Alice Johnson (Team A)",
-      "createdAt": "2026-09-10T06:19:20.327Z"
+      "createdAt": "2026-09-10T18:20:03.919Z"
     },
     {
       "id": "usr_student_2",
       "username": "student2",
-      "password": "scrypt$24af1509aa3a1e3803431fccf6a590d8$b627b0d023433b85c6e0016370e39ecf5c566eeec4038b79bd67bb45ce38dfee4376418b90f91a7bef80e35439e42757be97e36ac67229dd8a2fdb920db5cc36",
+      "password": "scrypt$c5d2c1fb63c0eea49e4a6beb4348bf50$7560b57a0e47d5bc915cc1ae31bf869323644d8d11582ff982d6ca4425604db11a00fad08518bc0f04635bd8b955cc669b1a3e1323b02c8a5b77c29896272b4b",
       "role": "student",
       "name": "Bob Smith (Team B)",
-      "createdAt": "2026-09-10T06:19:20.380Z"
+      "createdAt": "2026-09-10T18:20:03.978Z"
     },
     {
       "id": "usr_student_3",
       "username": "student3",
-      "password": "scrypt$d118d97e68bfa602eda4ee46315fcbd8$f127e218c854e772aae6f7c7dca4556f6b319a631881d8eaf700c95adb0dc196f0c21ed388c2a4fb673ce0369df50ca614e9d9ffdcbe1d767f06ea6baac48a63",
+      "password": "scrypt$accb50648bb150f99e9146ba97958c20$c438bb25b016013ea564aa103be9e4d1fc7a839a0accd61043df327b60d0ab4e5ee55d49d23d55e59a87e5c46ed254e8d446ca00640a24b8dfe7661e2771bf79",
       "role": "student",
       "name": "Charlie Davis (Team C)",
-      "createdAt": "2026-09-10T06:19:20.433Z"
+      "createdAt": "2026-09-10T18:20:04.034Z"
     },
     {
       "id": "usr_student_4",
       "username": "student4",
-      "password": "scrypt$b7fea8fe5aeb31df74e13ea3646bf244$b1b488804ee411156c652b38007b3c4f93548631bfe49014b7afb13f2d65e93727835d9d3ba1873226d7d3d0b4af23c11dd52e5294a7e130b3dc7cedf63e5b64",
+      "password": "scrypt$a937e92b107393e0f016264166d5eb5d$d2260d1d9cf51bd7feeb576bdb43a3deb51c9e0b744b156d01afb0a7582bf0f0a452c22195babf28d3c3454053b77589f088c8e914b3b8abdf0a905b3486eed5",
       "role": "student",
       "name": "Dana Lee (Team D)",
-      "createdAt": "2026-09-10T06:19:20.486Z"
+      "createdAt": "2026-09-10T18:20:04.090Z"
     }
   ],
   "problems": [
     {
-      "id": "prob_089b7fb4",
-      "title": "test",
-      "language": "python",
-      "filename": "test.py",
-      "description": "hhhhhh",
-      "starterCode": "numbers = [10, 20, 30, 40, 50]\ntotal = 0\nfor i in range(len(numbers) + 1):\n    total += numbers[i]\nprint(\"Numbers:\", numbers)\nprint(\"Total:\", total)\nprint(\"Average:\", total / len(numbers))",
-      "expectedOutput": "Numbers: [10, 20, 30, 40, 50]\nTotal: 150\nAverage: 30.0",
-      "testCases": [
-        {
-          "input": "",
-          "expectedOutput": "Numbers: [10, 20, 30, 40, 50]\nTotal: 150\nAverage: 30.0",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-09-10T06:49:18.897Z"
-    },
-    {
-      "id": "prob_7fb5e41b",
-      "title": "test",
-      "language": "python",
-      "filename": "tst.py",
-      "description": "hhh",
-      "starterCode": "3numbers = [5, 10, 15, 20, 25]\nlargest = 0\nfor number in numbers:\n    if number < largest:\n        largest = number\nprint(\"Numbers:\", numbers)\nprint(\"Largest:\", largest)\nprint(\"Result: Largest number found\")",
-      "expectedOutput": "Numbers: [5, 10, 15, 20, 25]\nLargest: 25\nResult: Largest number found",
-      "testCases": [
-        {
-          "input": "",
-          "expectedOutput": "Numbers: [5, 10, 15, 20, 25]\nLargest: 25\nResult: Largest number found",
-          "isHidden": false
-        }
-      ],
-      "timeLimitMs": 3000,
-      "durationMinutes": 15,
-      "createdAt": "2026-09-10T06:52:03.222Z"
-    },
-    {
-      "id": "prob_80d8a794",
+      "id": "prob_8e40cccd",
       "title": "big",
       "language": "python",
       "filename": "big.py",
-      "description": "hhh",
-      "starterCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
-      "expectedOutput": "===== STUDENT REPORT =====\nArun - Total: 255 - Average: 85.0\nBala - Total: 222 - Average: 74.0\nKavin - Total: 274 - Average: 91.33\nRavi - Total: 217 - Average: 72.33\nVijay - Total: 265 - Average: 88.33\n==========================\nTop Student: Kavin\nHighest Average: 91.33",
+      "description": "ffff",
+      "starterCode": "def factorial(n):\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\n\ndef is_prime(num):\n    if num < 2:\n        return False\n    for i in range(2, int(num ** 0.5) + 1):\n        if num % i == 0:\n            return False\n    return True\n\n\ndef fibonacci_series(count):\n    series = []\n    a, b = 0, 1\n    for _ in range(count):\n        series.append(a)\n        a, b = b, a + b\n    return series\n\n\ndef main():\n    print(\"=== Factorial Table ===\")\n    for n in range(1, 6):\n        print(f\"{n}! = {factorial(n)}\")\n\n    print(\"\\n=== Prime Numbers up to 20 ===\")\n    primes = [x for x in range(2, 21) if is_prime(x)]\n    print(primes)\n\n    print(\"\\n=== Fibonacci Series (10 terms) ===\")\n    fib = fibonacci_series(10)\n    print(fib)\n\n    print(\"\\n=== Sum of Fibonacci Series ===\")\n    total = sum(fib)\n    print(\"Sum =\", total)\n\n    print(\"\\n=== Average of Fibonacci Series ===\")\n    average = total / len(fib)\n    print(\"Average =\", average)\n\n    print(\"\\nProgram finished successfully.\")\n\n\nif __name__ == \"__main__\"\n    main()",
+      "expectedOutput": "=== Factorial Table ===\n1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n\n=== Prime Numbers up to 20 ===\n[2, 3, 5, 7, 11, 13, 17, 19]\n\n=== Fibonacci Series (10 terms) ===\n[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]\n\n=== Sum of Fibonacci Series ===\nSum = 88\n\n=== Average of Fibonacci Series ===\nAverage = 8.8\n\nProgram finished successfully.",
       "testCases": [
         {
           "input": "",
-          "expectedOutput": "===== STUDENT REPORT =====\nArun - Total: 255 - Average: 85.0\nBala - Total: 222 - Average: 74.0\nKavin - Total: 274 - Average: 91.33\nRavi - Total: 217 - Average: 72.33\nVijay - Total: 265 - Average: 88.33\n==========================\nTop Student: Kavin\nHighest Average: 91.33",
+          "expectedOutput": "=== Factorial Table ===\n1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n\n=== Prime Numbers up to 20 ===\n[2, 3, 5, 7, 11, 13, 17, 19]\n\n=== Fibonacci Series (10 terms) ===\n[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]\n\n=== Sum of Fibonacci Series ===\nSum = 88\n\n=== Average of Fibonacci Series ===\nAverage = 8.8\n\nProgram finished successfully.",
           "isHidden": false
         }
       ],
       "timeLimitMs": 3000,
       "durationMinutes": 15,
-      "createdAt": "2026-09-10T06:57:30.359Z"
+      "createdAt": "2026-09-10T17:46:49.800Z"
+    },
+    {
+      "id": "prob_f242f774",
+      "title": "big.c",
+      "language": "c",
+      "filename": "big.c",
+      "description": "hhhhh",
+      "starterCode": "#include <stdio.h>\n\nint factorial(int n) {\n    int result = 1;\n    for (int i = 1; i <= n; i++) {\n        result *= i;\n    }\n    return result;\n}\n\nint isPrime(int num) {\n    if (num < 2) return 0;\n    for (int i = 2; i * i <= num; i++) {\n        if (num % i == 0) return 0;\n    }\n    return 1;\n}\n\nvoid printFibonacci(int count) {\n    int a = 0, b = 1;\n    printf(\"Fibonacci: \");\n    for (int i = 0; i < count; i++) {\n        printf(\"%d \", a);\n        int next = a + b;\n        a = b;\n        b = next;\n    }\n    printf(\"\\n\");\n}\n\nint main() {\n    printf(\"=== Factorial Table ===\\n\");\n    for (int n = 1; n <= 5; n++) {\n        printf(\"%d! = %d\\n\", n, factorial(n));\n    }\n\n    printf(\"\\n=== Prime Numbers up to 20 ===\\n\");\n    for (int x = 2; x <= 20; x++) {\n        if (isPrime(x)) {\n            printf(\"%d \", x)\n        }\n    }\n    printf(\"\\n\");\n\n    printf(\"\\n\");\n    printFibonacci(10);\n\n    printf(\"\\nProgram finished successfully.\\n\");\n    return 0;\n}",
+      "expectedOutput": "=== Factorial Table ===\n1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n\n=== Prime Numbers up to 20 ===\n2 3 5 7 11 13 17 19 \n\nFibonacci: 0 1 1 2 3 5 8 13 21 34 \n\nProgram finished successfully.",
+      "testCases": [
+        {
+          "input": "",
+          "expectedOutput": "=== Factorial Table ===\n1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n\n=== Prime Numbers up to 20 ===\n2 3 5 7 11 13 17 19 \n\nFibonacci: 0 1 1 2 3 5 8 13 21 34 \n\nProgram finished successfully.",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-10T17:49:44.256Z"
     },
     {
       "id": "prob_py_palindrome",
@@ -123,76 +93,14 @@
           "input": "Race car\nmadam\nhello\n",
           "expectedOutput": "YES\nYES\nNO",
           "isHidden": false
-        },
-        {
-          "input": "noon\nworld\n",
-          "expectedOutput": "YES\nNO",
-          "isHidden": true
         }
       ],
       "timeLimitMs": 3000,
       "durationMinutes": 15,
-      "createdAt": "2026-09-10T10:43:17.360Z",
-      "updatedAt": "2026-09-10T10:43:18.153Z"
+      "createdAt": "2026-09-10T18:20:04.090Z"
     }
   ],
-  "assignments": [
-    {
-      "id": "asg_d5244aa6",
-      "studentId": "usr_251d40df",
-      "problemId": "prob_80d8a794",
-      "assignedAt": "2026-09-10T06:57:36.855Z",
-      "expiresAt": "2026-09-10T07:12:36.855Z",
-      "durationMinutes": 15,
-      "status": "failed",
-      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 - m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] > top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
-      "lastUpdated": "2026-09-10T06:58:26.337Z"
-    },
-    {
-      "id": "asg_b4a945a7",
-      "studentId": "usr_student_1",
-      "problemId": "prob_80d8a794",
-      "assignedAt": "2026-09-10T06:57:36.855Z",
-      "expiresAt": "2026-09-10T07:12:36.855Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
-      "lastUpdated": "2026-09-10T06:57:36.855Z"
-    },
-    {
-      "id": "asg_023ef4d9",
-      "studentId": "usr_student_2",
-      "problemId": "prob_80d8a794",
-      "assignedAt": "2026-09-10T06:57:36.855Z",
-      "expiresAt": "2026-09-10T07:12:36.855Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
-      "lastUpdated": "2026-09-10T06:57:36.855Z"
-    },
-    {
-      "id": "asg_b9d62917",
-      "studentId": "usr_student_3",
-      "problemId": "prob_80d8a794",
-      "assignedAt": "2026-09-10T06:57:36.855Z",
-      "expiresAt": "2026-09-10T07:12:36.855Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
-      "lastUpdated": "2026-09-10T06:57:36.855Z"
-    },
-    {
-      "id": "asg_cf0a9a86",
-      "studentId": "usr_student_4",
-      "problemId": "prob_80d8a794",
-      "assignedAt": "2026-09-10T06:57:36.855Z",
-      "expiresAt": "2026-09-10T07:12:36.855Z",
-      "durationMinutes": 15,
-      "status": "assigned",
-      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
-      "lastUpdated": "2026-09-10T06:57:36.855Z"
-    }
-  ],
+  "assignments": [],
   "submissions": [
     {
       "id": "sub_f96e1297",
@@ -206,71 +114,6 @@
       "genericMessage": "✅ Program Executed Successfully",
       "executionTimeMs": 42,
       "createdAt": "2026-09-09T17:21:55.493Z"
-    },
-    {
-      "id": "sub_7dee1caa",
-      "studentId": "usr_251d40df",
-      "problemId": "prob_c_array_max",
-      "code": "#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // FIX 1: Initialize to first element, not 0\n    int max_val = arr[0];\n    int count = 1;\n\n    // FIX 2: i < n, not i <= n\n    for (int i = 1; i < n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n  \n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count); // Expected: 5 2\n    return 0;\n}",
-      "language": "c",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":82,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"actualOutput\":\"5 0\\r\\n\",\"expectedOutput\":\"5 2\",\"durationMs\":82}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 82,
-      "createdAt": "2026-09-10T06:22:03.200Z"
-    },
-    {
-      "id": "sub_67ca62c4",
-      "studentId": "usr_251d40df",
-      "problemId": "prob_089b7fb4",
-      "code": "numbers = [10, 20, 30, 40, 50]\ntotal = 0\nfor i in range(len(numbers)):\n    total += numbers[i]\nprint(\"Numbers:\", numbers)\nprint(\"Total:\", total)\nprint(\"Average:\", total / len(numbers))",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":39,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"Numbers: [10, 20, 30, 40, 50]\\r\\nTotal: 150\\r\\nAverage: 30.0\\r\\n\",\"expectedOutput\":\"Numbers: [10, 20, 30, 40, 50]\\nTotal: 150\\nAverage: 30.0\",\"durationMs\":39}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 39,
-      "createdAt": "2026-09-10T06:49:56.798Z"
-    },
-    {
-      "id": "sub_7167ddeb",
-      "studentId": "usr_251d40df",
-      "problemId": "prob_7fb5e41b",
-      "code": "numbers = [5, 10, 15, 20, 25]\nlargest = 0\nfor number in numbers:\n    if number > largest:\n        largest = number\nprint(\"Numbers:\", numbers)\nprint(\"Largest:\", largest)\nprint(\"Result: Largest number found\")",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":40,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"Numbers: [5, 10, 15, 20, 25]\\r\\nLargest: 25\\r\\nResult: Largest number found\\r\\n\",\"expectedOutput\":\"Numbers: [5, 10, 15, 20, 25]\\nLargest: 25\\nResult: Largest number found\",\"durationMs\":40}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 40,
-      "createdAt": "2026-09-10T06:56:39.410Z"
-    },
-    {
-      "id": "sub_b0f9e35a",
-      "studentId": "usr_251d40df",
-      "problemId": "prob_80d8a794",
-      "code": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 - m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] > top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
-      "language": "python",
-      "status": "EXECUTION_FAILED",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":40,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"actualOutput\":\"===== STUDENT REPORT =====\\r\\nArun - Total: 99 - Average: 33.0\\r\\nBala - Total: 74 - Average: 24.67\\r\\nKavin - Total: 98 - Average: 32.67\\r\\nRavi - Total: 79 - Average: 26.33\\r\\nVijay - Total: 79 - Average: 26.33\\r\\n==========================\\r\\nTop Student: Arun\\r\\nHighest Average: 33.0\\r\\n\",\"expectedOutput\":\"===== STUDENT REPORT =====\\nArun - Total: 255 - Average: 85.0\\nBala - Total: 222 - Average: 74.0\\nKavin - Total: 274 - Average: 91.33\\nRavi - Total: 217 - Average: 72.33\\nVijay - Total: 265 - Average: 88.33\\n==========================\\nTop Student: Kavin\\nHighest Average: 91.33\",\"durationMs\":40}]}",
-      "genericMessage": "❌ Program Execution Failed",
-      "executionTimeMs": 40,
-      "createdAt": "2026-09-10T06:58:26.337Z"
-    },
-    {
-      "id": "sub_4a25389c",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_palindrome",
-      "code": "\nimport sys\n\ndef is_palindrome(s):\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n    left = 0\n    right = len(cleaned) - 1\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    lines = sys.stdin.read().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
-      "language": "python",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":99,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":99}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 99,
-      "createdAt": "2026-09-10T10:43:18.148Z"
     }
   ],
   "contestSettings": {
