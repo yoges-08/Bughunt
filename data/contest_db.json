@@ -52,62 +52,145 @@
       "createdAt": "2026-09-10T06:19:20.486Z"
     }
   ],
-  "problems": [],
+  "problems": [
+    {
+      "id": "prob_089b7fb4",
+      "title": "test",
+      "language": "python",
+      "filename": "test.py",
+      "description": "hhhhhh",
+      "starterCode": "numbers = [10, 20, 30, 40, 50]\ntotal = 0\nfor i in range(len(numbers) + 1):\n    total += numbers[i]\nprint(\"Numbers:\", numbers)\nprint(\"Total:\", total)\nprint(\"Average:\", total / len(numbers))",
+      "expectedOutput": "Numbers: [10, 20, 30, 40, 50]\nTotal: 150\nAverage: 30.0",
+      "testCases": [
+        {
+          "input": "",
+          "expectedOutput": "Numbers: [10, 20, 30, 40, 50]\nTotal: 150\nAverage: 30.0",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-10T06:49:18.897Z"
+    },
+    {
+      "id": "prob_7fb5e41b",
+      "title": "test",
+      "language": "python",
+      "filename": "tst.py",
+      "description": "hhh",
+      "starterCode": "3numbers = [5, 10, 15, 20, 25]\nlargest = 0\nfor number in numbers:\n    if number < largest:\n        largest = number\nprint(\"Numbers:\", numbers)\nprint(\"Largest:\", largest)\nprint(\"Result: Largest number found\")",
+      "expectedOutput": "Numbers: [5, 10, 15, 20, 25]\nLargest: 25\nResult: Largest number found",
+      "testCases": [
+        {
+          "input": "",
+          "expectedOutput": "Numbers: [5, 10, 15, 20, 25]\nLargest: 25\nResult: Largest number found",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-10T06:52:03.222Z"
+    },
+    {
+      "id": "prob_80d8a794",
+      "title": "big",
+      "language": "python",
+      "filename": "big.py",
+      "description": "hhh",
+      "starterCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
+      "expectedOutput": "===== STUDENT REPORT =====\nArun - Total: 255 - Average: 85.0\nBala - Total: 222 - Average: 74.0\nKavin - Total: 274 - Average: 91.33\nRavi - Total: 217 - Average: 72.33\nVijay - Total: 265 - Average: 88.33\n==========================\nTop Student: Kavin\nHighest Average: 91.33",
+      "testCases": [
+        {
+          "input": "",
+          "expectedOutput": "===== STUDENT REPORT =====\nArun - Total: 255 - Average: 85.0\nBala - Total: 222 - Average: 74.0\nKavin - Total: 274 - Average: 91.33\nRavi - Total: 217 - Average: 72.33\nVijay - Total: 265 - Average: 88.33\n==========================\nTop Student: Kavin\nHighest Average: 91.33",
+          "isHidden": false
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-10T06:57:30.359Z"
+    },
+    {
+      "id": "prob_py_palindrome",
+      "title": "Fix Palindrome & Whitespace Bug",
+      "language": "python",
+      "filename": "palindrome_checker.py",
+      "description": "The given function is supposed to check if strings are palindromes ignoring case and spaces. Fix the logic and index bounds error to produce the expected output.",
+      "starterCode": "# Bug Hunt Challenge: Palindrome Checker\n# Fix the bugs so the output matches the expected output:\n# Race car -> YES\n# madam -> YES\n# hello -> NO\n\nimport sys\n\ndef is_palindrome(s):\n    # BUG 1: Case conversion missed\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch  # Bug: should normalize case\n\n    # BUG 2: Off-by-one error in manual reversal\n    left = 0\n    right = len(cleaned) # BUG: should be len(cleaned) - 1\n\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    lines = sys.stdin.read().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
+      "expectedOutput": "YES\nYES\nNO",
+      "testCases": [
+        {
+          "input": "Race car\nmadam\nhello\n",
+          "expectedOutput": "YES\nYES\nNO",
+          "isHidden": false
+        },
+        {
+          "input": "noon\nworld\n",
+          "expectedOutput": "YES\nNO",
+          "isHidden": true
+        }
+      ],
+      "timeLimitMs": 3000,
+      "durationMinutes": 15,
+      "createdAt": "2026-09-10T10:43:17.360Z",
+      "updatedAt": "2026-09-10T10:43:18.153Z"
+    }
+  ],
   "assignments": [
     {
       "id": "asg_d5244aa6",
       "studentId": "usr_251d40df",
-      "problemId": "prob_c_array_max",
-      "assignedAt": "2026-09-10T06:19:49.178Z",
-      "expiresAt": "2026-09-10T06:34:49.178Z",
+      "problemId": "prob_80d8a794",
+      "assignedAt": "2026-09-10T06:57:36.855Z",
+      "expiresAt": "2026-09-10T07:12:36.855Z",
       "durationMinutes": 15,
       "status": "failed",
-      "currentCode": "#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // FIX 1: Initialize to first element, not 0\n    int max_val = arr[0];\n    int count = 1;\n\n    // FIX 2: i < n, not i <= n\n    for (int i = 1; i < n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n  \n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count); // Expected: 5 2\n    return 0;\n}",
-      "lastUpdated": "2026-09-10T06:22:03.200Z"
+      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 - m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] > top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
+      "lastUpdated": "2026-09-10T06:58:26.337Z"
     },
     {
       "id": "asg_b4a945a7",
       "studentId": "usr_student_1",
-      "problemId": "prob_c_array_max",
-      "assignedAt": "2026-09-10T06:19:49.178Z",
-      "expiresAt": "2026-09-10T06:34:49.178Z",
+      "problemId": "prob_80d8a794",
+      "assignedAt": "2026-09-10T06:57:36.855Z",
+      "expiresAt": "2026-09-10T07:12:36.855Z",
       "durationMinutes": 15,
       "status": "assigned",
-      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
-      "lastUpdated": "2026-09-10T06:19:49.178Z"
+      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
+      "lastUpdated": "2026-09-10T06:57:36.855Z"
     },
     {
       "id": "asg_023ef4d9",
       "studentId": "usr_student_2",
-      "problemId": "prob_c_array_max",
-      "assignedAt": "2026-09-10T06:19:49.179Z",
-      "expiresAt": "2026-09-10T06:34:49.179Z",
+      "problemId": "prob_80d8a794",
+      "assignedAt": "2026-09-10T06:57:36.855Z",
+      "expiresAt": "2026-09-10T07:12:36.855Z",
       "durationMinutes": 15,
       "status": "assigned",
-      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
-      "lastUpdated": "2026-09-10T06:19:49.179Z"
+      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
+      "lastUpdated": "2026-09-10T06:57:36.855Z"
     },
     {
       "id": "asg_b9d62917",
       "studentId": "usr_student_3",
-      "problemId": "prob_c_array_max",
-      "assignedAt": "2026-09-10T06:19:49.179Z",
-      "expiresAt": "2026-09-10T06:34:49.179Z",
+      "problemId": "prob_80d8a794",
+      "assignedAt": "2026-09-10T06:57:36.855Z",
+      "expiresAt": "2026-09-10T07:12:36.855Z",
       "durationMinutes": 15,
       "status": "assigned",
-      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
-      "lastUpdated": "2026-09-10T06:19:49.179Z"
+      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
+      "lastUpdated": "2026-09-10T06:57:36.855Z"
     },
     {
       "id": "asg_cf0a9a86",
       "studentId": "usr_student_4",
-      "problemId": "prob_c_array_max",
-      "assignedAt": "2026-09-10T06:19:49.179Z",
-      "expiresAt": "2026-09-10T06:34:49.179Z",
+      "problemId": "prob_80d8a794",
+      "assignedAt": "2026-09-10T06:57:36.855Z",
+      "expiresAt": "2026-09-10T07:12:36.855Z",
       "durationMinutes": 15,
       "status": "assigned",
-      "currentCode": "/* Bug Hunt Challenge: Array Maximum & Frequency\n   Find the maximum element and its count.\n   Expected Output: \"5 2\"\n*/\n#include <stdio.h>\n\nvoid find_max_and_count(int arr[], int n, int *out_max, int *out_count) {\n    // BUG 1: Initializing max to 0 fails for all-negative arrays\n    int max_val = 0;\n    int count = 0;\n\n    // BUG 2: Loop condition i <= n causes buffer over-read\n    for (int i = 0; i <= n; i++) {\n        if (arr[i] > max_val) {\n            max_val = arr[i];\n            count = 1;\n        } else if (arr[i] == max_val) {\n            count++;\n        }\n    }\n\n    *out_max = max_val;\n    *out_count = count;\n}\n\nint main() {\n    int arr[] = {1, 5, 3, 5, 2};\n    int n = sizeof(arr) / sizeof(arr[0]);\n    int max_val, count;\n    find_max_and_count(arr, n, &max_val, &count);\n    printf(\"%d %d\\n\", max_val, count);\n    return 0;\n}\n",
-      "lastUpdated": "2026-09-10T06:19:49.179Z"
+      "currentCode": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 + m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] < top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
+      "lastUpdated": "2026-09-10T06:57:36.855Z"
     }
   ],
   "submissions": [
@@ -136,6 +219,58 @@
       "genericMessage": "❌ Program Execution Failed",
       "executionTimeMs": 82,
       "createdAt": "2026-09-10T06:22:03.200Z"
+    },
+    {
+      "id": "sub_67ca62c4",
+      "studentId": "usr_251d40df",
+      "problemId": "prob_089b7fb4",
+      "code": "numbers = [10, 20, 30, 40, 50]\ntotal = 0\nfor i in range(len(numbers)):\n    total += numbers[i]\nprint(\"Numbers:\", numbers)\nprint(\"Total:\", total)\nprint(\"Average:\", total / len(numbers))",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":39,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"Numbers: [10, 20, 30, 40, 50]\\r\\nTotal: 150\\r\\nAverage: 30.0\\r\\n\",\"expectedOutput\":\"Numbers: [10, 20, 30, 40, 50]\\nTotal: 150\\nAverage: 30.0\",\"durationMs\":39}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 39,
+      "createdAt": "2026-09-10T06:49:56.798Z"
+    },
+    {
+      "id": "sub_7167ddeb",
+      "studentId": "usr_251d40df",
+      "problemId": "prob_7fb5e41b",
+      "code": "numbers = [5, 10, 15, 20, 25]\nlargest = 0\nfor number in numbers:\n    if number > largest:\n        largest = number\nprint(\"Numbers:\", numbers)\nprint(\"Largest:\", largest)\nprint(\"Result: Largest number found\")",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":40,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"Numbers: [5, 10, 15, 20, 25]\\r\\nLargest: 25\\r\\nResult: Largest number found\\r\\n\",\"expectedOutput\":\"Numbers: [5, 10, 15, 20, 25]\\nLargest: 25\\nResult: Largest number found\",\"durationMs\":40}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 40,
+      "createdAt": "2026-09-10T06:56:39.410Z"
+    },
+    {
+      "id": "sub_b0f9e35a",
+      "studentId": "usr_251d40df",
+      "problemId": "prob_80d8a794",
+      "code": "students = [\n    (\"Arun\", 85, 78, 92),\n    (\"Bala\", 67, 74, 81),\n    (\"Kavin\", 91, 88, 95),\n    (\"Ravi\", 72, 69, 76),\n    (\"Vijay\", 88, 93, 84)\n]\n\nresults = []\nfor name, m1, m2, m3 in students:\n    total = m1 - m2 + m3\n    average = total / 3\n    results.append((name, total, average))\n\ntop_student = results[0]\nfor result in results:\n    if result[2] > top_student[2]:\n        top_student = result\n\nprint(\"===== STUDENT REPORT =====\")\nfor name, total, average in results:\n    print(name, \"- Total:\", total, \"- Average:\", round(average, 2))\n\nprint(\"==========================\")\nprint(\"Top Student:\", top_student[0])\nprint(\"Highest Average:\", round(top_student[2], 2))",
+      "language": "python",
+      "status": "EXECUTION_FAILED",
+      "pass": false,
+      "rawOutput": "{\"success\":false,\"status\":\"EXECUTION_FAILED\",\"genericMessage\":\"❌ Program Execution Failed\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":40,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"actualOutput\":\"===== STUDENT REPORT =====\\r\\nArun - Total: 99 - Average: 33.0\\r\\nBala - Total: 74 - Average: 24.67\\r\\nKavin - Total: 98 - Average: 32.67\\r\\nRavi - Total: 79 - Average: 26.33\\r\\nVijay - Total: 79 - Average: 26.33\\r\\n==========================\\r\\nTop Student: Arun\\r\\nHighest Average: 33.0\\r\\n\",\"expectedOutput\":\"===== STUDENT REPORT =====\\nArun - Total: 255 - Average: 85.0\\nBala - Total: 222 - Average: 74.0\\nKavin - Total: 274 - Average: 91.33\\nRavi - Total: 217 - Average: 72.33\\nVijay - Total: 265 - Average: 88.33\\n==========================\\nTop Student: Kavin\\nHighest Average: 91.33\",\"durationMs\":40}]}",
+      "genericMessage": "❌ Program Execution Failed",
+      "executionTimeMs": 40,
+      "createdAt": "2026-09-10T06:58:26.337Z"
+    },
+    {
+      "id": "sub_4a25389c",
+      "studentId": "usr_student_1",
+      "problemId": "prob_py_palindrome",
+      "code": "\nimport sys\n\ndef is_palindrome(s):\n    cleaned = \"\"\n    for ch in s:\n        if ch.isalnum():\n            cleaned += ch.lower()\n    left = 0\n    right = len(cleaned) - 1\n    while left < right:\n        if cleaned[left] != cleaned[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\nif __name__ == \"__main__\":\n    lines = sys.stdin.read().splitlines()\n    for line in lines:\n        if line.strip():\n            print(\"YES\" if is_palindrome(line) else \"NO\")\n",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":99,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"YES\\r\\nYES\\r\\nNO\\r\\n\",\"expectedOutput\":\"YES\\nYES\\nNO\",\"durationMs\":99}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 99,
+      "createdAt": "2026-09-10T10:43:18.148Z"
     }
   ],
   "contestSettings": {

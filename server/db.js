@@ -114,6 +114,8 @@ const INITIAL_DB = {
 # madam -> YES
 # hello -> NO
 
+import sys
+
 def is_palindrome(s):
     # BUG 1: Case conversion missed
     cleaned = ""
@@ -133,13 +135,14 @@ def is_palindrome(s):
     return True
 
 if __name__ == "__main__":
-    test_words = ["Race car", "madam", "hello"]
-    for word in test_words:
-        print("YES" if is_palindrome(word) else "NO")
+    lines = sys.stdin.read().splitlines()
+    for line in lines:
+        if line.strip():
+            print("YES" if is_palindrome(line) else "NO")
 `,
       expectedOutput: "YES\nYES\nNO",
       testCases: [
-        { input: "", expectedOutput: "YES\nYES\nNO", isHidden: false }
+        { input: "Race car\nmadam\nhello\n", expectedOutput: "YES\nYES\nNO", isHidden: false }
       ],
       timeLimitMs: 3000,
       durationMinutes: 15,
@@ -579,11 +582,17 @@ class ContestDatabase {
     }
 
     if (testCases !== undefined) {
-      if (Array.isArray(testCases) && testCases.length > 0) {
-        problem.testCases = testCases;
-        if (!problem.expectedOutput && testCases[0]?.expectedOutput) {
-          problem.expectedOutput = testCases[0].expectedOutput;
+      if (!Array.isArray(testCases) || testCases.length === 0) {
+        throw new Error('Problem must contain at least one test case');
+      }
+      for (const tc of testCases) {
+        if (!tc || typeof tc.expectedOutput !== 'string') {
+          throw new Error('Every test case must contain expectedOutput');
         }
+      }
+      problem.testCases = testCases;
+      if (!problem.expectedOutput && testCases[0]?.expectedOutput) {
+        problem.expectedOutput = testCases[0].expectedOutput;
       }
     }
 

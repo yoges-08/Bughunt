@@ -57,6 +57,17 @@ function findExecutableOnSystem(binName) {
 }
 
 /**
+ * Check whether an executable path is within the app's bundled private compilers directory.
+ */
+export function isBundledCompilerPath(targetPath) {
+  if (!targetPath || typeof targetPath !== 'string') return false;
+  const compilersRoot = path.resolve(APP_ROOT, 'bin', 'compilers');
+  const resolvedTarget = path.resolve(targetPath);
+  const rel = path.relative(compilersRoot, resolvedTarget);
+  return !rel.startsWith('..') && !path.isAbsolute(rel);
+}
+
+/**
  * Build a restricted, isolated environment object for sandboxed subprocesses.
  * Issue 4: Strips host process.env.PATH to prevent student code from invoking
  * arbitrary host utilities. Confinements: only the compiler's directory (extraPath)
@@ -172,11 +183,12 @@ async function compileSource(compilerCmd, args, cwd, timeoutMs = 5000) {
     let totalBytes = 0;
     let timedOut = false;
 
+    const extraPath = isBundledCompilerPath(compilerCmd) ? path.dirname(compilerCmd) : '';
     const child = spawn(compilerCmd, args, {
       cwd,
       windowsHide: true,
       detached: process.platform !== 'win32',
-      env: getSanitizedEnv(cwd, path.dirname(compilerCmd))
+      env: getSanitizedEnv(cwd, extraPath)
     });
 
     const timer = setTimeout(() => {
@@ -243,11 +255,12 @@ async function runBinary(binaryPath, args, cwd, stdinText = '', timeoutMs = 3000
     let timedOut = false;
     const startTime = Date.now();
 
+    const extraPath = isBundledCompilerPath(binaryPath) ? path.dirname(binaryPath) : '';
     const child = spawn(binaryPath, args, {
       cwd,
       windowsHide: true,
       detached: process.platform !== 'win32',
-      env: getSanitizedEnv(cwd, path.dirname(binaryPath))
+      env: getSanitizedEnv(cwd, extraPath)
     });
 
     const timer = setTimeout(() => {
@@ -410,11 +423,12 @@ export async function prepareExecutable({ code, language }) {
       fs.writeFileSync(sourceFilePath, code, 'utf-8');
 
       // Syntax check for Python with 5s timeout (CQ-07)
+      const pyExtraPath = isBundledCompilerPath(compilerPath) ? path.dirname(compilerPath) : '';
       const syntaxCheck = await new Promise((resolve) => {
         execFile(compilerPath, ['-m', 'py_compile', sourceFileName], {
           cwd: sandboxDir,
           timeout: 5000,
-          env: getSanitizedEnv(sandboxDir, path.dirname(compilerPath))
+          env: getSanitizedEnv(sandboxDir, pyExtraPath)
         }, (err, stdout, stderr) => {
           if (err) {
             resolve({ success: false, isEnvironmentError: err.code === 'ENOENT', stderr: stderr || err.message });
