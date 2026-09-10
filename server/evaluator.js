@@ -59,12 +59,12 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
   if (testCases.length === 0) {
     allPassed = false;
     runtimeSuccess = false;
-    rawRuntimeError = 'Problem has no expected output configured';
+    rawRuntimeError = 'Problem has no test cases configured';
     testResults.push({
       testCaseIndex: 0,
       isHidden: false,
       passed: false,
-      error: 'Problem has no expected output configured'
+      error: 'Problem has no test cases configured'
     });
   }
 
