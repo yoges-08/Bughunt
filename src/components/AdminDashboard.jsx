@@ -891,8 +891,8 @@ export default function AdminDashboard({ user, onLogout }) {
                   <button
                     onClick={() => {
                       setStudentCreationType('solo');
-                      setSoloStudentData({ name: '', password: '' });
-                      setTeamStudentData({ teamName: '', teammates: '', password: '' });
+                      setSoloStudentData({ name: '', password: '', preferredLanguage: 'python' });
+                      setTeamStudentData({ teamName: '', teammates: '', password: '', preferredLanguage: 'python' });
                       setShowAddStudentModal(true);
                     }}
                     className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/20 active:scale-[0.99]"
@@ -2102,7 +2102,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 <div className="bg-surface-950 p-3 rounded-xl border border-slate-800">
                   <div className="text-[10px] uppercase font-bold text-slate-400">Total Systems</div>
                   <div className="text-xl font-mono font-bold text-white mt-1">{languageStats.total}</div>
-                  <div className="text-[10px] text-slate-500">Across 45 LAN stations</div>
+                  <div className="text-[10px] text-slate-500">Across {languageStats.total} LAN station{languageStats.total !== 1 ? 's' : ''}</div>
                 </div>
                 <div className="bg-emerald-950/20 p-3 rounded-xl border border-emerald-500/30">
                   <div className="text-[10px] uppercase font-bold text-emerald-400">🐍 Python Students</div>
@@ -2258,7 +2258,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 hover:opacity-95 text-slate-950 rounded-xl font-extrabold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.99] disabled:opacity-50 text-xs"
               >
                 <Sparkles className="w-4 h-4 stroke-[2.5]" />
-                <span>{multiLangLoading ? 'Launching to all 45 systems...' : '🚀 Launch Contest Across All Systems'}</span>
+                <span>{multiLangLoading ? `Launching to all ${languageStats.total} systems...` : '🚀 Launch Contest Across All Systems'}</span>
               </button>
             </div>
           </div>
