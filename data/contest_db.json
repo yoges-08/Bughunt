@@ -9,48 +9,28 @@
       "createdAt": "2026-08-29T16:54:14.625Z"
     },
     {
-      "id": "usr_41a37aca",
+      "id": "usr_1cdee083",
       "username": "yoges",
-      "password": "scrypt$7e7d12ead1ceba95e36e54e75d756c9b$5a567a7cb80b8d5b63374ab54fd1fd17fb4083bff5b4342cc4b9334b441edd368ebbc6b4b4e39e5d75524ed95453501c089e15c5f4879d06810a53cff9fe387e",
+      "password": "scrypt$c9935ac88f6fed37d9a4e5d8f73e70cb$b3e57ee81bf2c610699e6c70a6575dd6b1ce0f53d0709b53f1aeed4dc65b1ac8c763098c037244afaba3d870c0e588d3755487e4d83aec9890d80268282321ff",
       "role": "student",
       "name": "yoges",
       "isTeam": false,
       "teamName": null,
       "teammates": null,
-      "preferredLanguage": "cpp",
-      "createdAt": "2026-09-11T07:43:40.815Z"
+      "preferredLanguage": "python",
+      "createdAt": "2026-09-11T14:40:33.468Z"
     },
     {
-      "id": "usr_student_1",
-      "username": "student1",
-      "password": "scrypt$fc42bfc2a2584847f989163dc0a58d6d$50331cc0c39af00b415f5ea937feede08229273054b057dc73eb863fa0e15624e33062f1777e43feed2bccc6f4f3fa452d811e3dc3090c588000782466b16989",
+      "id": "usr_d16e8110",
+      "username": "yoges2",
+      "password": "scrypt$d690258049313a8b3788568acc29edf8$48c08d07e96836295b1977e3c694d81a1a5a8455a5faf79866ac381b5713ce284985065c30bc7b5b5941445dacf2e0e1bb6fa20972be532a177da41b1cc12512",
       "role": "student",
-      "name": "Alice Johnson (Team A)",
-      "createdAt": "2026-09-11T08:04:32.044Z"
-    },
-    {
-      "id": "usr_student_2",
-      "username": "student2",
-      "password": "scrypt$14d4d292b3e12785e01dcf6ab6fa4c69$8779781eb2866ac40f24fab187c658d57e728534655bbdc898fafb8caf540ad24ff8f8120b3e5356ab7c26dd71a0c9ff0cf98656879fd30fe92aba80a41d674b",
-      "role": "student",
-      "name": "Bob Smith (Team B)",
-      "createdAt": "2026-09-11T08:04:32.131Z"
-    },
-    {
-      "id": "usr_student_3",
-      "username": "student3",
-      "password": "scrypt$a9998a87b887dea4e55734c5b0400dab$045f63b5ad959a5722966c7b220088d7724f938dae1dda36db40eb193cfac0de08f6be5e0db6775142ecefcf9a83a5dc20c17b36fd36b90c79c1c36db0bda7a2",
-      "role": "student",
-      "name": "Charlie Davis (Team C)",
-      "createdAt": "2026-09-11T08:04:32.220Z"
-    },
-    {
-      "id": "usr_student_4",
-      "username": "student4",
-      "password": "scrypt$88f614a0d8dd5f90f4f378e098859cb1$6ed78b0827766427ca48cbac61390f582538d3197c88659aea6e9249e15210f9500567e8887e06b37a3bebc6f1dc4ef1942b69b7fe48f29b4aa5d882f30c54f6",
-      "role": "student",
-      "name": "Dana Lee (Team D)",
-      "createdAt": "2026-09-11T08:04:32.309Z"
+      "name": "yoges2",
+      "isTeam": false,
+      "teamName": null,
+      "teammates": null,
+      "preferredLanguage": "python",
+      "createdAt": "2026-09-11T14:41:44.545Z"
     }
   ],
   "problems": [
@@ -226,7 +206,34 @@
       "createdAt": "2026-09-11T09:17:28.159Z"
     }
   ],
-  "assignments": [],
+  "assignments": [
+    {
+      "id": "asg_89f362f9",
+      "studentId": "usr_1cdee083",
+      "problemId": "prob_py_r1",
+      "contestId": null,
+      "contestStartAt": 1789137751819,
+      "assignedAt": "2026-09-11T14:42:31.819Z",
+      "expiresAt": "2026-09-11T14:45:31.819Z",
+      "durationMinutes": 3,
+      "status": "passed",
+      "currentCode": "def evaluate_student(marks, attendance):\n    total = 0\n    for i in range(len(marks)): # FIXED: was len(marks) - 1\n        total += marks[i]\n    avg = total / len(marks)\n    if attendance < 75 or avg < 50.0:\n        status, grade = \"NOT ELIGIBLE\", \"F\"\n    else:\n        status = \"ELIGIBLE\"\n        if avg >= 85.0:\n            grade = \"A\"\n        elif avg >= 70.0:\n            grade = \"B\"\n        elif avg > 50.0:\n            grade = \"C\"\n        else:\n            grade = \"F\"\n    print(f\"Average: {avg:.2f} | Attendance: {attendance}% | Status: {status} | Grade: {grade}\")\n\nevaluate_student([80, 90, 70, 80], 85)",
+      "lastUpdated": "2026-09-11T14:44:59.758Z"
+    },
+    {
+      "id": "asg_532c00ec",
+      "studentId": "usr_d16e8110",
+      "problemId": "prob_py_r1",
+      "contestId": null,
+      "contestStartAt": 1789137751822,
+      "assignedAt": "2026-09-11T14:42:31.822Z",
+      "expiresAt": "2026-09-11T14:45:31.822Z",
+      "durationMinutes": 3,
+      "status": "passed",
+      "currentCode": "def evaluate_student(marks, attendance):\n    total = 0\n    for i in range(len(marks)):\n        total += marks[i]\n    avg = total / len(marks)\n\n    if attendance < 75 or avg < 50.0:\n        status, grade = \"NOT ELIGIBLE\", \"F\"\n    else:\n        status = \"ELIGIBLE\"\n        if avg >= 85.0:\n            grade = \"A\"\n        elif avg >= 70.0:\n            grade = \"B\"\n        elif avg >= 50.0:\n            grade = \"C\"\n        else:\n            grade = \"F\"\n\n    print(f\"Average: {avg:.2f} | Attendance: {attendance}% | Status: {status} | Grade: {grade}\")\n\nevaluate_student([80, 90, 70, 80], 85)",
+      "lastUpdated": "2026-09-11T14:43:35.425Z"
+    }
+  ],
   "submissions": [
     {
       "id": "sub_f96e1297",
@@ -1191,32 +1198,6 @@
       "createdAt": "2026-09-11T09:17:44.575Z"
     },
     {
-      "id": "sub_963292fd",
-      "studentId": "usr_student_1",
-      "problemId": "prob_c_r1",
-      "code": "#include <stdio.h>\n\nint main() {\n    int marks[4] = {80, 90, 70, 80};\n    int attendance = 85;\n    int total = 0;\n    for (int i = 0; i < 4; i++) {\n        total += marks[i];\n    }\n    float avg = (float)total / 4.0f;\n    char grade = 'F';\n    if (attendance >= 75 && avg >= 85.0f) grade = 'A';\n    else if (attendance >= 75 && avg >= 70.0f) grade = 'B';\n    else if (attendance >= 75 && avg > 50.0f) grade = 'C';\n    printf(\"Average: %.2f | Attendance: %d%% | Grade: %c\\n\", avg, attendance, grade);\n    return 0;\n}",
-      "language": "c",
-      "status": "SUCCESS",
-      "pass": true,
-      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":68,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"Average: 80.00 | Attendance: 85% | Grade: B\\r\\n\",\"expectedOutput\":\"Average: 80.00 | Attendance: 85% | Grade: B\",\"durationMs\":68}]}",
-      "genericMessage": "✅ Program Executed Successfully",
-      "executionTimeMs": 68,
-      "createdAt": "2026-09-11T09:28:49.061Z"
-    },
-    {
-      "id": "sub_321a87bc",
-      "studentId": "usr_student_1",
-      "problemId": "prob_py_r1",
-      "code": "#include <stdio.h>\n\nint main() {\n    int marks[4] = {80, 90, 70, 80};\n    int attendance = 85;\n    int total = 0;\n    for (int i = 0; i < 4; i++) {\n        total += marks[i];\n    }\n    float avg = (float)total / 4.0f;\n    char grade = 'F';\n    if (attendance >= 75 && avg >= 85.0f) grade = 'A';\n    else if (attendance >= 75 && avg >= 70.0f) grade = 'B';\n    else if (attendance >= 75 && avg > 50.0f) grade = 'C';\n    printf(\"Average: %.2f | Attendance: %d%% | Grade: %c\\n\", avg, attendance, grade);\n    return 0;\n}",
-      "language": "python",
-      "status": "PROGRAM_ERROR",
-      "pass": false,
-      "rawOutput": "{\"success\":false,\"status\":\"PROGRAM_ERROR\",\"genericMessage\":\"❌ Program Error\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":false,\"runtimeSuccess\":true,\"exitCode\":1,\"durationMs\":0,\"stdout\":\"\",\"stderr\":\"Python SyntaxError:\\n  File \\\"main.py\\\", line 10\\r\\n    float avg = (float)total / 4.0f;\\r\\n                                 ^\\r\\nSyntaxError: invalid decimal literal\\r\\n\",\"rawError\":\"Python SyntaxError:\\n  File \\\"main.py\\\", line 10\\r\\n    float avg = (float)total / 4.0f;\\r\\n                                 ^\\r\\nSyntaxError: invalid decimal literal\\r\\n\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":false,\"compileFailed\":true,\"timedOut\":false,\"exitCode\":1,\"error\":\"Python SyntaxError:\\n  File \\\"main.py\\\", line 10\\r\\n    float avg = (float)total / 4.0f;\\r\\n                                 ^\\r\\nSyntaxError: invalid decimal literal\\r\\n\"}]}",
-      "genericMessage": "❌ Program Error",
-      "executionTimeMs": 0,
-      "createdAt": "2026-09-11T09:28:49.135Z"
-    },
-    {
       "id": "sub_06eef2a0",
       "studentId": "usr_admin",
       "problemId": "prob_py_r1",
@@ -1449,6 +1430,32 @@
       "genericMessage": "✅ Program Executed Successfully",
       "executionTimeMs": 181,
       "createdAt": "2026-09-11T09:36:03.269Z"
+    },
+    {
+      "id": "sub_bc82736e",
+      "studentId": "usr_d16e8110",
+      "problemId": "prob_py_r1",
+      "code": "def evaluate_student(marks, attendance):\n    total = 0\n    for i in range(len(marks)):\n        total += marks[i]\n    avg = total / len(marks)\n\n    if attendance < 75 or avg < 50.0:\n        status, grade = \"NOT ELIGIBLE\", \"F\"\n    else:\n        status = \"ELIGIBLE\"\n        if avg >= 85.0:\n            grade = \"A\"\n        elif avg >= 70.0:\n            grade = \"B\"\n        elif avg >= 50.0:\n            grade = \"C\"\n        else:\n            grade = \"F\"\n\n    print(f\"Average: {avg:.2f} | Attendance: {attendance}% | Status: {status} | Grade: {grade}\")\n\nevaluate_student([80, 90, 70, 80], 85)",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":66,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"Average: 80.00 | Attendance: 85% | Status: ELIGIBLE | Grade: B\\r\\n\",\"expectedOutput\":\"Average: 80.00 | Attendance: 85% | Status: ELIGIBLE | Grade: B\",\"durationMs\":66}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 66,
+      "createdAt": "2026-09-11T14:43:35.425Z"
+    },
+    {
+      "id": "sub_1a6a6d41",
+      "studentId": "usr_1cdee083",
+      "problemId": "prob_py_r1",
+      "code": "def evaluate_student(marks, attendance):\n    total = 0\n    for i in range(len(marks)): # FIXED: was len(marks) - 1\n        total += marks[i]\n    avg = total / len(marks)\n    if attendance < 75 or avg < 50.0:\n        status, grade = \"NOT ELIGIBLE\", \"F\"\n    else:\n        status = \"ELIGIBLE\"\n        if avg >= 85.0:\n            grade = \"A\"\n        elif avg >= 70.0:\n            grade = \"B\"\n        elif avg > 50.0:\n            grade = \"C\"\n        else:\n            grade = \"F\"\n    print(f\"Average: {avg:.2f} | Attendance: {attendance}% | Status: {status} | Grade: {grade}\")\n\nevaluate_student([80, 90, 70, 80], 85)",
+      "language": "python",
+      "status": "SUCCESS",
+      "pass": true,
+      "rawOutput": "{\"success\":true,\"status\":\"SUCCESS\",\"genericMessage\":\"✅ Program Executed Successfully\",\"isEnvironmentError\":false,\"timedOut\":false,\"compileSuccess\":true,\"runtimeSuccess\":true,\"exitCode\":0,\"durationMs\":69,\"stdout\":\"\",\"stderr\":\"\",\"rawError\":\"\",\"testResults\":[{\"testCaseIndex\":1,\"isHidden\":false,\"passed\":true,\"actualOutput\":\"Average: 80.00 | Attendance: 85% | Status: ELIGIBLE | Grade: B\\r\\n\",\"expectedOutput\":\"Average: 80.00 | Attendance: 85% | Status: ELIGIBLE | Grade: B\",\"durationMs\":69}]}",
+      "genericMessage": "✅ Program Executed Successfully",
+      "executionTimeMs": 69,
+      "createdAt": "2026-09-11T14:44:59.758Z"
     }
   ],
   "contestSettings": {

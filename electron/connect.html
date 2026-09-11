@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Hunt — Connect to Host</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0b0f17;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+    .glow-1 {
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .glow-2 {
+      position: absolute;
+      bottom: -100px;
+      right: -100px;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .card {
+      position: relative;
+      z-index: 10;
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      margin-bottom: 12px;
+    }
+    .logo-badge svg {
+      width: 26px;
+      height: 26px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
+    p.subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      background-color: #0b0f17;
+      border: 1px solid #374151;
+      border-radius: 10px;
+      padding: 12px 14px 12px 14px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: #34d399;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+    .hint {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .btn {
+      width: 100%;
+      background-color: #059669;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background-color: #10b981;
+    }
+    .btn:active {
+      transform: scale(0.99);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .error-box {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      background-color: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: 8px;
+      color: #fb7185;
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-msg {
+      margin-top: 14px;
+      font-size: 11px;
+      text-align: center;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+
+  <div class="card">
+    <div class="header">
+      <div class="logo-badge">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 8h-1.81a5.985 5.985 0 00-1.82-1.96l.93-.93a.996.996 0 10-1.41-1.41l-1.47 1.47C12.83 5.06 12.18 5 11.5 5s-1.33.06-1.92.17L8.11 3.7a.996.996 0 10-1.41 1.41l.93.93C6.73 6.64 6.13 7.28 5.81 8H4a1 1 0 000 2h1.09c-.05.33-.09.66-.09 1v1H4a1 1 0 000 2h1v1c0 .34.04.67.09 1H4a1 1 0 000 2h1.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H19a1 1 0 000-2h-1.09c.05-.33.09-.66.09-1v-1h1a1 1 0 000-2h-1v-1c0-.34-.04-.67-.09-1H19a1 1 0 000-2zm-6 10c-2.21 0-4-1.79-4-4v-3c0-2.21 1.79-4 4-4s4 1.79 4 4v3c0 2.21-1.79 4-4 4z"></path>
+        </svg>
+      </div>
+      <h1>Connect to Host</h1>
+      <p class="subtitle">Bug Hunt — LAN Contest Client</p>
+    </div>
+
+    <div id="errorBox" class="error-box"></div>
+
+    <form id="connectForm">
+      <div class="form-group">
+        <label for="hostInput">Host IP Address or Port</label>
+        <div class="input-wrapper">
+          <input type="text" id="hostInput" placeholder="192.168.1.50:4000" autofocus required />
+        </div>
+        <p class="hint">Ask your lab instructor for the Host Server IP address shown on their screen.</p>
+      </div>
+
+      <button type="submit" id="connectBtn" class="btn">
+        <span>Connect & Start Contest</span>
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </button>
+    </form>
+
+    <div class="status-msg">
+      Isolated Offline Lab Mode • Zero Internet Required
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('connectForm');
+    const input = document.getElementById('hostInput');
+    const btn = document.getElementById('connectBtn');
+    const errorBox = document.getElementById('errorBox');
+
+    // Parse URL params for any initial error or IP
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialError = urlParams.get('error');
+    const initialIp = urlParams.get('ip');
+
+    if (initialError) {
+      errorBox.textContent = initialError;
+      errorBox.style.display = 'flex';
+    }
+
+    if (initialIp) {
+      input.value = initialIp;
+    } else if (window.bughuntClient && window.bughuntClient.getSavedHost) {
+      window.bughuntClient.getSavedHost().then(saved => {
+        if (saved && !input.value) {
+          input.value = saved;
+        }
+      }).catch(() => {});
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = input.value.trim();
+      if (!raw) return;
+
+      btn.disabled = true;
+      btn.innerHTML = 'Connecting to host...';
+      errorBox.style.display = 'none';
+
+      if (window.bughuntClient && window.bughuntClient.connect) {
+        window.bughuntClient.connect(raw);
+      } else {
+        // Fallback for browser testing
+        let target = raw;
+        if (!target.startsWith('http://') && !target.startsWith('https://')) {
+          target = 'http://' + target;
+        }
+        if (!target.includes(':4000') && !target.match(/:\d+$/)) {
+          target = target + ':4000';
+        }
+        window.location.href = target;
+      }
+    });
+  </script>
+</body>
+</html>

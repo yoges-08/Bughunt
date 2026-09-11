@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Editor from '@monaco-editor/react';
+import '../utils/monacoSetup'; // Load Monaco locally instead of from CDN for offline LAN support
 import { 
   Play, Send, CheckCircle2, XCircle, Clock, 
   FileCode, LogOut, Radio, Save, Sparkles, Lock
