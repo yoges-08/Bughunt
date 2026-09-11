@@ -387,7 +387,8 @@ router.post('/assign', (req, res) => {
     assignedAt: now.toISOString(),
     expiresAt,
     hasSubmitted: false,
-    sampleTestCase: problem.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expectedOut }
+    sampleTestCase: problem.testCases?.find(t => !t.isHidden) || { input: '', expectedOutput: expectedOut },
+    serverTime: now.getTime()
   };
 
   if (assignAll) {

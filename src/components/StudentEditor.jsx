@@ -524,7 +524,10 @@ export default function StudentEditor({ user, onLogout }) {
                 value={code || (problem ? '' : '# Pre-warmed editor engine ready for contest\n')}
                 onChange={handleEditorChange}
                 onMount={handleEditorMount}
-                options={MONACO_EDITOR_OPTIONS}
+                options={{
+                  ...MONACO_EDITOR_OPTIONS,
+                  readOnly: Boolean(hasSubmitted || isTimeExpired)
+                }}
                 loading={
                   <div className="flex flex-col items-center justify-center gap-3 p-8 text-slate-400 h-full">
                     <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
@@ -602,8 +605,12 @@ export default function StudentEditor({ user, onLogout }) {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={handleRun}
-                      disabled={runLoading || submitLoading}
-                      className="px-5 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-100 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-700 transition shadow"
+                      disabled={runLoading || submitLoading || hasSubmitted || isTimeExpired}
+                      className={`px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border transition shadow ${
+                        hasSubmitted || isTimeExpired
+                          ? 'bg-slate-800/40 text-slate-600 border-slate-800/60 cursor-not-allowed'
+                          : 'bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-100 border-slate-700'
+                      }`}
                     >
                       <Play className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
                       <span>{runLoading ? 'Running...' : 'RUN'}</span>

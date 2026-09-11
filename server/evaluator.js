@@ -196,6 +196,7 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
     exitCode: (!compileSuccess || !runtimeSuccess) ? 1 : 0,
     durationMs: totalDurationMs,
     rawError: rawCompileError || rawRuntimeError,
+    stdout: (testResults.length > 0 && testResults[0].actualOutput) ? testResults[0].actualOutput : '',
     stderr: rawCompileError || rawRuntimeError,
     testResults
   };
