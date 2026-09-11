@@ -600,8 +600,12 @@ class ContestDatabase {
         throw new Error('Problem must contain an Expected Output or at least one test case');
       }
       problem.expectedOutput = cleanExpected;
-      if (!testCases) {
-        problem.testCases = [{ input: '', expectedOutput: problem.expectedOutput, isHidden: false }];
+      if (testCases === undefined) {
+        if (Array.isArray(problem.testCases) && problem.testCases.length > 0) {
+          problem.testCases = problem.testCases.map((tc, idx) => idx === 0 ? { ...tc, expectedOutput: cleanExpected } : tc);
+        } else {
+          problem.testCases = [{ input: '', expectedOutput: problem.expectedOutput, isHidden: false }];
+        }
       }
     }
 

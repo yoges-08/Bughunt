@@ -136,11 +136,6 @@ export default function AdminDashboard({ user, onLogout }) {
     };
   }, []);
 
-  // Reset page when filter or search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [studentSearch, studentFilter, rowsPerPage]);
-
   // Memoize status counts in a single pass over students
   const statusCounts = useMemo(() => {
     let online = 0;
@@ -573,6 +568,19 @@ export default function AdminDashboard({ user, onLogout }) {
         return;
       }
 
+      let testCases = [{ input: '', expectedOutput: expOut, isHidden: false }];
+      if (editingProblemId) {
+        const existingProblem = problems.find(p => p.id === editingProblemId);
+        if (existingProblem && Array.isArray(existingProblem.testCases) && existingProblem.testCases.length > 0) {
+          testCases = existingProblem.testCases.map((tc, idx) => {
+            if (idx === 0) {
+              return { ...tc, expectedOutput: expOut };
+            }
+            return { ...tc };
+          });
+        }
+      }
+
       const payload = {
         title: newProblemData.title.trim(),
         language: newProblemData.language,
@@ -581,7 +589,7 @@ export default function AdminDashboard({ user, onLogout }) {
         starterCode: newProblemData.starterCode || '',
         durationMinutes: Number(newProblemData.durationMinutes) || 15,
         expectedOutput: expOut,
-        testCases: [{ input: '', expectedOutput: expOut, isHidden: false }]
+        testCases
       };
 
       if (editingProblemId) {

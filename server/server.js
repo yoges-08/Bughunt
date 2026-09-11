@@ -56,12 +56,16 @@ export function getLocalIpAddresses() {
 }
 
 let compilerStatusCache = null;
+let compilerStatusCacheTime = 0;
+const COMPILER_CACHE_TTL_MS = 30000; // 30-second TTL to refresh live compiler availability
 
 // System info endpoint (to display host LAN IP and compiler status to clients)
 app.get('/api/system/info', async (req, res) => {
-  if (!compilerStatusCache) {
+  const now = Date.now();
+  if (!compilerStatusCache || (now - compilerStatusCacheTime > COMPILER_CACHE_TTL_MS)) {
     try {
       compilerStatusCache = await checkAllCompilers();
+      compilerStatusCacheTime = now;
     } catch {}
   }
   res.json({

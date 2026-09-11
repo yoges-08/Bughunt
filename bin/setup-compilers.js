@@ -17,9 +17,9 @@ console.log('====================================================');
 
 let status = await checkAllCompilers();
 
-// If C/C++ compiler is missing, auto-download and setup
-if (!status.c.available || !status.cpp.available) {
-  console.log('\n📥 C/C++ toolchain is missing. Setting up bundled compilers...');
+// 1. If C compiler is missing, auto-download and setup TinyCC
+if (!status.c.available) {
+  console.log('\n📥 C toolchain is missing. Setting up bundled Tiny C Compiler (TCC)...');
   fs.mkdirSync(C_CPP_DIR, { recursive: true });
 
   const tccZip = path.join(COMPILERS_DIR, 'tcc.zip');
@@ -59,10 +59,18 @@ if (!status.c.available || !status.cpp.available) {
   } catch (err) {
     console.warn('⚠️  Could not auto-download TCC:', err.message);
   }
-
-  // Re-check after setup attempt
-  status = await checkAllCompilers();
 }
+
+// 2. If C++ compiler is missing, explain MinGW-w64 requirement (TinyCC is C-only)
+if (!status.cpp.available) {
+  console.log('\nℹ️  C++ Toolchain Notice:');
+  console.log('   TinyCC only compiles C code. To enable C++ problems (g++),');
+  console.log('   please install MinGW-w64 on the host machine or place g++.exe in PATH / bin/compilers/c_cpp/bin.');
+  console.log('   👉 Recommended MinGW-w64 build: https://winlibs.com/ or https://www.msys2.org/');
+}
+
+// Re-check after setup attempt
+status = await checkAllCompilers();
 
 console.log('\nResults:');
 console.log(`[C Compiler]`);

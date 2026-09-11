@@ -56,17 +56,49 @@ export async function evaluateSubmission({ studentId, problemId, code, language 
   let isEnvironmentError = false;
   const testResults = [];
 
-  // If problem has zero test cases and no expected output, do NOT auto-pass
+  // If problem has zero test cases and no expected output, do NOT auto-pass or compile
   if (testCases.length === 0) {
-    allPassed = false;
-    runtimeSuccess = false;
-    rawRuntimeError = 'Problem has no test cases configured';
-    testResults.push({
+    const zeroTcResults = [{
       testCaseIndex: 0,
       isHidden: false,
       passed: false,
       error: 'Problem has no test cases configured'
+    }];
+
+    const rawSummary = {
+      compileSuccess: true,
+      runtimeSuccess: false,
+      isEnvironmentError: false,
+      timedOut: false,
+      testPassed: false,
+      exitCode: 1,
+      durationMs: 0,
+      rawError: 'Problem has no test cases configured',
+      stderr: 'Problem has no test cases configured',
+      testResults: zeroTcResults
+    };
+
+    const studentResult = sanitizeForStudent(rawSummary);
+    const adminResult = formatForAdmin(rawSummary);
+
+    const submission = db.recordSubmission({
+      studentId,
+      problemId,
+      code,
+      language,
+      status: studentResult.status,
+      pass: studentResult.success,
+      rawOutput: JSON.stringify(adminResult),
+      genericMessage: studentResult.message,
+      executionTimeMs: 0
     });
+
+    return {
+      submissionId: submission.id,
+      studentResult,
+      adminResult,
+      submission
+    };
   }
 
   // Compile once for all test cases (CQ-01)

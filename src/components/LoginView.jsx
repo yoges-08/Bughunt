@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bug, ArrowRight, CheckCircle2, AlertCircle, Server, Lock, User } from 'lucide-react';
 import { api } from '../services/api';
+import collegeLogo from '../assets/college-logo.png';
 
 export default function LoginView({ onLoginSuccess }) {
   const [hostIp, setHostIp] = useState(api.getHostUrl().replace(/^https?:\/\//, ''));
@@ -72,15 +73,28 @@ export default function LoginView({ onLoginSuccess }) {
 
       {/* Main card */}
       <div className="w-full max-w-md bg-surface-900 border border-slate-800 rounded-2xl shadow-2xl p-8 z-10 backdrop-blur">
-        {/* Header / Logo */}
-        <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <Bug className="w-7 h-7" />
+        {/* College Logo & Header */}
+        <div className="flex flex-col items-center justify-center mb-6 text-center">
+          <div className="relative mb-3 flex items-center justify-center">
+            {/* Ambient luminous glow behind logo */}
+            <div className="absolute w-28 h-28 sm:w-32 sm:h-32 bg-cyan-400/20 rounded-full blur-xl pointer-events-none -z-10" />
+            <div className="absolute w-24 h-24 sm:w-28 sm:h-28 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none -z-10" />
+            <img
+              src={collegeLogo}
+              alt="AAMEC College Logo"
+              className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-[0_0_15px_rgba(56,189,248,0.45)] drop-shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-transform duration-300 hover:scale-105"
+            />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-100 tracking-tight">BUG HUNT</h1>
-            <p className="text-xs text-slate-400 font-medium">LAN Coding Contest Platform</p>
+
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+              <Bug className="w-5 h-5" />
+            </div>
+            <h1 className="text-2xl font-black text-slate-100 tracking-tight">BUG HUNT</h1>
           </div>
+          <p className="text-xs text-slate-400 font-medium tracking-wide">
+            LAN Coding Contest Platform
+          </p>
         </div>
 
         {/* Server IP Connection */}
