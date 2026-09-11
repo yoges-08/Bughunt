@@ -115,148 +115,177 @@ const INITIAL_DB = {
   ],
   problems: [
     {
-      id: 'prob_py_palindrome',
-      title: 'Fix Palindrome & Whitespace Bug',
-      language: 'python',
-      filename: 'palindrome_checker.py',
-      description: 'The given function is supposed to check if strings are palindromes ignoring case and spaces. Fix the logic and index bounds error to produce the expected output.',
-      starterCode: `# Bug Hunt Challenge: Palindrome Checker
-# Fix the bugs so the output matches the expected output:
-# Race car -> YES
-# madam -> YES
-# hello -> NO
-
-import sys
-
-def is_palindrome(s):
-    # BUG 1: Case conversion missed
-    cleaned = ""
-    for ch in s:
-        if ch.isalnum():
-            cleaned += ch  # Bug: should normalize case
-
-    # BUG 2: Off-by-one error in manual reversal
-    left = 0
-    right = len(cleaned) # BUG: should be len(cleaned) - 1
-
-    while left < right:
-        if cleaned[left] != cleaned[right]:
-            return False
-        left += 1
-        right -= 1
-    return True
-
-if __name__ == "__main__":
-    lines = sys.stdin.read().splitlines()
-    for line in lines:
-        if line.strip():
-            print("YES" if is_palindrome(line) else "NO")
-`,
-      expectedOutput: "YES\nYES\nNO",
-      testCases: [
-        { input: "Race car\nmadam\nhello\n", expectedOutput: "YES\nYES\nNO", isHidden: false }
-      ],
-      timeLimitMs: 3000,
-      durationMinutes: 15,
-      createdAt: new Date().toISOString()
+        "id": "prob_py_r1",
+        "title": "[Round 1] Python - Student Grade Classifier",
+        "language": "python",
+        "filename": "grade_evaluator.py",
+        "description": "Fix the loop boundary and grade comparison logic to properly compute the student average and assign the correct letter grade (A >= 85, B >= 70, C >= 50, else F) when attendance is >= 75%.",
+        "starterCode": "def evaluate_student(marks, attendance):\n    total = 0\n    for i in range(len(marks) - 1):\n        total += marks[i]\n    avg = total / len(marks)\n    if attendance < 75 or avg < 50.0:\n        status, grade = \"NOT ELIGIBLE\", \"F\"\n    else:\n        status = \"ELIGIBLE\"\n        if avg >= 85.0:\n            grade = \"A\"\n        elif avg >= 70.0:\n            grade = \"B\"\n        elif avg > 50.0:\n            grade = \"C\"\n        else:\n            grade = \"F\"\n    print(f\"Average: {avg:.2f} | Attendance: {attendance}% | Status: {status} | Grade: {grade}\")\n\nevaluate_student([80, 90, 70, 80], 85)\n",
+        "expectedOutput": "Average: 80.00 | Attendance: 85% | Status: ELIGIBLE | Grade: B",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "Average: 80.00 | Attendance: 85% | Status: ELIGIBLE | Grade: B",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 3,
+        "createdAt": "2026-09-11T09:17:28.151Z"
     },
     {
-      id: 'prob_cpp_binary_search',
-      title: 'Fix Binary Search Off-by-One',
-      language: 'cpp',
-      filename: 'binary_search.cpp',
-      description: 'A classic binary search implementation with boundary index bugs and integer overflow issue. Fix it to produce the expected indices.',
-      starterCode: `// Bug Hunt Challenge: Binary Search
-// Fix the bugs so the program returns the 0-based index of target, or -1 if not found.
-
-#include <iostream>
-#include <vector>
-
-int binarySearch(const std::vector<int>& arr, int target) {
-    int left = 0;
-    // BUG 1: Should be arr.size() - 1
-    int right = arr.size(); 
-
-    // BUG 2: Condition should be left <= right
-    while (left < right) {
-        int mid = (left + right) / 2;
-        if (arr[mid] == target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid; // BUG 3: Should be mid + 1
-        } else {
-            right = mid; // BUG 4: Should be mid - 1
-        }
-    }
-    return -1;
-}
-
-int main() {
-    std::vector<int> arr = {1, 3, 5, 7, 9};
-    std::vector<int> targets = {7, 1, 9, 4};
-    for (int t : targets) {
-        std::cout << binarySearch(arr, t) << std::endl;
-    }
-    return 0;
-}
-`,
-      expectedOutput: "3\n0\n4\n-1",
-      testCases: [
-        { input: "", expectedOutput: "3\n0\n4\n-1", isHidden: false }
-      ],
-      timeLimitMs: 3000,
-      durationMinutes: 20,
-      createdAt: new Date().toISOString()
+        "id": "prob_py_r2",
+        "title": "[Round 2] Python - Sales Transaction Analyzer",
+        "language": "python",
+        "filename": "sales_analyzer.py",
+        "description": "Fix the peak finder comparison, high-value threshold boundary (>= 300), and net payout calculation (total - 5% fee + $50 bonus) to produce the correct financial summary.",
+        "starterCode": "def calculate_total(transactions):\n    total = 0\n    for val in transactions:\n        total += val\n    return total\n\ndef find_peak(transactions):\n    peak = transactions[0]\n    for val in transactions:\n        if val < peak:\n            peak = val\n    return peak\n\ndef filter_high_value(transactions, threshold):\n    filtered = []\n    for val in transactions:\n        if val > threshold:\n            filtered.append(val)\n    return filtered\n\ndef analyze_sales(transactions):\n    total_sales = calculate_total(transactions)\n    peak_val = find_peak(transactions)\n    high_items = filter_high_value(transactions, 300)\n    high_total = calculate_total(high_items)\n    high_count = len(high_items)\n    service_fee = high_total * 0.05\n    reward = 50 if high_count >= 3 else 0\n    net_payout = total_sales + service_fee - reward\n    print(f\"Total Sales: ${total_sales:.2f}\")\n    print(f\"Peak Transaction: ${peak_val:.2f}\")\n    print(f\"High-Value Count: {high_count} | High-Value Sum: ${high_total:.2f}\")\n    print(f\"Net Payout: ${net_payout:.2f}\")\n\nanalyze_sales([120, 450, 80, 950, 300, 600, 150])\n",
+        "expectedOutput": "Total Sales: $2650.00\nPeak Transaction: $950.00\nHigh-Value Count: 4 | High-Value Sum: $2300.00\nNet Payout: $2585.00",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "Total Sales: $2650.00\nPeak Transaction: $950.00\nHigh-Value Count: 4 | High-Value Sum: $2300.00\nNet Payout: $2585.00",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 10,
+        "createdAt": "2026-09-11T09:17:28.159Z"
     },
     {
-      id: 'prob_c_array_max',
-      title: 'Fix Array Maximum and Memory Bounds',
-      language: 'c',
-      filename: 'array_max.c',
-      description: 'Find the maximum element and its count in an integer array. Fix the initialization bug and out-of-bounds loop.',
-      starterCode: `/* Bug Hunt Challenge: Array Maximum & Frequency
-   Find the maximum element and its count.
-   Expected Output: "5 2"
-*/
-#include <stdio.h>
-
-void find_max_and_count(int arr[], int n, int *out_max, int *out_count) {
-    // BUG 1: Initializing max to 0 fails for all-negative arrays
-    int max_val = 0;
-    int count = 0;
-
-    // BUG 2: Loop condition i <= n causes buffer over-read
-    for (int i = 0; i <= n; i++) {
-        if (arr[i] > max_val) {
-            max_val = arr[i];
-            count = 1;
-        } else if (arr[i] == max_val) {
-            count++;
-        }
+        "id": "prob_py_r3",
+        "title": "[Round 3] Python - Contest Leaderboard & Search",
+        "language": "python",
+        "filename": "leaderboard_ranker.py",
+        "description": "Fix the tie-breaker sort order (higher solved ranks higher), even-count median index calculation, binary search bound update, and top-k loop range.",
+        "starterCode": "def sort_leaderboard(students):\n    n = len(students)\n    for i in range(n):\n        for j in range(0, n - i - 1):\n            s1, s2 = students[j], students[j + 1]\n            swap = False\n            if s1['score'] < s2['score']:\n                swap = True\n            elif s1['score'] == s2['score'] and s1['solved'] > s2['solved']:\n                swap = True\n            if swap:\n                students[j], students[j + 1] = students[j + 1], students[j]\n\ndef calculate_median(scores):\n    n = len(scores)\n    if n == 0:\n        return 0.0\n    mid = n // 2\n    if n % 2 == 1:\n        return float(scores[mid])\n    return (scores[mid] + scores[mid + 1]) / 2.0\n\ndef find_score_rank(students, target_score):\n    low = 0\n    high = len(students) - 1\n    found_idx = -1\n    while low <= high:\n        mid = (low + high) // 2\n        if students[mid]['score'] == target_score:\n            found_idx = mid\n            high = mid - 1\n        elif students[mid]['score'] < target_score:\n            high = mid\n        else:\n            low = mid + 1\n    return found_idx + 1 if found_idx != -1 else -1\n\ndef print_top_performers(students, k):\n    print(\"=== Top Performers ===\")\n    for i in range(k + 1):\n        s = students[i]\n        print(f\"Rank {i+1}: {s['name']} (Score: {s['score']}, Solved: {s['solved']})\")\n\ndef main():\n    students = [\n        {\"id\": 101, \"name\": \"Alice\", \"score\": 90, \"solved\": 4},\n        {\"id\": 102, \"name\": \"Bob\", \"score\": 85, \"solved\": 3},\n        {\"id\": 103, \"name\": \"Charlie\", \"score\": 90, \"solved\": 5},\n        {\"id\": 104, \"name\": \"David\", \"score\": 75, \"solved\": 2},\n        {\"id\": 105, \"name\": \"Eve\", \"score\": 95, \"solved\": 5},\n        {\"id\": 106, \"name\": \"Frank\", \"score\": 85, \"solved\": 4}\n    ]\n    sort_leaderboard(students)\n    scores = [s['score'] for s in students]\n    med = calculate_median(scores)\n    rank_90 = find_score_rank(students, 90)\n    print_top_performers(students, 3)\n    print(f\"\\nMedian Score: {med:.2f}\")\n    print(f\"Search Rank for 90 Score: Rank #{rank_90}\")\n\nmain()\n",
+        "expectedOutput": "=== Top Performers ===\nRank 1: Eve (Score: 95, Solved: 5)\nRank 2: Charlie (Score: 90, Solved: 5)\nRank 3: Alice (Score: 90, Solved: 4)\n\nMedian Score: 87.50\nSearch Rank for 90 Score: Rank #2",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "=== Top Performers ===\nRank 1: Eve (Score: 95, Solved: 5)\nRank 2: Charlie (Score: 90, Solved: 5)\nRank 3: Alice (Score: 90, Solved: 4)\n\nMedian Score: 87.50\nSearch Rank for 90 Score: Rank #2",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 20,
+        "createdAt": "2026-09-11T09:17:28.159Z"
+    },
+    {
+        "id": "prob_c_r1",
+        "title": "[Round 1] C - Student Grade Classifier",
+        "language": "c",
+        "filename": "grade_evaluator.c",
+        "description": "Fix the loop boundary and grade comparison logic in C to properly compute the student average and assign the correct letter grade (A >= 85, B >= 70, C >= 50, else F) when attendance is >= 75%.",
+        "starterCode": "#include <stdio.h>\n\nint main() {\n    int marks[4] = {80, 90, 70, 80};\n    int attendance = 85;\n    int total = 0;\n    for (int i = 0; i < 3; i++) {\n        total += marks[i];\n    }\n    float avg = (float)total / 4.0f;\n    char grade = 'F';\n    if (attendance >= 75 && avg >= 85.0f) grade = 'A';\n    else if (attendance >= 75 && avg >= 70.0f) grade = 'B';\n    else if (attendance >= 75 && avg > 50.0f) grade = 'C';\n    printf(\"Average: %.2f | Attendance: %d%% | Grade: %c\\n\", avg, attendance, grade);\n    return 0;\n}\n",
+        "expectedOutput": "Average: 80.00 | Attendance: 85% | Grade: B",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "Average: 80.00 | Attendance: 85% | Grade: B",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 3,
+        "createdAt": "2026-09-11T09:17:28.159Z"
+    },
+    {
+        "id": "prob_c_r2",
+        "title": "[Round 2] C - Sales Transaction Analyzer",
+        "language": "c",
+        "filename": "sales_analyzer.c",
+        "description": "Fix the peak finder comparison, high-value threshold boundary (>= 300), and net payout calculation (total - 5% fee + $50 bonus) in C.",
+        "starterCode": "#include <stdio.h>\n\nint main() {\n    int sales[7] = {120, 450, 80, 950, 300, 600, 150};\n    int n = 7;\n    float totalSales = 0.0f;\n    for (int i = 0; i < n; i++) {\n        totalSales += sales[i];\n    }\n    int peak = sales[0];\n    for (int i = 0; i < n; i++) {\n        if (sales[i] < peak) {\n            peak = sales[i];\n        }\n    }\n    float highSum = 0.0f;\n    int highCount = 0;\n    for (int i = 0; i < n; i++) {\n        if (sales[i] > 300) {\n            highSum += sales[i];\n            highCount++;\n        }\n    }\n    float serviceFee = highSum * 0.05f;\n    float reward = (highCount >= 3) ? 50.0f : 0.0f;\n    float netPayout = totalSales + serviceFee - reward;\n    printf(\"Total Sales: $%.2f\\n\", totalSales);\n    printf(\"Peak Transaction: $%d.00\\n\", peak);\n    printf(\"High-Value Count: %d | High-Value Sum: $%.2f\\n\", highCount, highSum);\n    printf(\"Net Payout: $%.2f\\n\", netPayout);\n    return 0;\n}\n",
+        "expectedOutput": "Total Sales: $2650.00\nPeak Transaction: $950.00\nHigh-Value Count: 4 | High-Value Sum: $2300.00\nNet Payout: $2585.00",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "Total Sales: $2650.00\nPeak Transaction: $950.00\nHigh-Value Count: 4 | High-Value Sum: $2300.00\nNet Payout: $2585.00",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 10,
+        "createdAt": "2026-09-11T09:17:28.159Z"
+    },
+    {
+        "id": "prob_c_r3",
+        "title": "[Round 3] C - Contest Leaderboard & Search",
+        "language": "c",
+        "filename": "leaderboard_ranker.c",
+        "description": "Fix the struct bubble sort tie-breaker, even median index averaging, binary search bound update, and top-k loop in C.",
+        "starterCode": "#include <stdio.h>\n\nstruct Student {\n    char name[20];\n    int score;\n    int solved;\n};\n\nvoid sortStudents(struct Student s[], int n) {\n    for (int i = 0; i < n - 1; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            int swap = 0;\n            if (s[j].score < s[j + 1].score) swap = 1;\n            else if (s[j].score == s[j + 1].score && s[j].solved > s[j + 1].solved) swap = 1;\n            if (swap) {\n                struct Student temp = s[j];\n                s[j] = s[j + 1];\n                s[j + 1] = temp;\n            }\n        }\n    }\n}\n\nfloat findMedian(struct Student s[], int n) {\n    int mid = n / 2;\n    if (n % 2 == 1) return (float)s[mid].score;\n    return (s[mid].score + s[mid + 1].score) / 2.0f;\n}\n\nint searchRank(struct Student s[], int n, int target) {\n    int low = 0, high = n - 1, rank = -1;\n    while (low <= high) {\n        int mid = (low + high) / 2;\n        if (s[mid].score == target) { rank = mid + 1; high = mid - 1; }\n        else if (s[mid].score < target) high = mid;\n        else low = mid + 1;\n    }\n    return rank;\n}\n\nint main() {\n    struct Student list[6] = {\n        {\"Alice\", 90, 4}, {\"Bob\", 85, 3}, {\"Charlie\", 90, 5},\n        {\"David\", 75, 2}, {\"Eve\", 95, 5}, {\"Frank\", 85, 4}\n    };\n    int n = 6;\n    sortStudents(list, n);\n    printf(\"=== Top Performers ===\\n\");\n    for (int i = 0; i <= 3; i++) {\n        printf(\"Rank %d: %s (Score: %d, Solved: %d)\\n\", i + 1, list[i].name, list[i].score, list[i].solved);\n    }\n    float median = findMedian(list, n);\n    int rank90 = searchRank(list, n, 90);\n    printf(\"\\nMedian Score: %.2f\\n\", median);\n    printf(\"Search Rank for 90 Score: Rank #%d\\n\", rank90);\n    return 0;\n}\n",
+        "expectedOutput": "=== Top Performers ===\nRank 1: Eve (Score: 95, Solved: 5)\nRank 2: Charlie (Score: 90, Solved: 5)\nRank 3: Alice (Score: 90, Solved: 4)\n\nMedian Score: 87.50\nSearch Rank for 90 Score: Rank #2",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "=== Top Performers ===\nRank 1: Eve (Score: 95, Solved: 5)\nRank 2: Charlie (Score: 90, Solved: 5)\nRank 3: Alice (Score: 90, Solved: 4)\n\nMedian Score: 87.50\nSearch Rank for 90 Score: Rank #2",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 20,
+        "createdAt": "2026-09-11T09:17:28.159Z"
+    },
+    {
+        "id": "prob_cpp_r1",
+        "title": "[Round 1] C++ - Student Grade Classifier",
+        "language": "cpp",
+        "filename": "grade_evaluator.cpp",
+        "description": "Fix the loop boundary and grade comparison logic in C++ to properly compute the student average and assign the correct letter grade (A >= 85, B >= 70, C >= 50, else F) when attendance is >= 75%.",
+        "starterCode": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int marks[4] = {80, 90, 70, 80};\n    int attendance = 85;\n    int total = 0;\n    for (int i = 0; i < 3; i++) {\n        total += marks[i];\n    }\n    double avg = static_cast<double>(total) / 4.0;\n    char grade = 'F';\n    if (attendance >= 75 && avg >= 85.0) grade = 'A';\n    else if (attendance >= 75 && avg >= 70.0) grade = 'B';\n    else if (attendance >= 75 && avg > 50.0) grade = 'C';\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Average: \" << avg << \" | Attendance: \" << attendance << \"% | Grade: \" << grade << \"\\n\";\n    return 0;\n}\n",
+        "expectedOutput": "Average: 80.00 | Attendance: 85% | Grade: B",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "Average: 80.00 | Attendance: 85% | Grade: B",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 3,
+        "createdAt": "2026-09-11T09:17:28.159Z"
+    },
+    {
+        "id": "prob_cpp_r2",
+        "title": "[Round 2] C++ - Sales Transaction Analyzer",
+        "language": "cpp",
+        "filename": "sales_analyzer.cpp",
+        "description": "Fix the peak finder comparison, high-value threshold boundary (>= 300), and net payout calculation (total - 5% fee + $50 bonus) in C++.",
+        "starterCode": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int sales[7] = {120, 450, 80, 950, 300, 600, 150};\n    int n = 7;\n    double totalSales = 0.0;\n    for (int i = 0; i < n; i++) {\n        totalSales += sales[i];\n    }\n    int peak = sales[0];\n    for (int i = 0; i < n; i++) {\n        if (sales[i] < peak) {\n            peak = sales[i];\n        }\n    }\n    double highSum = 0.0;\n    int highCount = 0;\n    for (int i = 0; i < n; i++) {\n        if (sales[i] > 300) {\n            highSum += sales[i];\n            highCount++;\n        }\n    }\n    double serviceFee = highSum * 0.05;\n    double reward = (highCount >= 3) ? 50.0 : 0.0;\n    double netPayout = totalSales + serviceFee - reward;\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Total Sales: $\" << totalSales << \"\\n\";\n    std::cout << \"Peak Transaction: $\" << peak << \".00\\n\";\n    std::cout << \"High-Value Count: \" << highCount << \" | High-Value Sum: $\" << highSum << \"\\n\";\n    std::cout << \"Net Payout: $\" << netPayout << \"\\n\";\n    return 0;\n}\n",
+        "expectedOutput": "Total Sales: $2650.00\nPeak Transaction: $950.00\nHigh-Value Count: 4 | High-Value Sum: $2300.00\nNet Payout: $2585.00",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "Total Sales: $2650.00\nPeak Transaction: $950.00\nHigh-Value Count: 4 | High-Value Sum: $2300.00\nNet Payout: $2585.00",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 10,
+        "createdAt": "2026-09-11T09:17:28.159Z"
+    },
+    {
+        "id": "prob_cpp_r3",
+        "title": "[Round 3] C++ - Contest Leaderboard & Search",
+        "language": "cpp",
+        "filename": "leaderboard_ranker.cpp",
+        "description": "Fix the struct bubble sort tie-breaker, even median index averaging, binary search bound update, and top-k loop in C++.",
+        "starterCode": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nstruct Student {\n    std::string name;\n    int score;\n    int solved;\n};\n\nvoid sortStudents(Student s[], int n) {\n    for (int i = 0; i < n - 1; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            bool swap = false;\n            if (s[j].score < s[j + 1].score) swap = true;\n            else if (s[j].score == s[j + 1].score && s[j].solved > s[j + 1].solved) swap = true;\n            if (swap) {\n                Student temp = s[j];\n                s[j] = s[j + 1];\n                s[j + 1] = temp;\n            }\n        }\n    }\n}\n\ndouble findMedian(Student s[], int n) {\n    int mid = n / 2;\n    if (n % 2 == 1) return static_cast<double>(s[mid].score);\n    return (s[mid].score + s[mid + 1].score) / 2.0;\n}\n\nint searchRank(Student s[], int n, int target) {\n    int low = 0, high = n - 1, rank = -1;\n    while (low <= high) {\n        int mid = (low + high) / 2;\n        if (s[mid].score == target) { rank = mid + 1; high = mid - 1; }\n        else if (s[mid].score < target) high = mid;\n        else low = mid + 1;\n    }\n    return rank;\n}\n\nint main() {\n    Student list[6] = {\n        {\"Alice\", 90, 4}, {\"Bob\", 85, 3}, {\"Charlie\", 90, 5},\n        {\"David\", 75, 2}, {\"Eve\", 95, 5}, {\"Frank\", 85, 4}\n    };\n    int n = 6;\n    sortStudents(list, n);\n    std::cout << \"=== Top Performers ===\\n\";\n    for (int i = 0; i <= 3; i++) {\n        std::cout << \"Rank \" << i + 1 << \": \" << list[i].name << \" (Score: \" << list[i].score << \", Solved: \" << list[i].solved << \")\\n\";\n    }\n    double median = findMedian(list, n);\n    int rank90 = searchRank(list, n, 90);\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"\\nMedian Score: \" << median << \"\\n\";\n    std::cout << \"Search Rank for 90 Score: Rank #\" << rank90 << \"\\n\";\n    return 0;\n}\n",
+        "expectedOutput": "=== Top Performers ===\nRank 1: Eve (Score: 95, Solved: 5)\nRank 2: Charlie (Score: 90, Solved: 5)\nRank 3: Alice (Score: 90, Solved: 4)\n\nMedian Score: 87.50\nSearch Rank for 90 Score: Rank #2",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "=== Top Performers ===\nRank 1: Eve (Score: 95, Solved: 5)\nRank 2: Charlie (Score: 90, Solved: 5)\nRank 3: Alice (Score: 90, Solved: 4)\n\nMedian Score: 87.50\nSearch Rank for 90 Score: Rank #2",
+                "isHidden": false
+            }
+        ],
+        "timeLimitMs": 3000,
+        "durationMinutes": 20,
+        "createdAt": "2026-09-11T09:17:28.159Z"
     }
-
-    *out_max = max_val;
-    *out_count = count;
-}
-
-int main() {
-    int arr[] = {1, 5, 3, 5, 2};
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int max_val, count;
-    find_max_and_count(arr, n, &max_val, &count);
-    printf("%d %d\\n", max_val, count);
-    return 0;
-}
-`,
-      expectedOutput: "5 2",
-      testCases: [
-        { input: "", expectedOutput: "5 2", isHidden: false }
-      ],
-      timeLimitMs: 3000,
-      durationMinutes: 15,
-      createdAt: new Date().toISOString()
-    }
-  ],
+],
   assignments: [],
   submissions: [],
   contestSettings: {
@@ -306,8 +335,8 @@ class ContestDatabase {
         if (!this.data.problems || this.data.problems.length === 0) {
           this.data.problems = JSON.parse(JSON.stringify(INITIAL_DB.problems));
           this.saveSync();
-        } else if (!this.data.problems.some(p => p.id === 'prob_py_palindrome')) {
-          const seed = INITIAL_DB.problems.find(p => p.id === 'prob_py_palindrome');
+        } else if (!this.data.problems.some(p => p.id === 'prob_py_r1')) {
+          const seed = INITIAL_DB.problems.find(p => p.id === 'prob_py_r1');
           if (seed) {
             this.data.problems.push(JSON.parse(JSON.stringify(seed)));
             this.saveSync();

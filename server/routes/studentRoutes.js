@@ -113,8 +113,12 @@ router.post('/run', async (req, res) => {
     const assignment = db.getStudentAssignment(studentId);
     let targetExpectedOutput = null;
     let effectiveStdin = stdin || '';
+    let effectiveLanguage = normalizeLanguage(language) || 'python';
 
     if (assignment) {
+      if (assignment.language) {
+        effectiveLanguage = normalizeLanguage(assignment.language);
+      }
       // Check if student has already submitted for the current assignment
       const existingSubmissions = db.getStudentSubmissions(studentId);
       const alreadySubmitted = existingSubmissions.some(s => 
@@ -151,7 +155,7 @@ router.post('/run', async (req, res) => {
     // Execute code using bundled compiler sandbox with 3s timeout
     const rawResult = await executeCode({
       code,
-      language,
+      language: effectiveLanguage,
       stdin: effectiveStdin,
       timeoutMs: 3000
     });
