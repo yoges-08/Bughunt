@@ -19,11 +19,18 @@ const MONACO_EDITOR_OPTIONS = {
   parameterHints: { enabled: false },
   suggestOnTriggerCharacters: false,
   hover: { enabled: false },
-  contextmenu: false,
+  contextmenu: true,
   scrollBeyondLastLine: false,
   automaticLayout: true,
   tabSize: 4,
-  wordWrap: 'on'
+  wordWrap: 'on',
+  cursorBlinking: 'blink',
+  cursorStyle: 'line',
+  cursorWidth: 2,
+  cursorSmoothCaretAnimation: 'on',
+  renderLineHighlight: 'all',
+  selectOnLineNumbers: true,
+  roundedSelection: true
 };
 
 export default function StudentEditor({ user, onLogout }) {
@@ -64,6 +71,19 @@ export default function StudentEditor({ user, onLogout }) {
     return () => clearTimeout(timer);
   }, [editorReady, editorRemountKey, useFallbackEditor]);
 
+  // Window resize handler to maintain Monaco layout and cursor coordinates
+  useEffect(() => {
+    const handleWindowResize = () => {
+      if (editorInstanceRef.current && !useFallbackEditor) {
+        try {
+          editorInstanceRef.current.layout();
+        } catch {}
+      }
+    };
+    window.addEventListener('resize', handleWindowResize);
+    return () => window.removeEventListener('resize', handleWindowResize);
+  }, [useFallbackEditor]);
+
   // Instant layout recalculation whenever problem state changes or editor finishes loading
   useEffect(() => {
     if (problem && editorInstanceRef.current && !useFallbackEditor) {
@@ -83,7 +103,14 @@ export default function StudentEditor({ user, onLogout }) {
     setEditorTimeout(false);
     try {
       editor.layout();
+      editor.focus();
     } catch {}
+    setTimeout(() => {
+      try {
+        editor.layout();
+        editor.focus();
+      } catch {}
+    }, 60);
   };
 
   const handleReloadEditor = () => {
@@ -380,7 +407,7 @@ export default function StudentEditor({ user, onLogout }) {
       {/* Main Content Area */}
       <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden">
         {/* Waiting Screen (shown when problem is not yet assigned) */}
-        {!problem && (
+        {!problem ? (
           <div className="flex-1 min-h-0 flex flex-col items-center justify-center p-8 text-center z-10 bg-surface-950">
             <div className="w-16 h-16 rounded-2xl bg-surface-900 border border-slate-800 flex items-center justify-center text-emerald-400 mb-4 animate-pulse">
               <Radio className="w-8 h-8" />
@@ -391,15 +418,12 @@ export default function StudentEditor({ user, onLogout }) {
             </p>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-900 border border-slate-800 text-xs text-slate-400">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Connected to LAN Contest Host • Editor Pre-Warmed</span>
+              <span>Connected to LAN Contest Host • Ready for Kickoff</span>
             </div>
           </div>
-        )}
-
-        {/* Active Contest Workspace (Always mounted for pre-warming, visible when problem is assigned) */}
-        <div className={`flex-1 min-h-0 flex overflow-hidden ${problem ? 'visible' : 'invisible absolute -left-[9999px] top-0 w-full h-full'}`}>
-          {/* Left Panel: Problem Spec & Test Case info */}
-          {problem && (
+        ) : (
+          <div className="flex-1 min-h-0 flex overflow-hidden">
+            {/* Left Panel: Problem Spec & Test Case info */}
             <div className="w-80 lg:w-96 shrink-0 bg-surface-900 border-r border-slate-800 flex flex-col min-h-0 overflow-hidden">
               {/* Tab switch Header */}
               <div className="shrink-0 flex border-b border-slate-800 text-xs">
@@ -550,7 +574,16 @@ export default function StudentEditor({ user, onLogout }) {
             </div>
 
             {/* Monaco Editor Container with Timeout Watchdog, Retry UI & Lightweight Fallback */}
-            <div className="flex-1 min-h-0 relative overflow-hidden bg-surface-950">
+            <div 
+              className="flex-1 min-h-0 relative overflow-hidden bg-surface-950 cursor-text"
+              onClick={() => {
+                if (editorInstanceRef.current && !useFallbackEditor) {
+                  try {
+                    editorInstanceRef.current.focus();
+                  } catch {}
+                }
+              }}
+            >
               {editorTimeout && !editorReady && !useFallbackEditor && (
                 <div className="absolute inset-0 bg-surface-950/95 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-6 text-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
@@ -600,8 +633,9 @@ export default function StudentEditor({ user, onLogout }) {
                     onScroll={handleTextareaScroll}
                     readOnly={Boolean(hasSubmitted || isTimeExpired)}
                     spellCheck={false}
-                    className="flex-1 h-full bg-transparent text-slate-100 p-3 outline-none resize-none font-mono leading-relaxed overflow-auto selection:bg-emerald-500/30 whitespace-pre"
+                    className="flex-1 h-full bg-transparent text-slate-100 p-3 outline-none resize-none font-mono leading-relaxed overflow-auto selection:bg-emerald-500/30 whitespace-pre cursor-text caret-emerald-400"
                     placeholder={problem ? "Write or fix your code here..." : "Waiting for problem assignment..."}
+                    autoFocus
                   />
                 </div>
               ) : (
@@ -610,7 +644,7 @@ export default function StudentEditor({ user, onLogout }) {
                   height="100%"
                   language={monacoLanguage}
                   theme="vs-dark"
-                  value={code || (problem ? '' : '# Pre-warmed editor engine ready for contest\n')}
+                  value={code !== undefined ? code : (problem ? '' : '# Pre-warmed editor engine ready for contest\n')}
                   onChange={handleEditorChange}
                   onMount={handleEditorMount}
                   options={{
@@ -740,6 +774,7 @@ export default function StudentEditor({ user, onLogout }) {
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );

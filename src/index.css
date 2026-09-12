@@ -24,6 +24,34 @@
   }
 }
 
+/* Monaco Editor Interactive Cursor & Selection Fixes */
+.monaco-editor,
+.monaco-editor .inputarea,
+.monaco-editor .view-lines,
+.monaco-editor .view-line,
+.monaco-editor .lines-content,
+.monaco-editor .overflow-guard {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  cursor: text !important;
+  pointer-events: auto !important;
+}
+
+.monaco-editor .cursors-layer .cursor {
+  background-color: #34d399 !important;
+  border-color: #34d399 !important;
+  color: #34d399 !important;
+  display: block !important;
+  visibility: visible !important;
+  width: 2px !important;
+}
+
+.monaco-editor .inputarea {
+  cursor: text !important;
+  pointer-events: auto !important;
+  caret-color: #34d399 !important;
+}
+
 /* Custom scrollbars */
 .max-h-\[420px\]::-webkit-scrollbar,
 .max-h-\[500px\]::-webkit-scrollbar,
