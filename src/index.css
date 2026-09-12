@@ -35,6 +35,9 @@
   -webkit-user-select: text !important;
   cursor: text !important;
   pointer-events: auto !important;
+  font-family: Consolas, 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace !important;
+  font-feature-settings: "liga" 0, "calt" 0 !important;
+  -webkit-font-feature-settings: "liga" 0, "calt" 0 !important;
 }
 
 .monaco-editor .cursors-layer .cursor {
@@ -50,6 +53,7 @@
   cursor: text !important;
   pointer-events: auto !important;
   caret-color: #34d399 !important;
+  font-family: Consolas, 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace !important;
 }
 
 /* Custom scrollbars */

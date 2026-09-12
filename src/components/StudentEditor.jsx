@@ -11,8 +11,11 @@ import { socket } from '../services/socket';
 import { formatTimer } from '../utils/time';
 
 const MONACO_EDITOR_OPTIONS = {
-  fontFamily: "'JetBrains Mono', monospace",
-  fontSize: 13,
+  fontFamily: "Consolas, 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace",
+  fontSize: 14,
+  lineHeight: 22,
+  letterSpacing: 0,
+  fontLigatures: false,
   lineNumbers: 'on',
   minimap: { enabled: false },
   quickSuggestions: false,
@@ -21,16 +24,20 @@ const MONACO_EDITOR_OPTIONS = {
   hover: { enabled: false },
   contextmenu: true,
   scrollBeyondLastLine: false,
+  scrollBeyondLastColumn: 5,
   automaticLayout: true,
   tabSize: 4,
-  wordWrap: 'on',
+  wordWrap: 'off',
   cursorBlinking: 'blink',
   cursorStyle: 'line',
   cursorWidth: 2,
   cursorSmoothCaretAnimation: 'on',
   renderLineHighlight: 'all',
   selectOnLineNumbers: true,
-  roundedSelection: true
+  roundedSelection: true,
+  renderWhitespace: 'none',
+  fixedOverflowWidgets: true,
+  links: false
 };
 
 export default function StudentEditor({ user, onLogout }) {
@@ -97,20 +104,30 @@ export default function StudentEditor({ user, onLogout }) {
     }
   }, [problem, editorReady, useFallbackEditor]);
 
-  const handleEditorMount = (editor, _monaco) => {
+  const handleEditorMount = (editor, monacoInstance) => {
     editorInstanceRef.current = editor;
     setEditorReady(true);
     setEditorTimeout(false);
+    
+    const remeasureAndLayout = () => {
+      try {
+        if (monacoInstance && monacoInstance.editor && monacoInstance.editor.remeasureFonts) {
+          monacoInstance.editor.remeasureFonts();
+        }
+        editor.layout();
+      } catch {}
+    };
+
+    remeasureAndLayout();
     try {
-      editor.layout();
       editor.focus();
     } catch {}
-    setTimeout(() => {
-      try {
-        editor.layout();
-        editor.focus();
-      } catch {}
-    }, 60);
+
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.ready.then(remeasureAndLayout);
+    }
+    setTimeout(remeasureAndLayout, 50);
+    setTimeout(remeasureAndLayout, 150);
   };
 
   const handleReloadEditor = () => {

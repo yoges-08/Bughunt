@@ -23,4 +23,13 @@ if (typeof window !== 'undefined') {
 // Point @monaco-editor/react loader to the local bundled Monaco instance
 loader.config({ monaco });
 
+// Ensure Monaco font metrics recalculate once system and web fonts are fully ready
+if (typeof document !== 'undefined' && document.fonts) {
+  document.fonts.ready.then(() => {
+    try {
+      monaco.editor.remeasureFonts();
+    } catch {}
+  });
+}
+
 export default monaco;
