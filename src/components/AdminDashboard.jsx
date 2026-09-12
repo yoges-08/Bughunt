@@ -505,6 +505,57 @@ export default function AdminDashboard({ user, onLogout }) {
     }
   };
 
+  // Clear All Student Accounts
+  const handleClearAllStudents = async () => {
+    if (students.length === 0) {
+      await notify('There are no student accounts to remove.', 'No Students');
+      return;
+    }
+
+    const ok = await confirm(
+      `⚠️ WARNING: Are you sure you want to remove ALL ${students.length} student accounts?\n\n` +
+      `This will permanently delete all registered student/team accounts, their active assignments, and draft code.\n` +
+      `• Admin account and contest problems will NOT be affected.\n\n` +
+      `Proceed with removing all students?`,
+      'Remove All Students?'
+    );
+    if (!ok) return;
+
+    try {
+      const res = await api.clearAllStudents();
+      setSelectedStudentId('ALL');
+      await notify(res.message || 'All student accounts removed.', 'Students Cleared');
+      loadData();
+    } catch (err) {
+      await notify('Failed to clear students: ' + err.message, 'Clear Error');
+    }
+  };
+
+  // Clear All Submissions
+  const handleClearAllSubmissions = async () => {
+    if (submissions.length === 0) {
+      await notify('There are no recorded submissions to clear.', 'No Submissions');
+      return;
+    }
+
+    const ok = await confirm(
+      `⚠️ Are you sure you want to clear all ${submissions.length} contest submissions?\n\n` +
+      `This resets the submissions history for a fresh contest start.\n` +
+      `• Problem definitions and student accounts will NOT be deleted.\n\n` +
+      `Proceed with clearing submissions?`,
+      'Clear All Submissions?'
+    );
+    if (!ok) return;
+
+    try {
+      const res = await api.clearAllSubmissions();
+      await notify(res.message || 'All submissions cleared.', 'Submissions Cleared');
+      loadData();
+    } catch (err) {
+      await notify('Failed to clear submissions: ' + err.message, 'Clear Error');
+    }
+  };
+
   // Feature 2: Delete Problem with confirmation and reference error handling
   const handleDeleteProblem = async (problemId, title) => {
     const ok = await confirm(`Delete problem "${title}"? This cannot be undone.`, 'Delete Problem?');
@@ -880,6 +931,17 @@ export default function AdminDashboard({ user, onLogout }) {
                 </div>
 
                 <div className="flex items-center gap-3">
+                  {students.length > 0 && (
+                    <button
+                      onClick={handleClearAllStudents}
+                      className="px-3.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 rounded-xl text-xs font-semibold border border-rose-500/20 flex items-center gap-1.5 transition active:scale-[0.99]"
+                      title="Delete all student accounts"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Clear All Students</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={() => setShowBulkStudentModal(true)}
                     className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-2 transition active:scale-[0.99] shadow"
@@ -1433,9 +1495,21 @@ export default function AdminDashboard({ user, onLogout }) {
           {/* Tab 3: Submissions View */}
           {activeTab === 'submissions' && (
             <div className="space-y-4">
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-                Contest Submissions & Internal Diagnostics ({submissions.length})
-              </h2>
+              <div className="flex justify-between items-center">
+                <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                  Contest Submissions & Internal Diagnostics ({submissions.length})
+                </h2>
+                {submissions.length > 0 && (
+                  <button
+                    onClick={handleClearAllSubmissions}
+                    className="px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 rounded-xl text-xs font-semibold border border-rose-500/20 flex items-center gap-1.5 transition active:scale-[0.99]"
+                    title="Clear all recorded submissions"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Clear Submissions</span>
+                  </button>
+                )}
+              </div>
 
               <div className="bg-surface-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
                 <table className="w-full text-left text-xs min-w-[700px] border-collapse">

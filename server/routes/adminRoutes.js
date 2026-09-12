@@ -141,6 +141,21 @@ router.post('/students', (req, res) => {
   }
 });
 
+// Delete all student accounts
+router.delete('/students', (req, res) => {
+  try {
+    const students = db.getAllStudents();
+    for (const s of students) {
+      socketManager.disconnectStudent(s.id, 'Contest reset by admin');
+    }
+    const result = db.clearAllStudents();
+    socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
+    res.json({ success: true, count: result.count, message: `Removed all ${result.count} student accounts.` });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // Delete student account
 router.delete('/students/:id', (req, res) => {
   const { id } = req.params;
@@ -682,6 +697,17 @@ router.post('/assign-multi-language', (req, res) => {
 router.get('/submissions', (req, res) => {
   const submissions = db.getSubmissionsForAdmin();
   res.json(submissions);
+});
+
+// Clear all contest submissions
+router.delete('/submissions', (req, res) => {
+  try {
+    const result = db.clearAllSubmissions();
+    socketManager.broadcastToAdmins({ type: 'STUDENTS_UPDATED' });
+    res.json({ success: true, count: result.count, message: `Cleared ${result.count} submissions.` });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 export default router;

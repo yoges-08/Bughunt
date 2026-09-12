@@ -162,6 +162,12 @@ class ApiService {
     });
   }
 
+  async clearAllStudents() {
+    return this.request('/api/admin/students', {
+      method: 'DELETE'
+    });
+  }
+
   async getAdminProblems() {
     return this.request('/api/admin/problems');
   }
@@ -202,6 +208,12 @@ class ApiService {
 
   async getAdminSubmissions() {
     return this.request('/api/admin/submissions');
+  }
+
+  async clearAllSubmissions() {
+    return this.request('/api/admin/submissions', {
+      method: 'DELETE'
+    });
   }
 
   // --- Student APIs ---

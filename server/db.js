@@ -317,18 +317,16 @@ class ContestDatabase {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         this.data = JSON.parse(raw);
 
-        // Ensure default contest users exist if missing
+        // Ensure admin user exists if missing
         if (!this.data.users || this.data.users.length === 0) {
-          this.data.users = JSON.parse(JSON.stringify(INITIAL_DB.users));
+          this.data.users = [JSON.parse(JSON.stringify(INITIAL_DB.users.find(u => u.role === 'admin')))];
           this.saveSync();
-        } else if (!this.data.users.some(u => u.username === 'student1')) {
-          const initialStudents = INITIAL_DB.users.filter(u => u.role === 'student');
-          for (const s of initialStudents) {
-            if (!this.data.users.some(u => u.username === s.username)) {
-              this.data.users.push(JSON.parse(JSON.stringify(s)));
-            }
+        } else if (!this.data.users.some(u => u.role === 'admin')) {
+          const adminUser = INITIAL_DB.users.find(u => u.role === 'admin');
+          if (adminUser) {
+            this.data.users.unshift(JSON.parse(JSON.stringify(adminUser)));
+            this.saveSync();
           }
-          this.saveSync();
         }
 
         // Ensure default contest problems exist if missing
@@ -527,6 +525,27 @@ class ContestDatabase {
     this.data.submissions = this.data.submissions.filter(s => s.studentId !== id);
     this.saveImmediately();
     return { id: removed.id, username: removed.username, name: removed.name };
+  }
+
+  clearAllStudents() {
+    const studentsRemoved = this.data.users.filter(u => u.role === 'student');
+    this.data.users = this.data.users.filter(u => u.role !== 'student');
+    this.data.assignments = [];
+    this.data.submissions = [];
+    this.saveImmediately();
+    return { count: studentsRemoved.length };
+  }
+
+  clearAllSubmissions() {
+    const count = this.data.submissions.length;
+    this.data.submissions = [];
+    for (const a of this.data.assignments) {
+      if (a.status === 'passed' || a.status === 'failed') {
+        a.status = 'assigned';
+      }
+    }
+    this.saveImmediately();
+    return { count };
   }
 
   // --- Problems ---
