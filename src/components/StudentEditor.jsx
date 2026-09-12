@@ -4,7 +4,7 @@ import '../utils/monacoSetup'; // Load Monaco locally instead of from CDN for of
 import { 
   Play, Send, CheckCircle2, XCircle, Clock, 
   FileCode, LogOut, Radio, Save, Sparkles, Lock,
-  AlertCircle, RefreshCw
+  AlertCircle, RefreshCw, Zap
 } from 'lucide-react';
 import { api } from '../services/api';
 import { socket } from '../services/socket';
@@ -38,41 +38,87 @@ export default function StudentEditor({ user, onLogout }) {
   const [incomingAlert, setIncomingAlert] = useState(null);
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(null);
   
-  // Monaco Pre-Warming, Initialization Watchdog & Retry State
+  // Monaco Pre-Warming, Initialization Watchdog & Fallback State
   const [editorReady, setEditorReady] = useState(false);
   const [editorTimeout, setEditorTimeout] = useState(false);
   const [editorRemountKey, setEditorRemountKey] = useState(0);
+  const [useFallbackEditor, setUseFallbackEditor] = useState(false);
 
   const saveTimeoutRef = useRef(null);
   const editorInstanceRef = useRef(null);
+  const lineNumbersRef = useRef(null);
   // Track clock offset between server and client to eliminate client clock skew (BUG-ML-06)
   const serverOffsetRef = useRef(0);
 
-  // Watchdog timer: if editor takes longer than 8 seconds to initialize, show retry card
+  // Watchdog timer: if editor takes longer than 8 seconds to initialize, show retry/fallback options
   useEffect(() => {
-    if (editorReady) {
+    if (editorReady || useFallbackEditor) {
       setEditorTimeout(false);
       return;
     }
     const timer = setTimeout(() => {
-      if (!editorReady) {
+      if (!editorReady && !useFallbackEditor) {
         setEditorTimeout(true);
       }
     }, 8000);
     return () => clearTimeout(timer);
-  }, [editorReady, editorRemountKey]);
+  }, [editorReady, editorRemountKey, useFallbackEditor]);
+
+  // Instant layout recalculation whenever problem state changes or editor finishes loading
+  useEffect(() => {
+    if (problem && editorInstanceRef.current && !useFallbackEditor) {
+      const raf = requestAnimationFrame(() => {
+        try {
+          editorInstanceRef.current.layout();
+          editorInstanceRef.current.focus();
+        } catch {}
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [problem, editorReady, useFallbackEditor]);
 
   const handleEditorMount = (editor, _monaco) => {
     editorInstanceRef.current = editor;
     setEditorReady(true);
     setEditorTimeout(false);
+    try {
+      editor.layout();
+    } catch {}
   };
 
   const handleReloadEditor = () => {
     setEditorReady(false);
     setEditorTimeout(false);
+    setUseFallbackEditor(false);
     setEditorRemountKey(k => k + 1);
   };
+
+  // Synchronized scroll between fallback line numbers and textarea
+  const handleTextareaScroll = (e) => {
+    if (lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = e.target.scrollTop;
+    }
+  };
+
+  // Tab key indentation handling for fallback textarea (inserts 4 spaces)
+  const handleTextareaKeyDown = (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      const newCode = (code || '').substring(0, start) + '    ' + (code || '').substring(end);
+      handleEditorChange(newCode);
+      requestAnimationFrame(() => {
+        if (e.target) {
+          e.target.selectionStart = e.target.selectionEnd = start + 4;
+        }
+      });
+    }
+  };
+
+  const codeLines = useMemo(() => {
+    return (code || '').split('\n');
+  }, [code]);
 
   // Load current assignment on mount or reconnect (Core Requirement 1)
   const loadState = async () => {
@@ -484,57 +530,101 @@ export default function StudentEditor({ user, onLogout }) {
                 <FileCode className="w-3.5 h-3.5 text-emerald-400" />
                 <span>{problem ? problem.filename : 'idle_buffer.py'}</span>
               </div>
-              <div className="text-[11px] text-slate-500 flex items-center gap-2">
+              <div className="text-[11px] text-slate-500 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setUseFallbackEditor(prev => !prev)}
+                  className="hover:text-emerald-400 flex items-center gap-1 transition text-slate-400 font-sans"
+                  title={useFallbackEditor ? "Switch back to Monaco Editor Engine" : "Switch to Lightweight Editor Engine"}
+                >
+                  <Sparkles className="w-3 h-3 text-emerald-400" />
+                  <span>{useFallbackEditor ? 'Use Monaco Engine' : 'Lightweight Mode'}</span>
+                </button>
+                <span>•</span>
                 <span>Bundled Compiler Sandboxed</span>
                 <span>•</span>
-                <span className={editorReady ? 'text-emerald-400' : 'text-amber-400'}>
-                  {editorReady ? 'Editor Engine Ready' : 'Initializing...'}
+                <span className={useFallbackEditor ? 'text-blue-400' : editorReady ? 'text-emerald-400' : 'text-amber-400'}>
+                  {useFallbackEditor ? 'Lightweight Engine' : editorReady ? 'Editor Ready' : 'Initializing...'}
                 </span>
               </div>
             </div>
 
-            {/* Monaco Editor Container with Timeout Watchdog & Retry UI */}
-            <div className="flex-1 min-h-0 relative overflow-hidden">
-              {editorTimeout && !editorReady && (
+            {/* Monaco Editor Container with Timeout Watchdog, Retry UI & Lightweight Fallback */}
+            <div className="flex-1 min-h-0 relative overflow-hidden bg-surface-950">
+              {editorTimeout && !editorReady && !useFallbackEditor && (
                 <div className="absolute inset-0 bg-surface-950/95 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-6 text-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
                     <AlertCircle className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-100 mb-1">Code Editor Initialization Delayed</h3>
-                    <p className="text-xs text-slate-400 max-w-xs">
-                      The code editor engine took longer than expected to initialize on this system.
+                    <p className="text-xs text-slate-400 max-w-sm">
+                      The Monaco engine took longer than expected to start. You can reload it or immediately switch to the lightweight editor.
                     </p>
                   </div>
-                  <button
-                    onClick={handleReloadEditor}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Reload Editor Engine</span>
-                  </button>
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <button
+                      onClick={handleReloadEditor}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg active:scale-[0.98]"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Reload Monaco Engine</span>
+                    </button>
+                    <button
+                      onClick={() => setUseFallbackEditor(true)}
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-bold flex items-center gap-2 transition border border-slate-700 active:scale-[0.98]"
+                    >
+                      <Zap className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Switch to Lightweight Editor</span>
+                    </button>
+                  </div>
                 </div>
               )}
 
-              <Editor
-                key={`editor-instance-${editorRemountKey}`}
-                height="100%"
-                language={monacoLanguage}
-                theme="vs-dark"
-                value={code || (problem ? '' : '# Pre-warmed editor engine ready for contest\n')}
-                onChange={handleEditorChange}
-                onMount={handleEditorMount}
-                options={{
-                  ...MONACO_EDITOR_OPTIONS,
-                  readOnly: Boolean(hasSubmitted || isTimeExpired)
-                }}
-                loading={
-                  <div className="flex flex-col items-center justify-center gap-3 p-8 text-slate-400 h-full">
-                    <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
-                    <span className="text-xs font-mono text-slate-300">Initializing Code Editor Engine...</span>
+              {useFallbackEditor ? (
+                <div className="w-full h-full flex bg-surface-950 font-mono text-xs overflow-hidden relative">
+                  {/* Line Numbers Gutter */}
+                  <div 
+                    ref={lineNumbersRef}
+                    className="shrink-0 w-12 bg-surface-900/60 border-r border-slate-800 text-slate-500 text-right pr-2.5 py-3 select-none overflow-hidden font-mono leading-relaxed"
+                  >
+                    {codeLines.map((_, i) => (
+                      <div key={i}>{i + 1}</div>
+                    ))}
                   </div>
-                }
-              />
+                  {/* Textarea */}
+                  <textarea
+                    value={code}
+                    onChange={(e) => handleEditorChange(e.target.value)}
+                    onKeyDown={handleTextareaKeyDown}
+                    onScroll={handleTextareaScroll}
+                    readOnly={Boolean(hasSubmitted || isTimeExpired)}
+                    spellCheck={false}
+                    className="flex-1 h-full bg-transparent text-slate-100 p-3 outline-none resize-none font-mono leading-relaxed overflow-auto selection:bg-emerald-500/30 whitespace-pre"
+                    placeholder={problem ? "Write or fix your code here..." : "Waiting for problem assignment..."}
+                  />
+                </div>
+              ) : (
+                <Editor
+                  key={`editor-instance-${editorRemountKey}`}
+                  height="100%"
+                  language={monacoLanguage}
+                  theme="vs-dark"
+                  value={code || (problem ? '' : '# Pre-warmed editor engine ready for contest\n')}
+                  onChange={handleEditorChange}
+                  onMount={handleEditorMount}
+                  options={{
+                    ...MONACO_EDITOR_OPTIONS,
+                    readOnly: Boolean(hasSubmitted || isTimeExpired)
+                  }}
+                  loading={
+                    <div className="flex flex-col items-center justify-center gap-3 p-8 text-slate-400 h-full">
+                      <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+                      <span className="text-xs font-mono text-slate-300">Initializing Code Editor Engine...</span>
+                    </div>
+                  }
+                />
+              )}
             </div>
 
             {/* Bottom Action & Generic Status Panel - Fixed Docked at Bottom */}
